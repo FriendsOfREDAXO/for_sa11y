@@ -4,6 +4,21 @@ FOR sa11y adds ["Sa11y"](https://sa11y.netlify.app) to the REDAXO frontend.
  
 Sa11y visually highlights content issues at the source with a simple tooltip on how to fix them. 
 
+HowTo: 
+
+Add this to your Template: 
+
+```php
+<?php     
+  if (rex_backend_login::createUser() !== null) {
+      $admin = rex::requireUser()->isAdmin();
+      if ($admin === true)
+      {     
+        echo for_sa11y::get();
+      }   
+}
+```
+
 
 AddOn-Lead: 
 [Thomas Skerbis](https://github.com/skerbis) 
