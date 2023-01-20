@@ -2,7 +2,7 @@
 
 FOR sa11y adds ["Sa11y"](https://sa11y.netlify.app) to the REDAXO frontend. 
  
-Sa11y visually highlights content issues at the source with a simple tooltip on how to fix them. Sa11y is not a comprehensive code analysis tool.
+Sa11y visually highlights content issues at the source with a simple tooltip on how to fix them. 
 
 
 AddOn-Lead: 
