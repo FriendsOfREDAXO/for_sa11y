@@ -1,4 +1,4 @@
-# FOR ["Sa11y"](https://sa11y.netlify.app)
+# FOR [Sa11y](https://sa11y.netlify.app)
 
 FOR sa11y adds ["Sa11y"](https://sa11y.netlify.app) to the REDAXO frontend. 
  
