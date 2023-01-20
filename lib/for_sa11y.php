@@ -17,7 +17,7 @@ $js = '
   const sa11y = new Sa11y.Sa11y({
     customChecks: new CustomChecks, // Optional
     checkRoot: "body",
-    containerIgnore: '.rex-minibar',
+    containerIgnore: \'.rex-minibar\',
   });
 </script>        
 ';
