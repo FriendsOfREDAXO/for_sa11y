@@ -3,6 +3,6 @@ version: '0.0.1-dev'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/addon_key
 requires:
-    redaxo: '^5.54.0'
+    redaxo: '^5.14.0'
     php:
         version: '>=8.0, <9'
