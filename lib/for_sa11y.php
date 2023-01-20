@@ -13,6 +13,7 @@ class for_sa11y
       <script src="' . $addon->getAssetsUrl("dist/js/lang/en.umd.js") . '"></script>
 
        <script src="' . $addon->getAssetsUrl("dist/js/sa11y-custom-checks.umd.min.js") . '"></script>
+  <script>     
   Sa11y.Lang.addI18n(Sa11yLangEn.strings);
   const sa11y = new Sa11y.Sa11y({
     customChecks: new CustomChecks, // Optional
