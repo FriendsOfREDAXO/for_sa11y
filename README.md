@@ -9,7 +9,8 @@ AddOn-Lead:
 [Thomas Skerbis](https://github.com/skerbis) 
 
 Credits:
-Many thanks to: [Adam Chaboryk](https://github.com/adamchaboryk), creator of Sa11y
+- Many thanks to: [Adam Chaboryk](https://github.com/adamchaboryk), creator of Sa11y
+- [Digital Media Projects team at TMU](https://github.com/ryersondmp)
 
 Vendor: 
 - Licensed under: Sa11y - License && GNU General Public License
