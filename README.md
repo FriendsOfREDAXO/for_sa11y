@@ -16,6 +16,11 @@ To let FOR sa11y ignore specific elements of the current page add to them the cs
 
 `.sa11y-ignore`
 
+To do: 
+
+- Settings page
+- on / off switch (REDAXO minibar)
+
 AddOn-Lead: 
 [Thomas Skerbis](https://github.com/skerbis) 
 
