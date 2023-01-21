@@ -12,6 +12,9 @@ Add this to your Template at the and of `<head>`:
   echo for_sa11y::get();
 ```
 
+To let FOR sa11y ignore specific elements of the current page add to them the css class: 
+
+`.sa11y-ignore`
 
 AddOn-Lead: 
 [Thomas Skerbis](https://github.com/skerbis) 
