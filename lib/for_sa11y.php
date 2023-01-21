@@ -1,9 +1,6 @@
 <?php
 class for_sa11y
 {
-  /**
-   * @return string
-   */
   public static function get(): void
   {
     if (rex_backend_login::createUser() !== null && rex_backend_login::hasSession()) {
@@ -24,7 +21,6 @@ class for_sa11y
   });
 </script>        
 ';
-
       echo $js;
     }
   }
