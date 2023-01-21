@@ -6,17 +6,10 @@ Sa11y visually highlights content issues at the source with a simple tooltip on 
 
 HowTo: 
 
-Add this to your Template: 
+Add this to your Template at the and of `<head>`: 
 
 ```php
-<?php     
-  if (rex_backend_login::createUser() !== null) {
-      $admin = rex::requireUser()->isAdmin();
-      if ($admin === true)
-      {     
-        echo for_sa11y::get();
-      }   
-}
+  echo for_sa11y::get();
 ```
 
 

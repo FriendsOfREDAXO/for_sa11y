@@ -6,8 +6,10 @@ class for_sa11y
    */
   public static function get(): string
   {
-    $addon = rex_addon::get('for_sa11y');
-    $js = '      
+    if (rex_backend_login::createUser() !== null && rex_backend_login::hasSession()) {
+
+      $addon = rex_addon::get('for_sa11y');
+      $js = '      
       <link rel="stylesheet" href="' . $addon->getAssetsUrl("dist/css/sa11y.min.css") . '"/>
       <script src="' . $addon->getAssetsUrl("dist/js/sa11y.umd.min.js") . '"></script>
       <script src="' . $addon->getAssetsUrl("dist/js/lang/en.umd.js") . '"></script>
@@ -21,6 +23,8 @@ class for_sa11y
   });
 </script>        
 ';
-    return $js;
+
+      return $js;
+    }
   }
 }
