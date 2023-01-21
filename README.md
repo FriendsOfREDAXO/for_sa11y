@@ -33,5 +33,5 @@ Credits:
 - [Digital Media Projects team at TMU](https://github.com/ryersondmp)
 
 Vendor: 
-- Licensed under: Sa11y - License && GNU General Public License
+- Licensed under: Sa11y - License & GNU General Public License
 - Link to license: https://github.com/ryersondmp/sa11y/blob/master/LICENSE.md
