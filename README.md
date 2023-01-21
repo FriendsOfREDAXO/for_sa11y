@@ -17,7 +17,7 @@ To let FOR sa11y ignore specific elements of the current page add the following 
 
 `sa11y-ignore`
 
-To disable it: Just disable the AddOn 
+To disable the checks: Just disable the AddOn 
 
 
 To do: 
