@@ -9,7 +9,7 @@ HowTo:
 Add this to your Template at the and of `<head>`: 
 
 ```php
-  echo for_sa11y::get();
+  for_sa11y::get();
 ```
 
 To let FOR sa11y ignore specific elements of the current page add to them the css class: 
