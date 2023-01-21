@@ -6,15 +6,16 @@ Sa11y visually highlights content issues at the source with a simple tooltip on 
 
 HowTo: 
 
-Add this to your Template at the and of `<head>`: 
+- Install the AddOn 
+- Add this to your Template at the and of `<head>`: 
 
 ```php
   for_sa11y::get();
 ```
 
-To let FOR sa11y ignore specific elements of the current page add to them the css class: 
+To let FOR sa11y ignore specific elements of the current page add the following css class to each: 
 
-`.sa11y-ignore`
+`sa11y-ignore`
 
 To do: 
 
