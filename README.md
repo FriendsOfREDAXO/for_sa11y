@@ -19,12 +19,6 @@ To let FOR sa11y ignore specific elements of the current page add the following 
 
 To disable the checks: Just disable the AddOn 
 
-
-To do: 
-
-- Settings page
-- on / off switch (REDAXO minibar)
-
 AddOn-Lead: 
 [Thomas Skerbis](https://github.com/skerbis) 
 
