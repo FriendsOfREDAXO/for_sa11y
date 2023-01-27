@@ -11,7 +11,7 @@ class for_sa11y
     $lang["setup"] = 'De';   
     
     $user = rex_backend_login::createUser();
-    if ($user->getLanguage()) === 'en_gb')
+    if ($user->getLanguage() === 'en_gb')
     {
       $lang["js"] = 'en';
       $lang["setup"] = 'En';
