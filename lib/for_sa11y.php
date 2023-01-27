@@ -8,7 +8,8 @@ class for_sa11y
    
     $lang = [];
     $lang["js"] = 'de';
-    $lang["setup"] = 'De';   
+    $lang["setup"] = 'De'; 
+    $lang["text"] = rex_clang::getCurrent()->getCode();
     
     $user = rex_backend_login::createUser();
     if ($user->getLanguage() === 'en_gb')
@@ -16,8 +17,6 @@ class for_sa11y
       $lang["js"] = 'en';
       $lang["setup"] = 'En';
     }
-      
-      
       $addon = rex_addon::get('for_sa11y');
       $js = '      
       <link rel="stylesheet" href="' . $addon->getAssetsUrl("dist/css/sa11y.min.css") . '"/>
@@ -29,7 +28,7 @@ class for_sa11y
   const sa11y = new Sa11y.Sa11y({
     customChecks: new CustomChecks,
     checkRoot: \'body\',
-    readabilityLang:	\'de\',
+    readabilityLang:	\''.$lang["text"].'\',
     containerIgnore: \'.rex-minibar,.sa11y-ignore\',
   });
 </script>        
