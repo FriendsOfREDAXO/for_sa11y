@@ -1,8 +1,8 @@
 package: for_sa11y
-version: '0.0.2'
+version: '0.0.3'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/addon_key
 requires:
-    redaxo: '^5.14.0'
+    redaxo: '^5.12.0'
     php:
-        version: '>=8.0, <9'
+        version: '>=7.4, <9'
