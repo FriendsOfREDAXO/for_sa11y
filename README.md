@@ -28,6 +28,7 @@ AddOn-Lead:
 Credits:
 - Many thanks to: [Adam Chaboryk](https://github.com/adamchaboryk), creator of Sa11y
 - [Digital Media Projects team at TMU](https://github.com/ryersondmp)
+- German Translation:  @elricco @ansichtsache
 
 Vendor: 
 - Licensed under: Sa11y - License & GNU General Public License
