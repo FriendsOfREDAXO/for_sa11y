@@ -4,7 +4,10 @@ FOR sa11y adds ["Sa11y"](https://sa11y.netlify.app) to the REDAXO frontend, when
  
 Sa11y visually highlights accessibilty content issues at the source with a simple tooltip on how to fix them. 
 
-HowTo: 
+The AddOn helps to reduce accessibility issues on the website. It should be noted that this is only a tool and therefore it is not a reliable tool to check the website for accessibility. Experts should be consulted for this. However, it is very useful as an editorial assistent. 
+
+
+## HowTo: 
 
 - Install the AddOn 
 - Add this to your Template at the and of `<head>`: 
