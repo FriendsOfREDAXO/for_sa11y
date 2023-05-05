@@ -26,7 +26,6 @@ class for_sa11y
   <script>     
   Sa11y.Lang.addI18n(Sa11yLang'.$lang["setup"].'.strings);
   const sa11y = new Sa11y.Sa11y({
-    customChecks: new CustomChecks,
     checkRoot: \'body\',
     readabilityLang:	\''.$lang["text"].'\',
     containerIgnore: \'.rex-minibar,.sa11y-ignore\',
