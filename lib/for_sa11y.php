@@ -27,9 +27,8 @@ class for_sa11y
   Sa11y.Lang.addI18n(Sa11yLang'.$lang["setup"].'.strings);
   const sa11y = new Sa11y.Sa11y({
     checkRoot: \'body\',
-    contrastPlugin: false,
     readabilityLang:	\''.$lang["text"].'\',
-    containerIgnore: \'.rex-minibar,.sa11y-ignore\',
+    containerIgnore: \'.rex-minibar,.consent_manager-wrapper,.sa11y-ignore\',
   });
 </script>        
 ';
