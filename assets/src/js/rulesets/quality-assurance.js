@@ -8,6 +8,7 @@ export default function checkQA(
   badLinksQA,
   strongItalicsQA,
   pdfQA,
+  documentQA,
   langQA,
   blockquotesQA,
   tablesQA,
@@ -54,23 +55,37 @@ export default function checkQA(
     });
   }
 
-  /* *********************************************************** */
-  /*  Warning: Find all PDF documents                            */
-  /* *********************************************************** */
-  if (pdfQA === true) {
-    Elements.Found.Pdf.forEach(($el) => {
-      const href = $el.getAttribute('href');
-      const key = Utils.prepareDismissal(`PDF${href}`);
-      results.push({
-        element: $el,
-        type: Constants.Global.WARNING,
-        content: Lang.sprintf('QA_PDF'),
-        inline: true,
-        position: 'beforebegin',
-        dismiss: key,
-      });
-    });
-  }
+  /* ************************************************************** */
+  /*  Warning: Manually inspect documents & PDF for accessibility.  */
+  /* ************************************************************** */
+  Elements.Found.Links.forEach(($el) => {
+    const href = $el.getAttribute('href');
+    const extensions = Constants.Global.documentLinks.split(', ');
+    if (href) {
+      const hasExtension = extensions.some((extension) => href.includes(extension));
+      const hasPDF = href.includes('.pdf');
+      const key = Utils.prepareDismissal(`DOCUMENT${href}`);
+      if (documentQA === true && hasExtension) {
+        results.push({
+          element: $el,
+          type: Constants.Global.WARNING,
+          content: Lang.sprintf('QA_DOCUMENT'),
+          inline: true,
+          position: 'beforebegin',
+          dismiss: key,
+        });
+      } else if (pdfQA === true && hasPDF) {
+        results.push({
+          element: $el,
+          type: Constants.Global.WARNING,
+          content: Lang.sprintf('QA_PDF'),
+          inline: true,
+          position: 'beforebegin',
+          dismiss: key,
+        });
+      }
+    }
+  });
 
   /* *************************************************************** */
   /*  Error: Missing language tag. Lang should be at least 2 chars.  */

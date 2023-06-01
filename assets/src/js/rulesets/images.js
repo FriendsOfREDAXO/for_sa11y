@@ -70,7 +70,8 @@ export default function checkImages(results) {
       const altText = Utils.sanitizeHTML(alt); // Prevent tooltip from breaking.
       const error = containsAltTextStopWords(altText);
       const altLength = alt.length;
-      const baseSrc = $el.getAttribute('src').split('?')[0];
+      const src = $el.getAttribute('src');
+      const baseSrc = (!src) ? $el.getAttribute('srcset') : src;
 
       if ($el.closest('a[href]') && $el.closest('a[href]').getAttribute('tabindex') === '-1' && $el.closest('a[href]').getAttribute('aria-hidden') === 'true') {
         // Do nothing if link has aria-hidden and negative tabindex.

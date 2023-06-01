@@ -73,7 +73,7 @@ export default function checkHeaders(
         });
       }
     } else if (i === 0 && level !== 1 && level !== 2) {
-      error = Lang._('HEADING_FIRST');
+      error = Lang.sprintf('HEADING_FIRST');
       results.push({
         element: $el,
         type: Constants.Global.ERROR,
