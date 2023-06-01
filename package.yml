@@ -1,5 +1,5 @@
 package: for_sa11y
-version: '2.0.0'
+version: '2.0.2'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/addon_key
 requires:
