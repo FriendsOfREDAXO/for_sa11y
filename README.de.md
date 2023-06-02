@@ -1,6 +1,6 @@
 # FOR [Sa11y](https://sa11y.netlify.app)
 
-FOR sa11y stellt,wenn Benutzer eingeloggt sind, ["Sa11y"](https://sa11y.netlify.app) im Frontend bereit.  
+FOR sa11y stellt, wenn Benutzer eingeloggt sind, ["Sa11y"](https://sa11y.netlify.app) im Frontend bereit.  
 
 Sa11y hebt Probleme mit der Barrierefreiheit von Inhalten visuell an der Quelle hervor und gibt Hilfestellungen über Tooltips, wie diese behoben werden können. 
 
