@@ -158,6 +158,7 @@ div {
 }
 .tippy-box[data-theme~=sa11y-theme] code {
   font-family: monospace;
+  font-size: calc(var(--sa11y-normal-text) - 1px);
 }
 .tippy-box[data-theme~=sa11y-theme] code,
 .tippy-box[data-theme~=sa11y-theme] kbd {
@@ -183,10 +184,8 @@ div {
   position: relative;
   padding: 0;
   margin: 0;
-  -webkit-margin-after: 0;
-          margin-block-end: 0;
-  -webkit-margin-before: 0;
-          margin-block-start: 0;
+  margin-block-end: 0;
+  margin-block-start: 0;
 }
 .tippy-box[data-theme~=sa11y-theme] li {
   display: list-item;
@@ -222,7 +221,7 @@ div {
   color: var(--sa11y-panel-primary);
   cursor: pointer;
   background: var(--sa11y-panel-bg-secondary);
-  border: 1px solid var(--sa11y-button-outline);
+  border: 2px solid var(--sa11y-button-outline);
   border-radius: 5px;
 }
 .tippy-box[data-theme~=sa11y-theme] button[data-sa11y-dismiss]:hover, .tippy-box[data-theme~=sa11y-theme] button[data-sa11y-dismiss]:focus {

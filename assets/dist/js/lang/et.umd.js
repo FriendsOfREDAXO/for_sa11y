@@ -1,7 +1,7 @@
 
 /*!
   * Sa11y, the accessibility quality assurance assistant.
-  * @version 3.0.3
+  * @version 3.0.6
   * @author Adam Chaboryk, Toronto Metropolitan University
   * @license GPL-2.0-or-later
   * @copyright © 2020 - 2023 Toronto Metropolitan University (formerly Ryerson University).
@@ -51,10 +51,24 @@
       HEADING_NOT_VISIBLE_ALERT: 'Pealkiri ei ole nähtav; see võib olla peidetud või olla akordioni või vahekaardikomponendi sees.',
       SKIP_TO_PAGE_ISSUES: 'Skip to Page Issues (lehekülje probleemid)',
       CONSOLE_ERROR_MESSAGE: 'Vabandame, kuid selle lehekülje ligipääsetavuse kontrolliga on probleem. Kas te saaksite <a href="%(link)">teavitada sellest selle vormi kaudu</a> või <a href="%(link)">GitHubis</a>?',
+
+      // Dismiss
       PANEL_DISMISS_BUTTON: 'Show %(dismissCount) dismissed warnings',
       DISMISS: 'Lase lahti',
       DISMISSED: 'Kõrvaldatud hoiatused',
       DISMISS_REMINDER: 'Pange tähele, et hoiatused lükatakse tagasi ainult <strong>vähemalt</strong>. Brauseri ajaloo ja küpsiste kustutamine taastab kõik varem tühistatud hoiatused kõigil lehekülgedel.',
+
+      // Export
+      DATE: 'Kuupäev',
+      PAGE_TITLE: 'Lehe pealkiri',
+      RESULTS: 'Tulemused',
+      EXPORT_RESULTS: 'Ekspordi tulemused',
+      GENERATED: 'Tulemused genereeritud %(tool) abil.',
+      PREVIEW: 'Eelvaade',
+      ELEMENT: 'Element',
+      PATH: 'Rada',
+
+      // Colour filters
       COLOUR_FILTER: 'Värvifilter',
       PROTANOPIA: 'Protanopia',
       DEUTERANOPIA: 'Deuteranopia',
@@ -66,6 +80,8 @@
       BLUE_EYE: 'Sinine pime.',
       MONO_EYE: 'Punane, sinine ja roheline pime.',
       COLOUR_FILTER_HIGH_CONTRAST_MESSAGE: 'Värvifiltrid ei tööta kõrge kontrastsusega režiimis.',
+
+      // Alternative text stop words
       SUSPICIOUS_ALT_STOPWORDS: [
         'pilt',
         'graafiline',
@@ -148,6 +164,7 @@
       HEADING_MISSING_ONE: 'Puudub pealkiri 1. Pealkiri 1 peaks olema peamise sisuala algus ja on peamine pealkiri, mis kirjeldab lehe üldist eesmärki. Lisateave <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">pealkirja struktuur.</a>',
       HEADING_EMPTY_WITH_IMAGE: 'Pealkiri ei sisalda teksti, kuid sisaldab pilti. Kui see ei ole pealkiri, muutke selle formaat <strong {r}>pealkiri %(level)</strong>-st <strong>normaalseks</strong> või <strong>paragrahviks</strong>. Vastasel juhul lisage pildile alt-tekst, kui see ei ole dekoratiivne.',
       PANEL_HEADING_MISSING_ONE: 'Puudub rubriik 1!',
+      PANEL_NO_HEADINGS: 'Pealkirju ei leitud.',
       LINK_EMPTY: 'Eemaldage tühjad lingid ilma tekstita.',
       LINK_EMPTY_LINK_NO_LABEL: 'Lingil ei ole eristatavat teksti, mis oleks nähtav ekraanilugejatele ja muudele abivahenditele. Parandada: <ul><li>Lisandage lühike tekst, mis kirjeldab, kuhu link viib.</li><li>Kui tegemist on <a href="https://a11y-101.com/development/icons-and-links">ikoonilink või SVG,</a> puudub tõenäoliselt kirjeldav märgistus.</li><li>Kui arvate, et see link on kopeerimis-/liidevigast tingitud viga, kaaluge selle kustutamist.</li></ul>Kui arvate, et tegemist on kopeerimis-/liidevigast tingitud veaga, kaaluge selle kustutamist.</li></ul>',
       LINK_LABEL: '<strong>Linki silt:</strong> %(sanitizedText)',
@@ -161,18 +178,18 @@
       MISSING_ALT_LINK_BUT_HAS_TEXT_MESSAGE: 'Pilti kasutatakse lingina koos ümbritseva tekstiga, kuigi alt-atribuut peaks olema märgitud dekoratiivseks või null.',
       MISSING_ALT_LINK_MESSAGE: 'Pilti kasutatakse lingina, kuid puudub alt-tekst! Palun veenduge, et alt-tekst kirjeldab, kuhu link viib.',
       MISSING_ALT_MESSAGE: 'Puuduv alt-tekst! Kui pilt edastab lugu, meeleolu või olulist teavet - kirjeldage kindlasti pilti.',
-      LINK_IMAGE_BAD_ALT_MESSAGE: 'Alt-tekstis olev faililaiend leitud. Veenduge, et alt-tekst kirjeldab lingi sihtkohta, mitte pildi sõna-sõnalist kirjeldust. Eemaldage: <strong {r}>%(error)</strong>.<hr><strong>Alt tekst:</strong> %(altText)',
+      LINK_ALT_HAS_FILE_EXTENSION: 'Alt-tekstis olev faililaiend leitud. Veenduge, et alt-tekst kirjeldab lingi sihtkohta, mitte pildi sõna-sõnalist kirjeldust. Eemaldage: <strong {r}>%(error)</strong>.<hr><strong>Alt tekst:</strong> %(altText)',
       LINK_IMAGE_PLACEHOLDER_ALT_MESSAGE: 'Leitud lingitud pildi sees olev mittekirjeldav või paigutatud alt-tekst. Veenduge, et alt-tekst kirjeldab lingi sihtkohta, mitte pildi sõna-sõnalist kirjeldust. Asendage järgmine alt-tekst: <strong {r}>%(altText)</strong>',
       LINK_IMAGE_SUS_ALT_MESSAGE: 'Abitehnoloogiad näitavad juba, et tegemist on pildiga, seega võib &quot;<strong {r}>%(error)</strong>&quot; olla üleliigne. Veenduge, et alt-tekst kirjeldab lingi sihtkohta, mitte pildi sõna-sõnalist kirjeldust. <hr> <strong>Alt tekst:</strong> %(altText)',
-      LINK_ALT_HAS_BAD_WORD_MESSAGE: 'Alt-tekstis olev faililaiend leitud. Kui pilt edastab lugu, meeleolu või olulist teavet - kirjeldage kindlasti pilti. Eemaldage: <strong {r}>%(error)</strong>.<hr><strong>Alt tekst:</strong> %(altText)',
+      ALT_HAS_FILE_EXTENSION: 'Alt-tekstis olev faililaiend leitud. Kui pilt edastab lugu, meeleolu või olulist teavet - kirjeldage kindlasti pilti. Eemaldage: <strong {r}>%(error)</strong>.<hr><strong>Alt tekst:</strong> %(altText)',
       ALT_PLACEHOLDER_MESSAGE: 'Leitud mittekirjeldav või paigutatud alt-tekst. Asendage järgmine alt-tekst millegi sisukamaga: <strong {r}>%(altText)</strong>',
       ALT_HAS_SUS_WORD: 'Abitehnoloogiad näitavad juba, et tegemist on pildiga, seega &quot;<strong {r}>%(error)</strong>&quot; võib olla üleliigne. <hr> <strong>Alt tekst:</strong> %(altText)',
-      LINK_IMAGE_ARIA_HIDDEN: 'Link pildi ümber on <code>aria-hidden=&quot;true&quot;</code>, kuid on siiski klaviatuuri fookuses. Kui kavatsete peita üleliigset või dubleerivat linki, lisage ka <code>tabindex=&quot;-1&quot;</code>.',
+      LINK_HIDDEN_FOCUSABLE: 'Lingil on <code>aria-hidden=&quot;true&quot;</code>, kuid see on ikkagi klaviatuuriga fookuses. Kui kavatsete peita ülearuse või topeltlingi, lisage ka <code>tabindex=&quot;-1&quot;</code>.',
       LINK_IMAGE_NO_ALT_TEXT: 'Linki sees olev pilt on märgitud dekoratiivseks ja lingi tekst puudub. Palun lisage pildile alt-tekst, mis kirjeldab lingi sihtkohta.',
       LINK_IMAGE_HAS_TEXT: 'Pilt on märgitud dekoratiivseks, kuigi link kasutab ümbritsevat teksti kirjeldava märgisena.',
       LINK_IMAGE_LONG_ALT: 'Lingitud pildi Alt-teksti kirjeldus on <strong>liiga pikk</strong>. Lingitud piltide alt-tekst peaks kirjeldama, kuhu link viib, mitte pildi sõna-sõnaline kirjeldus. <strong>Võta arvesse, et kasuta alt-tekstina selle lehekülje pealkirja, millele see viitab.</strong> <hr> <strong>Alt-tekst (<span {r}>%(altLength)</span> tähemärki):</strong> %(altText)',
       LINK_IMAGE_ALT_WARNING: 'Pildilink sisaldab alternatiivset teksti. <strong>Kas alternatiivne tekst kirjeldab, kuhu link viib?</strong> Kaaluge alternatiivse tekstina selle lehekülje pealkirja kasutamist, millele link viitab. <hr> <strong>Alt-tekst:</strong> %(altText)',
-      LINK_IMAGE_ALT_AND_TEXT_WARNING: 'Pildilink sisaldab <strong>sellise alt-teksti ja ümbritseva lingi teksti.</strong> Kui see pilt on dekoratiivne ja seda kasutatakse funktsionaalse lingina teisele lehele, kaaluge pildi märkimist dekoratiivseks või nullina - ümbritsevast lingi tekstist peaks piisama. <hr> <strong>Alt tekst:</strong> %(altText)',
+      LINK_IMAGE_ALT_AND_TEXT_WARNING: 'Pildilink sisaldab <strong>sellise alt-teksti ja ümbritseva lingi teksti.</strong> Kui see pilt on dekoratiivne ja seda kasutatakse funktsionaalse lingina teisele lehele, kaaluge pildi märkimist dekoratiivseks või nullina - ümbritsevast lingi tekstist peaks piisama. <hr> <strong>Alt tekst:</strong> %(altText) <hr> <strong>Linki silt:</strong> %(sanitizedText)',
       IMAGE_FIGURE_DECORATIVE: 'Pilt on märgitud kui <strong>dekoratiivne</strong> ja abitehnoloogiad ignoreerivad seda. <hr> Kuigi on esitatud <strong>caption</strong>, peaks pildil olema enamasti ka alt-tekst. <ul><li>Alt-tekst peaks andma lühikese kirjelduse selle kohta, mis on pildil.</li><li>Tekstis peaks tavaliselt olema kontekst, et seostada pilt ümbritseva sisuga või juhtida tähelepanu konkreetsele teabele.</li></ul>Lisaks: <a href="https://thoughtbot.com/blog/alt-vs-figcaption#the-figcaption-element">alt versus figcaption.</a>',
       IMAGE_FIGURE_DUPLICATE_ALT: 'Ärge kasutage täpselt samu sõnu nii alt- kui ka tiiteltekstis. Ekraanilugejad annavad teavet kaks korda teada.<ul><li>Alt-tekst peaks andma lühikese kirjelduse selle kohta, mis on pildil.</li><li>Tekstis peaks tavaliselt olema kontekst, et seostada pilt ümbritseva sisuga või juhtida tähelepanu konkreetsele teabele.</li></ul> Lisateave: <a href="https://thoughtbot.com/blog/alt-vs-figcaption#the-figcaption-element">alt versus figcaption.</a> <hr> <strong>Alt tekst:</strong> %(altText)',
       IMAGE_DECORATIVE: 'Pilt on märgitud kui <strong>dekoratiivne</strong> ja abitehnoloogiad ignoreerivad seda. Kui pilt edastab lugu, meeleolu või olulist teavet - lisage kindlasti alt-tekst.',
@@ -180,14 +197,15 @@
       IMAGE_PASS: '<strong>Alt tekst:</strong> %(altText)',
       LABELS_MISSING_IMAGE_INPUT_MESSAGE: 'Pildi nupul puudub alt-tekst. Palun lisage alt-tekst, et anda ligipääsetav nimi. Näiteks: <em>Search</em> või <em>Submit</em>.',
       LABELS_INPUT_RESET_MESSAGE: 'Reset-nuppe ei tohiks <strong>ei</strong> kasutada, kui see pole spetsiaalselt vajalik, sest neid on lihtne kogemata aktiveerida. <hr> <strong>Nipp!</strong> Lugege, miks <a href="https://www.nngroup.com/articles/reset-and-cancel-buttons/">Reset ja Cancel nupud tekitavad kasutatavusprobleeme.</a>',
-      LABELS_ARIA_LABEL_INPUT_MESSAGE: 'Sisendil on juurdepääsetav nimi, kuigi palun veenduge, et ka silt on nähtav. <hr> Selle sisendi juurdepääsetav nimi on: <strong>%(sanitizedText)</strong>',
+      LABELS_ARIA_LABEL_INPUT_MESSAGE: 'Sisendil on juurdepääsetav nimi, kuigi palun veenduge, et ka silt on nähtav. <hr> <strong>Sisendmärgis:</strong> %(sanitizedText)',
       LABELS_NO_FOR_ATTRIBUTE_MESSAGE: 'Selle sisendiga ei ole seotud mingit märgistust. Lisage sildile <code>for</code> atribuut, mis vastab selle sisendi <code>id</code>. <hr> Selle sisendi ID on: <strong>id=&#34;%(id)&#34;</strong>',
       LABELS_MISSING_LABEL_MESSAGE: 'Selle sisendiga ei ole seotud mingit märgistust. Palun lisage sellele sisendile <code>id</code> ja lisage sildile vastav <code>for</code> atribuut.',
       EMBED_VIDEO: 'Palun veenduge, et <strong>kõik millisel videol on kinnised subtiitrid.</strong> Kogu heli- ja videosisu puhul on subtiitrite esitamine kohustuslik A-taseme nõue. Üleskirjutused toetavad kurte ja vaegkuuljaid inimesi, kes on kurdid või vaegkuuljad.',
       EMBED_AUDIO: 'Veenduge, et kõigi podcastide kohta esitatakse <strong>transkriptsioon.</strong> Audiosisu transkriptsiooni esitamine on kohustuslik A-taseme nõue. Transkriptsioonid toetavad kurte ja vaegkuuljaid, kuid neist on kasu kõigile. Kaaluge transkriptsiooni paigutamist allapoole või akordionpaneeli sisse.',
       EMBED_DATA_VIZ: 'Sellised andmete visualiseerimise vidinad on sageli problemaatilised inimestele, kes kasutavad navigeerimiseks klaviatuuri või ekraanilugejat, ning võivad tekitada märkimisväärseid raskusi inimestele, kellel on madal nägemine või värvipimedus. Soovitatav on esitada sama teave alternatiivses (teksti või tabeli) vormis vidina all. <hr> Lisateave <a href="https://www.w3.org/WAI/tutorials/images/complex">komplekspiltide kohta.</a>',
-      EMBED_MISSING_TITLE: 'Varjatud sisu vajab juurdepääsetavat nime, mis kirjeldab selle sisu. Andke <code>iframe</code> elemendile <code>tiitle</code> või <code>aria-label</code> atribuut unikaalne <code>tiitle</code> või <code>aria-label</code>. Lisateave <a href="https://dequeuniversity.com/tips/provide-iframe-titles">iFrame\'i kohta.</a>',
+      EMBED_MISSING_TITLE: 'Varjatud sisu vajab juurdepääsetavat nime, mis kirjeldab selle sisu. Andke <code>iframe</code> elemendile <code>tiitle</code> või <code>aria-label</code> atribuut unikaalne <code>tiitle</code> või <code>aria-label</code>. Lisateave <a href="https://web.dev/learn/accessibility/more-html#iframes">iFrame\'i kohta.</a>',
       EMBED_GENERAL_WARNING: 'Ei saa kontrollida varjatud sisu. Palun veenduge, et piltidel on alt-tekst, videote pealkirjad, tekst on piisavalt kontrastne ja interaktiivsed komponendid on <a href="https://webaim.org/techniques/keyboard/">tahvlile juurdepääsetavad.</a>.',
+      EMBED_UNFOCUSABLE: '<code>&lt;iframe&gt;</code> koos fookustamata elementidega ei tohiks olla <code>tabindex="-1"</code>. Manustatud sisu ei ole klaviatuuriga juurdepääsetav.',
       QA_BAD_LINK: 'Leitud halb link. Link näib viitavat arenduskeskkonnale. <hr> See link viitab: <br> <strong {r}>%(el)</strong>',
       QA_BAD_ITALICS: 'Paks ja kursiivne märgistus on semantilise tähendusega ja neid ei tohiks <strong>ei</strong> kasutada tervete lõigete esiletõstmiseks. Häälestatud teksti tuleks kasutada selleks, et rõhutada sõna või fraasi tugevalt <strong>kõrge</strong>. Kursiivkirjas tuleks kasutada pärisnimede (st raamatute ja artiklite pealkirjade), võõrsõnade, jutumärkide esiletõstmiseks. Pikad tsitaadid tuleks vormistada plokktsitaatidena.',
       QA_PDF: 'Ei saa kontrollida PDF-failide juurdepääsetavust. PDF-failid loetakse veebisisuks ja need tuleb samuti juurdepääsetavaks muuta. PDF-failid sisaldavad sageli probleeme inimeste jaoks, kes kasutavad ekraanilugejaid (puuduvad struktuurilised märgised või vormiväljade märgised) ja inimeste jaoks, kellel on vaegnägemine (tekst ei voola suurendatud kujul tagasi). <ul><li>Kui tegemist on vormiga, kaaluge alternatiivina ligipääsetava HTML-vormi kasutamist.</li><li>Kui tegemist on dokumendiga, kaaluge selle teisendamist veebileheks.</li></ul>Muudel juhtudel kontrollige <a href="https://helpx.adobe.com/acrobat/using/create-verify-pdf-accessibility.html">PDF-i ligipääsetavust Acrobat DC-s.</a>.',

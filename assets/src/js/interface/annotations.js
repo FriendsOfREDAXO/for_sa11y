@@ -33,6 +33,7 @@ export function annotate(
   inline = false,
   position,
   index,
+  dismissKey,
   dismissAnnotationsOption,
 ) {
   const validTypes = [
@@ -61,8 +62,9 @@ export function annotate(
     [validTypes[2]]: Lang._('GOOD'),
   };
 
-  // Add dismiss button if prop enabled.
-  const dismiss = (dismissAnnotationsOption === true && type === 'warning') ? `<button data-sa11y-dismiss='${index}' type='button'>${Lang._('DISMISS')}</button>` : '';
+  // Add dismiss button if prop enabled & dismiss key was defined.
+  const dismiss = (dismissAnnotationsOption === true && type === 'warning' && dismissKey !== undefined)
+    ? `<button data-sa11y-dismiss='${index}' type='button'>${Lang._('DISMISS')}</button>` : '';
 
   const instance = document.createElement('sa11y-annotation');
   instance.setAttribute('data-sa11y-annotation', index);
@@ -73,7 +75,7 @@ export function annotate(
     // Page errors displayed to main panel.
     Constants.Panel.pageIssues.classList.add('active');
     Constants.Panel.panel.classList.add('has-page-issues');
-    listItem.innerHTML = `<strong>${ariaLabel[type]}</strong> ${content}`;
+    listItem.innerHTML = `<strong>${ariaLabel[type]}</strong> ${content}${dismiss}`;
     Constants.Panel.pageIssuesList.insertAdjacentElement('afterbegin', listItem);
   } else {
     // Button annotations.
@@ -86,7 +88,7 @@ export function annotate(
       class="sa11y-btn ${[type]}-btn${inline ? '-text' : ''}"
       data-tippy-content=
         "<div lang='${Lang._('LANG_CODE')}'>
-          <button class='close-btn close-tooltip' aria-label='${Lang._('ALERT_CLOSE')}'></button>
+          <button type='button' class='close-btn close-tooltip' aria-label='${Lang._('ALERT_CLOSE')}'></button>
           <div class='header-text'><h2>${ariaLabel[type]}</h2></div>
           ${escapeHTML(content)}
           ${dismiss}
@@ -94,10 +96,7 @@ export function annotate(
     ></button>`;
 
     // Make sure annotations always appended outside of interactive elements.
-    let location = element.closest('a, button');
-    if (!location) {
-      location = element;
-    }
+    const location = element.closest('a, button') || element;
     location.insertAdjacentElement(position, instance);
     instance.shadowRoot.appendChild(create);
   }
