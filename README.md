@@ -22,14 +22,20 @@ To let FOR sa11y ignore specific elements of the current page add the following 
 
 To disable the checks: Just disable the AddOn 
 
-AddOn-Lead: 
+## Update of the vendor
+
+- Download current release
+- Copy to the assets folder without /tests and /src
+- Start pull request
+
+## AddOn-Lead: 
 [Thomas Skerbis](https://github.com/skerbis) 
 
-Credits:
+## Credits:
 - Many thanks to: [Adam Chaboryk](https://github.com/adamchaboryk), creator of Sa11y
 - [Digital Media Projects team at TMU](https://github.com/ryersondmp)
 - German Translation:  @elricco @ansichtsache
 
-Vendor: 
+## Vendor: 
 - Licensed under: Sa11y - License & GNU General Public License
 - Link to license: https://github.com/ryersondmp/sa11y/blob/master/LICENSE.md
