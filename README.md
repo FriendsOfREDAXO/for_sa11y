@@ -1,4 +1,4 @@
-# FOR [Sa11y](https://sa11y.netlify.app)
+# FOR A11y
 
 FOR sa11y adds ["Sa11y"](https://sa11y.netlify.app) to the REDAXO frontend, when a user is logged in.  
  
@@ -13,7 +13,7 @@ The AddOn helps to reduce accessibility issues on the website. It should be note
 - Add this to your Template at the and or beginning of `<body>`: 
 
 ```php
-  <?=for_sa11y::get()?>
+  <?=FriendsOfRedaxo\A11y\Sa11y::get()?>
 ```
 
 To let FOR sa11y ignore specific elements of the current page add the following css class to each: 
