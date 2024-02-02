@@ -36,7 +36,7 @@ class Sa11y
       <script src="' . $addon->getAssetsUrl("dist/js/sa11y.umd.min.js") . '"></script>
       <script src="' . $addon->getAssetsUrl("dist/js/lang/" . $lang['js'] . ".umd.js") . '"></script>
   
-  <script>     
+  <script <?=rex_response::getNonce()?>>     
   Sa11y.Lang.addI18n(Sa11yLang' . $lang["setup"] . '.strings);
   const sa11y = new Sa11y.Sa11y({
     checkRoot: \'body\',
