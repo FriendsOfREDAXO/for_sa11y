@@ -19,7 +19,7 @@ class for_sa11y
                 $lang = $supportedLanguages[$userLanguage];
             } else {
                 // Standard-Spracheinstellungen, falls die Benutzersprache nicht unterstützt wird
-                $lang = ['js' => 'en', 'setup' => 'En'];
+                $lang = ['js' => 'de', 'setup' => 'De'];
             }
 
             $lang["text"] = rex_clang::getCurrent()->getCode();
