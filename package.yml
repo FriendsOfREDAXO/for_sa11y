@@ -1,4 +1,4 @@
-package: A11y
+package: for_a11y
 version: '3.0.0-dev'
 vendors: 'sa11y 3.0.7'
 author: 'Friends Of REDAXO'
