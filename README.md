@@ -1,4 +1,4 @@
-# FOR A11y
+# FOR A11y - REDAXO AddOn
 
 FOR sa11y adds ["Sa11y"](https://sa11y.netlify.app) to the REDAXO frontend, when a user is logged in.  
  
