@@ -1,5 +1,11 @@
 <?php
-class for_sa11y
+namespace FriendsOfRedaxo\A11y;
+
+use rex_clang;
+use rex_backend_login;
+use rex_category;
+
+class Sa11y
 {
     public static function get(): void
     {
