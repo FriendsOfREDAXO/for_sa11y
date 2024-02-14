@@ -13,7 +13,7 @@ The AddOn helps to reduce accessibility issues on the website. It should be note
 - Add this to your Template at the and or beginning of `<body>`: 
 
 ```php
-  <?=FriendsOfRedaxo\A11y\Sa11y::get()?>
+  <?=\FriendsOfRedaxo\A11y\Sa11y::get()?>
 ```
 
 To let FOR sa11y ignore specific elements of the current page add the following css class to each: 
