@@ -1,6 +1,6 @@
 <?php
 namespace FriendsOfRedaxo\Sa11y;
-
+use rex_addon;
 use rex_clang;
 use rex_backend_login;
 use rex_category;
