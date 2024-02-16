@@ -1,6 +1,6 @@
 # FOR Sa11y - REDAXO AddOn
 
-FOR A11y adds ["Sa11y"](https://sa11y.netlify.app) to the REDAXO frontend, when a user is logged in.  
+FOR Sa11y adds ["Sa11y"](https://sa11y.netlify.app) to the REDAXO frontend, when a user is logged in.  
  
 Sa11y visually highlights accessibilty content issues at the source with a simple tooltip on how to fix them. 
 
