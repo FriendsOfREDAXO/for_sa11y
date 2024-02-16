@@ -1,5 +1,5 @@
 <?php
-namespace FriendsOfRedaxo\A11y;
+namespace FriendsOfRedaxo\Sa11y;
 
 use rex_clang;
 use rex_backend_login;
