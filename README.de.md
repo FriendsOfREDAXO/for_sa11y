@@ -12,7 +12,7 @@ Das AddOn hilft dabei, Probleme mit der Barrierefreiheit auf der Website zu entd
 - Folgenden Code ame Ende oder Anfang von `<body>` einfügen: 
 
 ```php
-  <?=for_sa11y::get()?>
+    <?=\FriendsOfRedaxo\Sa11y\Sa11y::get()?>
 ```
 
 Man kann FOR Sa11y anweisen bestimmte Bereiche der Website zu ignorieren, diese Bereiche können mit der CSS Class `sa11y-ignore` markiert werden. 
