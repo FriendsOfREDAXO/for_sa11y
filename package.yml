@@ -1,6 +1,6 @@
 package: for_sa11y
-version: '3.0.1'
-vendors: 'sa11y 3.0.8'
+version: '3.1.0'
+vendors: 'sa11y 3.1.3'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/addon_key
 requires:
