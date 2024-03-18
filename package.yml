@@ -17,4 +17,4 @@ page:
              { title: 'translate:for_sa11y_help',  icon: rex-icon fa-question-circle, subPath: README.md} 
 default_config:
     root: 'body'
-    active: true
+    active: 'true'
