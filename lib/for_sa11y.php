@@ -10,7 +10,7 @@ class Sa11y
     public static function get(): void
     {
         if (rex_addon::get('for_sa11y')->getConfig('active')  == false) {
-            return '';
+            echo '';
         }
         
         if (rex_backend_login::createUser() !== null && rex_backend_login::hasSession()) {
