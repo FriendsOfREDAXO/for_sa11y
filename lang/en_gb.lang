@@ -1,0 +1,7 @@
+for_sa11y_title = FOR Sa11y
+for_sa11y_help = Help
+for_sa11y_config = Settings
+for_sa11y_active = Active
+for_sa11y_active_false = no
+for_sa11y_active_true = yes
+for_sa11y_root = Root selector
