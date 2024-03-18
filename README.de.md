@@ -2,7 +2,7 @@
 
 FOR sa11y stellt, wenn Benutzer eingeloggt sind, ["Sa11y"](https://sa11y.netlify.app) im Frontend bereit.  
 
-Sa11y hebt Probleme mit der Barrierefreiheit von Inhalten visuell an der Quelle hervor und gibt Hilfestellungen über Tooltips, wie diese behoben werden können. 
+Sa11y hebt Probleme mit der Barrierefreiheit von Inhalten visuell an der Quelle hervor und gibt Hilfestellungen zur Behebung der Probleme.
 
 Das AddOn hilft dabei, Probleme mit der Barrierefreiheit auf der Website zu entdecken und zu reduzieren. Es sollte beachtet werden, dass es sich hierbei nur um ein Hilfsmittel handelt und es daher kein zuverlässiges Werkzeug zur Überprüfung der Zugänglichkeit einer Website ist. Hierfür sollten Experten zu Rate gezogen werden. Als redaktionelle Hilfestellung und zum ersten Auffinden von Problemen ist es jedoch sehr nützlich. 
 
@@ -14,10 +14,6 @@ Das AddOn hilft dabei, Probleme mit der Barrierefreiheit auf der Website zu entd
 ```php
     <?=\FriendsOfRedaxo\Sa11y\Sa11y::get()?>
 ```
-
-Man kann FOR Sa11y anweisen bestimmte Bereiche der Website zu ignorieren, diese Bereiche können mit der CSS Class `sa11y-ignore` markiert werden. 
-
-Um die Prüfungen zu deaktivieren: AddOn deaktivieren 
 
 AddOn-Lead: 
 [Thomas Skerbis](https://github.com/skerbis) 
