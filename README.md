@@ -10,7 +10,7 @@ The AddOn helps to reduce accessibility issues on the website. It should be note
 ## HowTo: 
 
 - Install the AddOn 
-- Add this to your Template at the and or beginning of `<body>`: 
+- Add this to your Template at the end or beginning of `<body>`: 
 
 ```php
   <?=\FriendsOfRedaxo\Sa11y\Sa11y::get()?>
