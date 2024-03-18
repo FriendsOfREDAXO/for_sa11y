@@ -13,7 +13,7 @@ class Sa11y
      */
     public static function get(): string
     {
-        if (!rex::getUser()?->hasPerm('for_sa11y[sa11yCheck]') || rex_addon::get('for_sa11y')->getConfig('active')  == 'false') {
+        if ((!rex::getUser()?->isAdmin() && !rex::getUser()?->hasPerm('for_sa11y[sa11yCheck]')) || rex_addon::get('for_sa11y')->getConfig('active')  == 'false') {
             return '';
         }
 
