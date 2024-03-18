@@ -19,3 +19,4 @@ page:
 default_config:
     root: 'body'
     active: 'true'
+    ignore: '.rex-minibar,.consent_manager-wrapper,.sa11y-ignore'
