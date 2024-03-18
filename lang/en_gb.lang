@@ -5,3 +5,5 @@ for_sa11y_active_label = Active
 for_sa11y_active_false = no
 for_sa11y_active_true = yes
 for_sa11y_root = Root selector
+perm_general_for_sa11y[sa11yCheck] =  FOR Sa11y: Allowed to check
+perm_general_for_sa11y[settings] =  FOR Sa11y: Settings
