@@ -12,7 +12,7 @@ page:
     icon: rex-icon fa-solid fa-universal-access
     perm: for_sa11y[settings]
     subpages:
-        config: { title: 'translate:quicknavi_config' }
+        config: { title: 'translate:for_sa11y_config' }
         help:  
              { title: 'translate:for_sa11y_help',  icon: rex-icon fa-question-circle, subPath: README.md} 
 default_config:
