@@ -13,6 +13,8 @@ if(rex::getUser()?->isAdmin())
     $field = $form->addInputField('text', 'root', null, ['class' => 'form-control']);
     $field->setLabel($package->i18n('root'));
     $field->getValidator()->add('notEmpty', $package->i18n('root_empty'));
+    $field = $form->addInputField('text', 'ignore', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('ignore'));
 }
 $fragment = new rex_fragment();
 $fragment->setVar('class', 'edit', false);
