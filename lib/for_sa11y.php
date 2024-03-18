@@ -7,10 +7,10 @@ use rex_category;
 
 class Sa11y
 {
-    public static function get(): void
+    public static function get(): string
     {
         if (rex_addon::get('for_sa11y')->getConfig('active')  == 'false') {
-            echo '';
+            return '';
         }
         
         if (rex_backend_login::createUser() !== null && rex_backend_login::hasSession()) {
@@ -49,7 +49,7 @@ class Sa11y
   });
 </script>        
 ';
-            echo $js;
+            return $js;
         }
     }
 }
