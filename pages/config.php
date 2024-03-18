@@ -4,8 +4,8 @@ $field = $form->addSelectField('active');
 $field->setLabel($this->i18n('for_sa11y_active_label'));
 $select = $field->getSelect();
 $select->setSize(1);
-$select->addOption($this->i18n('for_sa11y_active_true'), true);
-$select->addOption($this->i18n('for_sa11y_active_false'), false);
+$select->addOption($this->i18n('for_sa11y_active_true'), 'true');
+$select->addOption($this->i18n('for_sa11y_active_false'), 'false');
 
 $field = $form->addInputField('text', 'root', null, ['class' => 'form-control']);
 $field->setLabel($this->i18n('root'));
