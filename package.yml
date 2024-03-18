@@ -1,9 +1,21 @@
 package: for_sa11y
-version: '3.1.0'
+version: '3.2.0-dev'
 vendors: 'sa11y 3.1.3'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/addon_key
+perm: for_sa11y[]
 requires:
     redaxo: '^5.16.0-beta1'
     php:
         version: '>=8.1, <9'
+page:
+    title: translate:for_sa11y_title
+    icon: rex-icon fa-solid fa-universal-access
+    perm: for_sa11y[settings]
+    subpages:
+        config: { title: 'translate:for_sa11y_config' }
+        help:  
+             { title: 'translate:for_sa11y_help',  icon: rex-icon fa-question-circle, subPath: README.md} 
+default_config:
+    root: 'body'
+    active: 'true'

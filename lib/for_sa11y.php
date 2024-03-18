@@ -1,5 +1,6 @@
 <?php
 namespace FriendsOfRedaxo\Sa11y;
+use rex;
 use rex_addon;
 use rex_clang;
 use rex_backend_login;
@@ -7,8 +8,14 @@ use rex_category;
 
 class Sa11y
 {
-    public static function get(): void
+    public static function get(): string
     {
+        if (!rex::getUser()->hasPerm('for_sa11y[sa11yCheck]') || rex_addon::get('for_sa11y')->getConfig('active')  == 'false') {
+            return '';
+        }
+
+        $root = rex_escape(rex_addon::get('for_sa11y')->getConfig('root')); 
+        
         if (rex_backend_login::createUser() !== null && rex_backend_login::hasSession()) {
             $user = rex_backend_login::createUser();
             $supportedLanguages = [
@@ -39,13 +46,13 @@ class Sa11y
   <script nonce="<?=rex_response::getNonce()?>">     
   Sa11y.Lang.addI18n(Sa11yLang' . $lang["setup"] . '.strings);
   const sa11y = new Sa11y.Sa11y({
-    checkRoot: \'body\',
+    checkRoot: \'' . $root . '\',
     readabilityLang: \'' . $lang["text"] . '\',
     containerIgnore: \'.rex-minibar,.consent_manager-wrapper,.sa11y-ignore\',
   });
 </script>        
 ';
-            echo $js;
+            return $js;
         }
     }
 }
