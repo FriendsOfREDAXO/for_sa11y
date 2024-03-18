@@ -17,7 +17,8 @@ class Sa11y
             return '';
         }
 
-        $root = rex_escape(rex_addon::get('for_sa11y')->getConfig('root')); 
+        $root = rex_escape(rex_addon::get('for_sa11y')->getConfig('root'));
+        $root = rex_escape(rex_addon::get('for_sa11y')->getConfig('ignore')); 
         
         if (rex_backend_login::createUser() !== null && rex_backend_login::hasSession()) {
             $user = rex_backend_login::createUser();
@@ -51,7 +52,7 @@ class Sa11y
   const sa11y = new Sa11y.Sa11y({
     checkRoot: \'' . $root . '\',
     readabilityLang: \'' . $lang["text"] . '\',
-    containerIgnore: \'.rex-minibar,.consent_manager-wrapper,.sa11y-ignore\',
+    containerIgnore: \'' . $ignore . '\',
   });
 </script>        
 ';
