@@ -9,7 +9,7 @@ class Sa11y
 {
     public static function get(): void
     {
-        if (rex_addon::get('for_sa11y')->getConfig('active')  == false) {
+        if (rex_addon::get('for_sa11y')->getConfig('active')  == 'false') {
             echo '';
         }
         
