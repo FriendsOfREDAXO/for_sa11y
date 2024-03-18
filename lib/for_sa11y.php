@@ -54,5 +54,6 @@ class Sa11y
 ';
             return $js;
         }
+        return '';
     }
 }
