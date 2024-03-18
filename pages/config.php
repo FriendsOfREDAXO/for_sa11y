@@ -7,10 +7,12 @@ $select->setSize(1);
 $select->addOption($this->i18n('for_sa11y_active_true'), 'true');
 $select->addOption($this->i18n('for_sa11y_active_false'), 'false');
 
-$field = $form->addInputField('text', 'root', null, ['class' => 'form-control']);
-$field->setLabel($this->i18n('root'));
-$field->getValidator()->add('notEmpty', $this->i18n('root_empty'));
-
+if(rex::getUser()?->isAdmin())
+{  
+    $field = $form->addInputField('text', 'root', null, ['class' => 'form-control']);
+    $field->setLabel($this->i18n('root'));
+    $field->getValidator()->add('notEmpty', $this->i18n('root_empty'));
+}
 $fragment = new rex_fragment();
 $fragment->setVar('class', 'edit', false);
 $fragment->setVar('title', $this->i18n('for_sa11y_config'), false);
