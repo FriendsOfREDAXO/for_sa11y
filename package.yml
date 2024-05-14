@@ -1,11 +1,11 @@
 package: for_sa11y
-version: '4.1.0'
-vendors: 'sa11y 3.1.3'
+version: '4.1.1'
+vendors: 'Sa11y 3.1.5'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/addon_key
 perm: for_sa11y[]
 requires:
-    redaxo: '^5.16.0-beta1'
+    redaxo: '^5.16.0'
     php:
         version: '>=8.1, <9'
 page:
