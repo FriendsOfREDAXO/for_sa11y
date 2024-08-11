@@ -53,6 +53,7 @@ class Sa11y
     checkRoot: \'' . $root . '\',
     readabilityLang: \'' . $lang["text"] . '\',
     containerIgnore: \'' . $ignore . '\',
+    exportResultsPlugin: true,
   });
 </script>        
 ';
