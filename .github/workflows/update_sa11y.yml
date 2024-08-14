@@ -1,0 +1,71 @@
+name: Update sa11y
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # Läuft jeden Montag um Mitternacht
+  workflow_dispatch:  # Ermöglicht manuelles Auslösen
+
+jobs:
+  update-sa11y:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Get latest sa11y release
+      id: get_release
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const response = await github.rest.repos.getLatestRelease({
+            owner: 'ryersondmp',
+            repo: 'sa11y'
+          });
+          return response.data.tag_name;
+
+    - name: Check if update is needed
+      id: check_update
+      run: |
+        echo "latest_sa11y_release=$(cat .sa11y_version)" >> $GITHUB_ENV
+        if [ "${{ steps.get_release.outputs.result }}" = "${latest_sa11y_release}" ]; then
+          echo "Already up-to-date."
+          exit 0
+        fi
+
+    - name: Download latest sa11y release
+      run: |
+        curl -L "https://github.com/ryersondmp/sa11y/archive/${{ steps.get_release.outputs.result }}.zip" -o sa11y.zip
+        unzip -o sa11y.zip -d sa11y
+        rm -rf assets/vendor/sa11y
+        mkdir -p assets/vendor/sa11y
+        mv sa11y/sa11y-*/* assets/vendor/sa11y/
+
+    - name: Save the current version
+      run: echo "${{ steps.get_release.outputs.result }}" > .sa11y_version
+
+    - name: Create a new branch
+      run: |
+        BRANCH_NAME="update-sa11y-${{ steps.get_release.outputs.result }}"
+        git checkout -b "$BRANCH_NAME"
+        git add assets/vendor/sa11y .sa11y_version
+        git commit -m "Update sa11y to version ${{ steps.get_release.outputs.result }}"
+        git push origin "$BRANCH_NAME"
+
+    - name: Create Pull Request
+      id: create_pr
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const { data: pullRequest } = await github.rest.pulls.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: `Update sa11y to version ${{ steps.get_release.outputs.result }}`,
+            head: `update-sa11y-${{ steps.get_release.outputs.result }}`,
+            base: 'main',
+            body: 'This PR updates sa11y to the latest version.',
+          });
+          return pullRequest.html_url;
+
+    - name: Output PR link
+      run: echo "Pull request created: ${{ steps.create_pr.outputs.result }}"
