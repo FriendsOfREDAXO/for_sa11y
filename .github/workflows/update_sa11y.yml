@@ -24,6 +24,29 @@ jobs:
           });
           core.setOutput("tag_name", latestRelease.data.tag_name);
 
+    - name: Check if branch for latest version exists
+      id: check_branch
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const branchName = `update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}`;
+          try {
+            await github.rest.repos.getBranch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: branchName
+            });
+            core.setOutput("branch_exists", "true");
+          } catch (error) {
+            core.setOutput("branch_exists", "false");
+          }
+
+    - name: Stop if branch exists
+      if: steps.check_branch.outputs.branch_exists == 'true'
+      run: |
+        echo "Branch for the latest version already exists. No update needed."
+        exit 0
+
     - name: Check if update is needed
       id: check_update
       run: |
@@ -59,8 +82,6 @@ jobs:
 
     - name: Create a new branch, commit, and force push changes
       run: |
-        git config --global user.name "GitHub Action"
-        git config --global user.email "action@github.com"
         BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
         git checkout -b "$BRANCH_NAME"
         git add assets/vendor/sa11y .sa11y_version
