@@ -39,6 +39,17 @@ jobs:
         fi
         echo "New version found: ${{ steps.get_latest_release.outputs.tag_name }}"
 
+    - name: Check if branch already exists
+      id: check_branch
+      run: |
+        BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
+        if git ls-remote --exit-code --heads origin "$BRANCH_NAME"; then
+          echo "Branch $BRANCH_NAME already exists. Exiting."
+          exit 0
+        else
+          echo "Branch $BRANCH_NAME does not exist. Proceeding with update."
+        fi
+
     - name: Download and extract latest sa11y release
       run: |
         TAG_NAME="${{ steps.get_latest_release.outputs.tag_name }}"
@@ -59,8 +70,6 @@ jobs:
 
     - name: Create a new branch, commit, and force push changes
       run: |
-        git config --global user.name "GitHub Action"
-        git config --global user.email "action@github.com"
         BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
         git checkout -b "$BRANCH_NAME"
         git add assets/vendor/sa11y .sa11y_version
