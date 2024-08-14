@@ -57,7 +57,7 @@ jobs:
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
 
-    - name: Create a new branch, commit, and push changes
+    - name: Create a new branch, commit, and force push changes
       run: |
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
@@ -65,7 +65,7 @@ jobs:
         git checkout -b "$BRANCH_NAME"
         git add assets/vendor/sa11y .sa11y_version
         git commit -m "Update sa11y to version ${{ steps.get_latest_release.outputs.tag_name }}"
-        git push origin "$BRANCH_NAME"
+        git push --force origin "$BRANCH_NAME"
 
     - name: Create Pull Request
       env:
