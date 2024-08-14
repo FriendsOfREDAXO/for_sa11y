@@ -1,4 +1,4 @@
-name: Update sa11y
+name: Update sa11y on monday
 
 on:
   schedule:
