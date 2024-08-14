@@ -2,8 +2,8 @@ name: Update sa11y
 
 on:
   schedule:
-    - cron: '0 0 * * 1'  # Läuft jeden Montag um Mitternacht
-  workflow_dispatch:  # Ermöglicht manuelles Auslösen
+    - cron: '0 0 * * 1'  # Runs every Monday at midnight
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   update-sa11y:
@@ -13,7 +13,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Get latest sa11y release tag
+    - name: Get latest sa11y release tag and download URL
       id: get_latest_release
       uses: actions/github-script@v6
       with:
@@ -22,7 +22,18 @@ jobs:
             owner: 'ryersondmp',
             repo: 'sa11y'
           });
-          return { tag_name: latestRelease.data.tag_name };
+
+          // Find the ZIP asset from the release assets
+          const zipAsset = latestRelease.data.assets.find(asset => asset.name.endsWith('.zip'));
+
+          if (!zipAsset) {
+            throw new Error('No ZIP asset found for the latest release.');
+          }
+
+          return { 
+            tag_name: latestRelease.data.tag_name,
+            download_url: zipAsset.browser_download_url
+          };
 
     - name: Check if update is needed
       id: check_update
@@ -41,7 +52,7 @@ jobs:
 
     - name: Download and extract latest sa11y release
       run: |
-        curl -L "https://github.com/ryersondmp/sa11y/archive/${{ steps.get_latest_release.outputs.tag_name }}.zip" -o sa11y.zip
+        curl -L "${{ steps.get_latest_release.outputs.download_url }}" -o sa11y.zip
         unzip -o sa11y.zip -d sa11y
         rm -rf assets/vendor/sa11y
         mkdir -p assets/vendor/sa11y
