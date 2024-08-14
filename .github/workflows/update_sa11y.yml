@@ -71,7 +71,7 @@ jobs:
             base: 'main',
             body: 'This PR updates sa11y to the latest version and replaces the content of the assets folder.',
           });
-          return pullRequest.html_url;
+          core.setOutput("pr_url", pullRequest.html_url);
 
     - name: Output PR link
-      run: echo "Pull request created: ${{ steps.create_pr.outputs.result }}"
+      run: echo "Pull request created: ${{ steps.create_pr.outputs.pr_url }}"
