@@ -24,29 +24,6 @@ jobs:
           });
           core.setOutput("tag_name", latestRelease.data.tag_name);
 
-    - name: Check if branch for latest version exists
-      id: check_branch
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const branchName = `update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}`;
-          try {
-            await github.rest.repos.getBranch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              branch: branchName
-            });
-            core.setOutput("branch_exists", "true");
-          } catch (error) {
-            core.setOutput("branch_exists", "false");
-          }
-
-    - name: Stop if branch exists
-      if: steps.check_branch.outputs.branch_exists == 'true'
-      run: |
-        echo "Branch for the latest version already exists. No update needed."
-        exit 0
-
     - name: Check if update is needed
       id: check_update
       run: |
@@ -61,6 +38,17 @@ jobs:
           exit 0
         fi
         echo "New version found: ${{ steps.get_latest_release.outputs.tag_name }}"
+
+    - name: Check if branch already exists
+      id: check_branch
+      run: |
+        BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
+        if git ls-remote --exit-code --heads origin "$BRANCH_NAME"; then
+          echo "Branch $BRANCH_NAME already exists. Exiting."
+          exit 0
+        else
+          echo "Branch $BRANCH_NAME does not exist. Proceeding with update."
+        fi
 
     - name: Download and extract latest sa11y release
       run: |
