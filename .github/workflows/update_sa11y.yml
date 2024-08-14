@@ -52,8 +52,15 @@ jobs:
     - name: Save the new version
       run: echo "${{ steps.get_latest_release.outputs.tag_name }}" > .sa11y_version
 
-    - name: Create a new branch and commit changes
+    - name: Configure Git
       run: |
+        git config --global user.name "GitHub Action"
+        git config --global user.email "action@github.com"
+
+    - name: Create a new branch, commit, and push changes
+      run: |
+        git config --global user.name "GitHub Action"
+        git config --global user.email "action@github.com"
         BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
         git checkout -b "$BRANCH_NAME"
         git add assets/vendor/sa11y .sa11y_version
