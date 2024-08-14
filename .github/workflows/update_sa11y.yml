@@ -13,7 +13,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Get latest sa11y release tag and download URL
+    - name: Get latest sa11y release tag
       id: get_latest_release
       uses: actions/github-script@v6
       with:
@@ -22,18 +22,7 @@ jobs:
             owner: 'ryersondmp',
             repo: 'sa11y'
           });
-
-          // Find the ZIP asset from the release assets
-          const zipAsset = latestRelease.data.assets.find(asset => asset.name.endsWith('.zip'));
-
-          if (!zipAsset) {
-            throw new Error('No ZIP asset found for the latest release.');
-          }
-
-          return { 
-            tag_name: latestRelease.data.tag_name,
-            download_url: zipAsset.browser_download_url
-          };
+          return { tag_name: latestRelease.data.tag_name };
 
     - name: Check if update is needed
       id: check_update
@@ -52,7 +41,8 @@ jobs:
 
     - name: Download and extract latest sa11y release
       run: |
-        curl -L "${{ steps.get_latest_release.outputs.download_url }}" -o sa11y.zip
+        DOWNLOAD_URL="https://github.com/ryersondmp/sa11y/archive/refs/tags/${{ steps.get_latest_release.outputs.tag_name }}.zip"
+        curl -L "$DOWNLOAD_URL" -o sa11y.zip
         unzip -o sa11y.zip -d sa11y
         rm -rf assets/vendor/sa11y
         mkdir -p assets/vendor/sa11y
