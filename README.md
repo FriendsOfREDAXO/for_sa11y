@@ -19,9 +19,8 @@ The AddOn helps to reduce accessibility issues on the website as an editorial as
 
 ## For Developers: Update of the vendor
 
-- Download current release
-- Copy to the assets folder without /tests and /src
-- Start pull request
+It is not necessary to update the vendor itself. A GitHub action takes care of this.  
+
 
 ## AddOn-Lead: 
 [Thomas Skerbis](https://github.com/skerbis) 
