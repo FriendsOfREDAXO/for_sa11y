@@ -43,16 +43,15 @@ jobs:
       id: check_branch
       run: |
         BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
-        if git ls-remote --heads origin "$BRANCH_NAME"; then
+        if git ls-remote --heads origin "$BRANCH_NAME" | grep "$BRANCH_NAME" > /dev/null; then
           echo "Branch $BRANCH_NAME already exists."
           echo "branch_exists=true" >> $GITHUB_ENV
-          exit 0
         else
           echo "branch_exists=false" >> $GITHUB_ENV
         fi
 
     - name: Download and extract latest sa11y release
-      if: env.branch_exists == 'false'
+      if: steps.check_branch.outputs.branch_exists == 'false'
       run: |
         TAG_NAME="${{ steps.get_latest_release.outputs.tag_name }}"
         DOWNLOAD_URL="https://github.com/ryersondmp/sa11y/archive/refs/tags/${TAG_NAME}.zip"
@@ -63,17 +62,17 @@ jobs:
         mv sa11y/sa11y-*/* assets/vendor/sa11y/
 
     - name: Save the new version
-      if: env.branch_exists == 'false'
+      if: steps.check_branch.outputs.branch_exists == 'false'
       run: echo "${{ steps.get_latest_release.outputs.tag_name }}" > .sa11y_version
 
     - name: Configure Git
-      if: env.branch_exists == 'false'
+      if: steps.check_branch.outputs.branch_exists == 'false'
       run: |
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
 
     - name: Create a new branch, commit, and force push changes
-      if: env.branch_exists == 'false'
+      if: steps.check_branch.outputs.branch_exists == 'false'
       run: |
         BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
         git checkout -b "$BRANCH_NAME"
@@ -82,7 +81,7 @@ jobs:
         git push --force origin "$BRANCH_NAME"
 
     - name: Create Pull Request
-      if: env.branch_exists == 'false'
+      if: steps.check_branch.outputs.branch_exists == 'false'
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH_NAME: ${{ steps.get_latest_release.outputs.tag_name }}
