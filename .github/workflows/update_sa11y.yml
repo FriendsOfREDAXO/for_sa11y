@@ -2,8 +2,8 @@ name: Update sa11y
 
 on:
   schedule:
-    - cron: '0 0 * * 1'  # Runs every Monday at midnight
-  workflow_dispatch:  # Allows manual triggering
+    - cron: '0 0 * * 1'  # Läuft jeden Montag um Mitternacht
+  workflow_dispatch:  # Ermöglicht manuelles Auslösen
 
 jobs:
   update-sa11y:
@@ -38,6 +38,17 @@ jobs:
           exit 0
         fi
         echo "New version found: ${{ steps.get_latest_release.outputs.tag_name }}"
+
+    - name: Check if branch already exists
+      id: check_branch
+      run: |
+        BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
+        if git ls-remote --heads origin "$BRANCH_NAME"; then
+          echo "Branch $BRANCH_NAME already exists."
+          exit 0
+        else
+          echo "Branch $BRANCH_NAME does not exist. Continuing..."
+        fi
 
     - name: Download and extract latest sa11y release
       run: |
