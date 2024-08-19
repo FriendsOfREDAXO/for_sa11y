@@ -1,3 +1,15 @@
+Run BRANCH_NAME="update-sa11y-3.2.2"
+Switched to a new branch 'update-sa11y-3.2.2'
+On branch update-sa11y-3.2.2
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	sa11y.zip
+	sa11y/
+
+nothing added to commit but untracked files present (use "git add" to track)
+Error: Process completed with exit code 1.
+
+
 name: Update sa11y
 
 on:
@@ -35,11 +47,9 @@ jobs:
         echo "Current version: $CURRENT_VERSION"
         if [ "$CURRENT_VERSION" = "${{ steps.get_latest_release.outputs.tag_name }}" ]; then
           echo "Already up-to-date."
-          echo "up_to_date=true" >> $GITHUB_ENV
-        else
-          echo "New version found: ${{ steps.get_latest_release.outputs.tag_name }}"
-          echo "up_to_date=false" >> $GITHUB_ENV
+          exit 0
         fi
+        echo "New version found: ${{ steps.get_latest_release.outputs.tag_name }}"
 
     - name: Check if branch already exists
       id: check_branch
@@ -53,7 +63,7 @@ jobs:
         fi
 
     - name: Download and extract latest sa11y release
-      if: env.branch_exists == 'false' && env.up_to_date == 'false'
+      if: env.branch_exists == 'false'
       run: |
         TAG_NAME="${{ steps.get_latest_release.outputs.tag_name }}"
         DOWNLOAD_URL="https://github.com/ryersondmp/sa11y/archive/refs/tags/${TAG_NAME}.zip"
@@ -62,20 +72,19 @@ jobs:
         rm -rf assets/vendor/sa11y
         mkdir -p assets/vendor/sa11y
         mv sa11y/sa11y-*/* assets/vendor/sa11y/
-        rm -rf sa11y.zip sa11y/
 
     - name: Save the new version
-      if: env.branch_exists == 'false' && env.up_to_date == 'false'
+      if: env.branch_exists == 'false'
       run: echo "${{ steps.get_latest_release.outputs.tag_name }}" > .sa11y_version
 
     - name: Configure Git
-      if: env.branch_exists == 'false' && env.up_to_date == 'false'
+      if: env.branch_exists == 'false'
       run: |
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
 
     - name: Create a new branch, commit, and force push changes
-      if: env.branch_exists == 'false' && env.up_to_date == 'false'
+      if: env.branch_exists == 'false'
       run: |
         BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
         git checkout -b "$BRANCH_NAME"
@@ -84,10 +93,9 @@ jobs:
         git push --force origin "$BRANCH_NAME"
 
     - name: Create Pull Request
-      if: env.branch_exists == 'false' && env.up_to_date == 'false'
+      if: env.branch_exists == 'false'
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH_NAME: ${{ steps.get_latest_release.outputs.tag_name }}
       run: |
-        PR_URL=$(gh pr create --title "Update sa11y to version ${{ steps.get_latest_release.outputs.tag_name }}" --body "This PR updates sa11y to the latest version and replaces the content of the assets folder." --head "update-sa11y-${BRANCH_NAME}" --base main)
-        echo "Pull request created: $PR_URL"
+        PR_URL=$(gh pr create --title "Update sa11y to version ${{ steps.get_latest_release.outputs.tag_name }}" --body "This PR updates
