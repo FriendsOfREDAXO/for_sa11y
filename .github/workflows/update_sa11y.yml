@@ -60,6 +60,7 @@ jobs:
         rm -rf assets/vendor/sa11y
         mkdir -p assets/vendor/sa11y
         mv sa11y/sa11y-*/* assets/vendor/sa11y/
+        rm -rf sa11y.zip sa11y/
 
     - name: Save the new version
       if: env.branch_exists == 'false'
