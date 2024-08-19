@@ -72,12 +72,16 @@ jobs:
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
 
-    - name: Create a new branch, commit, and force push changes
+    - name: Add files to Git
+      if: env.branch_exists == 'false'
+      run: |
+        git add assets/vendor/sa11y .sa11y_version
+        git status  # Überprüfen des Status, um sicherzustellen, dass die Dateien hinzugefügt wurden
+
+    - name: Commit and push changes
       if: env.branch_exists == 'false'
       run: |
         BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
-        git checkout -b "$BRANCH_NAME"
-        git add assets/vendor/sa11y .sa11y_version
         git commit -m "Update sa11y to version ${{ steps.get_latest_release.outputs.tag_name }}"
         git push --force origin "$BRANCH_NAME"
 
