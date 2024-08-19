@@ -35,9 +35,11 @@ jobs:
         echo "Current version: $CURRENT_VERSION"
         if [ "$CURRENT_VERSION" = "${{ steps.get_latest_release.outputs.tag_name }}" ]; then
           echo "Already up-to-date."
-          exit 0
+          echo "up_to_date=true" >> $GITHUB_ENV
+        else
+          echo "New version found: ${{ steps.get_latest_release.outputs.tag_name }}"
+          echo "up_to_date=false" >> $GITHUB_ENV
         fi
-        echo "New version found: ${{ steps.get_latest_release.outputs.tag_name }}"
 
     - name: Check if branch already exists
       id: check_branch
@@ -51,7 +53,7 @@ jobs:
         fi
 
     - name: Download and extract latest sa11y release
-      if: env.branch_exists == 'false'
+      if: env.branch_exists == 'false' && env.up_to_date == 'false'
       run: |
         TAG_NAME="${{ steps.get_latest_release.outputs.tag_name }}"
         DOWNLOAD_URL="https://github.com/ryersondmp/sa11y/archive/refs/tags/${TAG_NAME}.zip"
@@ -63,17 +65,17 @@ jobs:
         rm -rf sa11y.zip sa11y/
 
     - name: Save the new version
-      if: env.branch_exists == 'false'
+      if: env.branch_exists == 'false' && env.up_to_date == 'false'
       run: echo "${{ steps.get_latest_release.outputs.tag_name }}" > .sa11y_version
 
     - name: Configure Git
-      if: env.branch_exists == 'false'
+      if: env.branch_exists == 'false' && env.up_to_date == 'false'
       run: |
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
 
     - name: Create a new branch, commit, and force push changes
-      if: env.branch_exists == 'false'
+      if: env.branch_exists == 'false' && env.up_to_date == 'false'
       run: |
         BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
         git checkout -b "$BRANCH_NAME"
@@ -82,7 +84,7 @@ jobs:
         git push --force origin "$BRANCH_NAME"
 
     - name: Create Pull Request
-      if: env.branch_exists == 'false'
+      if: env.branch_exists == 'false' && env.up_to_date == 'false'
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH_NAME: ${{ steps.get_latest_release.outputs.tag_name }}
