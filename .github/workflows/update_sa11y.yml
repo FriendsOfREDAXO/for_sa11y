@@ -35,7 +35,7 @@ jobs:
         echo "Current version: $CURRENT_VERSION"
         if [ "$CURRENT_VERSION" = "${{ steps.get_latest_release.outputs.tag_name }}" ]; then
           echo "Already up-to-date."
-          exit 0
+          exit 0  # Beenden Sie den Job, wenn keine Aktualisierung erforderlich ist
         fi
         echo "New version found: ${{ steps.get_latest_release.outputs.tag_name }}"
 
@@ -56,11 +56,12 @@ jobs:
         TAG_NAME="${{ steps.get_latest_release.outputs.tag_name }}"
         DOWNLOAD_URL="https://github.com/ryersondmp/sa11y/archive/refs/tags/${TAG_NAME}.zip"
         curl -L "$DOWNLOAD_URL" -o sa11y.zip
-        unzip -o sa11y.zip -d sa11y
+        unzip -o sa11y.zip
         rm -rf assets/vendor/sa11y
         mkdir -p assets/vendor/sa11y
-        mv sa11y/sa11y-*/* assets/vendor/sa11y/
+        mv sa11y-*/** assets/vendor/sa11y/
         rm sa11y.zip  # Löschen der ZIP-Datei nach dem Entpacken
+        rm -rf sa11y-*  # Löschen des temporären entpackten Ordners
 
     - name: Save the new version
       if: env.branch_exists == 'false'
@@ -82,6 +83,7 @@ jobs:
       if: env.branch_exists == 'false'
       run: |
         BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
+        git checkout -b "$BRANCH_NAME"
         git commit -m "Update sa11y to version ${{ steps.get_latest_release.outputs.tag_name }}"
         git push --force origin "$BRANCH_NAME"
 
