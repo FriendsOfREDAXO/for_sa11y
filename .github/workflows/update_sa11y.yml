@@ -60,6 +60,7 @@ jobs:
         rm -rf assets/vendor/sa11y
         mkdir -p assets/vendor/sa11y
         mv sa11y/sa11y-*/* assets/vendor/sa11y/
+        rm sa11y.zip  # Löschen der ZIP-Datei nach dem Entpacken
 
     - name: Save the new version
       if: env.branch_exists == 'false'
