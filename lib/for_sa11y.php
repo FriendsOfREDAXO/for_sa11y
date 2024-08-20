@@ -17,7 +17,7 @@ class Sa11y
             return '';
         }
 
-        $root = rex_escape(rex_addon::get('for_sa11y')->getConfig('root'));
+        $root = rex_escape(rex_addon::get('for_sa11y')->getConfig('root','body'));
         $ignore = rex_escape(rex_addon::get('for_sa11y')->getConfig('ignore')); 
         
         if (rex_backend_login::createUser() !== null && rex_backend_login::hasSession()) {
