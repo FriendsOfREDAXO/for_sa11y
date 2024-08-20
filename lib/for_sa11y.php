@@ -43,7 +43,7 @@ class Sa11y
 
             $addon = rex_addon::get('for_sa11y');
             $js = '      
-      <link rel="stylesheet" href="' . $addon->getAssetsUrl("dist/css/sa11y.min.css") . '"/>
+      <link rel="stylesheet" href="' . $addon->getAssetsUrl("vendor/sa11y/dist/css/sa11y.min.css") . '"/>
       <script src="' . $addon->getAssetsUrl("vendor/sa11y/dist/js/sa11y.umd.min.js") . '"></script>
       <script src="' . $addon->getAssetsUrl("vendor/sa11y/dist/js/lang/" . $lang['js'] . ".umd.js") . '"></script>
   
