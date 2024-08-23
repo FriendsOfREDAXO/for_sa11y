@@ -16,7 +16,7 @@ if(rex::getUser()?->isAdmin())
     $field = $form->addInputField('text', 'ignore', null, ['class' => 'form-control']);
     $field->setLabel($package->i18n('ignore'));
     $field->addTextAreaField('text', null, ['class' => 'form-control']);
-    $field->setLabel($addon->i18n('custom_settings'));
+    $field->setLabel($package->i18n('custom_settings'));
 }
 $fragment = new rex_fragment();
 $fragment->setVar('class', 'edit', false);
