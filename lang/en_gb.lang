@@ -6,5 +6,6 @@ for_sa11y_active_false = no
 for_sa11y_active_true = yes
 for_sa11y_root = Root selector
 for_sa11y_ignore = Ignore selectors
+for_sa11y_custom_settings = Custom Settings
 perm_general_for_sa11y[sa11yCheck] =  FOR Sa11y: Allowed to check
 perm_general_for_sa11y[settings] =  FOR Sa11y: Settings

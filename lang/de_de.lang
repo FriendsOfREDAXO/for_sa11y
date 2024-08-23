@@ -5,6 +5,7 @@ for_sa11y_active_label = Aktiv
 for_sa11y_active_false = nein
 for_sa11y_active_true = ja
 for_sa11y_root = Prüfen ab Selektor
+for_sa11y_custom_settings = Individuelle Einstellungen
 for_sa11y_ignore = Zu ignorierende Selektoren
 perm_general_for_sa11y[sa11yCheck] =  FOR Sa11y: Check erlaubt
 perm_general_for_sa11y[settings] =  FOR Sa11y: Konfiguration

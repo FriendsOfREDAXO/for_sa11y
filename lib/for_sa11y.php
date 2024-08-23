@@ -19,6 +19,7 @@ class Sa11y
 
         $root = rex_escape(rex_addon::get('for_sa11y')->getConfig('root','body'));
         $ignore = rex_escape(rex_addon::get('for_sa11y')->getConfig('ignore')); 
+        $custom = rex_addon::get('for_sa11y')->getConfig('custom_settings'); 
         
         if (rex_backend_login::createUser() !== null && rex_backend_login::hasSession()) {
             $user = rex_backend_login::createUser();
@@ -54,6 +55,7 @@ class Sa11y
     readabilityLang: \'' . $lang["text"] . '\',
     containerIgnore: \'' . $ignore . '\',
     exportResultsPlugin: true,
+    ' . $custom . '
   });
 </script>        
 ';
