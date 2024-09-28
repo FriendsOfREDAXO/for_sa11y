@@ -1,5 +1,7 @@
 # FOR [Sa11y](https://sa11y.netlify.app)
 
+![Sa11y, the accessibility quality assurance tool.](https://ryersondmp.github.io/sa11y/assets/github-banner.png)
+
 FOR sa11y stellt, wenn Benutzer eingeloggt sind, ["Sa11y"](https://sa11y.netlify.app) im Frontend bereit.  
 
 Sa11y hebt Probleme mit der Barrierefreiheit von Inhalten visuell an der Quelle hervor und gibt Hilfestellungen zur Behebung der Probleme.
