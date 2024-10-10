@@ -123,7 +123,7 @@ jobs:
         git push --force origin "$BRANCH_NAME"
 
     - name: Create Pull Request
-      if: env.branch_exists == 'false'
+      if: env.branch_exists == 'false' && steps.commit_and_push.changes_detected == 'true'
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH_NAME: ${{ steps.get_latest_release.outputs.tag_name }}
