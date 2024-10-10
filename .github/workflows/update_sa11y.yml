@@ -102,7 +102,7 @@ jobs:
         # Überprüfen, ob Dateien zum Commit hinzugefügt wurden
         if [ -z "$(git status --porcelain)" ]; then
           echo "No changes detected, exiting."
-          exit 1
+          exit 0
         fi
         
         git status  # Überprüfen des Status, um sicherzustellen, dass die Dateien hinzugefügt wurden
