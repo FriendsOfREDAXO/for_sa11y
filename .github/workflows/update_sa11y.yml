@@ -81,8 +81,8 @@ jobs:
         mv sa11y-*/** assets/vendor/sa11y/
 
         # Löschen der ZIP-Datei und des temporären entpackten Ordners
-        rm sa11y.zip  # Löschen der ZIP-Datei nach dem Entpacken
-        rm -rf sa11y-*  # Löschen des temporären entpackten Ordners
+        rm sa11y.zip
+        rm -rf sa11y-*
 
     - name: Save the new version
       if: env.branch_exists == 'false'
@@ -96,42 +96,37 @@ jobs:
 
     - name: Add files to Git
       if: env.branch_exists == 'false'
+      id: add_files
       run: |
         git add assets/vendor/sa11y .sa11y_version
-
-        # Überprüfen, ob Dateien zum Commit hinzugefügt wurden
+        
         if [ -z "$(git status --porcelain)" ]; then
           echo "No changes detected, exiting."
+          echo "changes_detected=false" >> $GITHUB_OUTPUT
           exit 0
+        else
+          echo "changes_detected=true" >> $GITHUB_OUTPUT
         fi
         
-        git status  # Überprüfen des Status, um sicherzustellen, dass die Dateien hinzugefügt wurden
+        git status
 
     - name: Commit and push changes
-      if: env.branch_exists == 'false'
+      if: steps.add_files.outputs.changes_detected == 'true'
       run: |
         BRANCH_NAME="update-sa11y-${{ steps.get_latest_release.outputs.tag_name }}"
         git checkout -b "$BRANCH_NAME"
-        
-        # Prüfen, ob es tatsächlich Änderungen gibt
-        if git diff-index --quiet HEAD --; then
-          echo "No changes to commit."
-          exit 0
-        fi
-
         git commit -m "Update sa11y to version ${{ steps.get_latest_release.outputs.tag_name }}"
         git push --force origin "$BRANCH_NAME"
 
     - name: Create Pull Request
-      if: env.branch_exists == 'false' && steps.commit_and_push.changes_detected == 'true'
+      if: steps.add_files.outputs.changes_detected == 'true'
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH_NAME: ${{ steps.get_latest_release.outputs.tag_name }}
       run: |
-        # Versuche, eine Pull Request zu erstellen und führe Fehlerbehandlung durch
-        PR_URL=$(gh pr create --title "Update sa11y to version ${{ steps.get_latest_release.outputs.tag_name }}" --body "This PR updates sa11y to the latest version and replaces the content of the assets folder." --head "update-sa11y-${BRANCH_NAME}" --base main || echo "Failed to create PR")
-        if [ "$PR_URL" = "Failed to create PR" ]; then
-          echo "Error creating Pull Request"
-          exit 1
-        fi
-        echo "Pull request created: $PR_URL"
+          PR_URL=$(gh pr create --title "Update sa11y to version ${{ steps.get_latest_release.outputs.tag_name }}" --body "This PR updates sa11y to the latest version and replaces the content of the assets folder." --head "update-sa11y-${BRANCH_NAME}" --base main || echo "Failed to create PR")
+          if [ "$PR_URL" = "Failed to create PR" ]; then
+              echo "Error creating Pull Request. Maybe a Pull request with this name already exists. This needs to be checked manually"
+          else
+              echo "Pull request created: $PR_URL"
+          fi
