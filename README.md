@@ -22,6 +22,16 @@ The AddOn helps to reduce accessibility issues on the website as an editorial as
 On the config page you can add or overwrite the props. 
 [https://sa11y.netlify.app/developers/props/](https://sa11y.netlify.app/developers/props/)
 
+### Example
+
+```js
+panelPosition: "top-right",
+aboutContent: '<h2>Hilfe</h2><p>Fragen? Wenden Sie sich bitte an die REDAXO Community</p>',
+delayCheck: 1000,
+showGoodImageButton: false,
+showGoodLinkButton: false,
+```
+
 
 ## For Developers: Update of the vendor
 
