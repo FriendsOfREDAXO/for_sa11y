@@ -17,9 +17,15 @@ The AddOn helps to reduce accessibility issues on the website as an editorial as
   <?=\FriendsOfRedaxo\Sa11y\Sa11y::get()?>
 ```
 
+## Custom props and config-settings 
+
+On the config page you can add or overwrite the props. 
+[https://sa11y.netlify.app/developers/props/](https://sa11y.netlify.app/developers/props/)
+
+
 ## For Developers: Update of the vendor
 
-It is not necessary to update the vendor itself. A GitHub action takes care of this.  
+It is not necessary to update the vendor yourself. A GitHub action takes care of this.  
 
 
 ## AddOn-Lead: 
