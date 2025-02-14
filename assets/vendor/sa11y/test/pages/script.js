@@ -52,12 +52,16 @@ const sa11y = new Sa11y({
   showHinPageOutline: 1,
   showTitleInPageOutline: 1,
   // contrastAPCA: true,
-  // editImageURLofCMS: 'localhost',
-
+  editImageURLofCMS: 'localhost',
+  ignoreHiddenOverflow: '.overlay, .modal',
+  insertAnnotationBefore: '.background-container',
+  // panelPosition: 'top-right',
+  // showMovePanelToggle: false,
+  // showImageOutline: false,
   exportResultsPlugin: true,
   autoDetectShadowComponents: true,
   developerChecksOnByDefault: true,
-
+  imageWithinLightbox: '.lightbox',
   checks: {
     QA_BAD_LINK: {
       sources: 'a[href*="dev."]',

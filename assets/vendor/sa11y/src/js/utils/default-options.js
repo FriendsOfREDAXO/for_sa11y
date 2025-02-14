@@ -10,13 +10,14 @@ const defaultOptions = {
   headerIgnoreSpan: '',
   headerIgnoreStrings: '',
   imageIgnore: '',
-  linkIgnore: 'nav *, [role="navigation"] *',
+  linkIgnore: '',
   linkIgnoreSpan: '',
   linkIgnoreStrings: '',
 
   // Control panel settings
   aboutContent: '',
   panelPosition: 'right',
+  showMovePanelToggle: true,
   checkAllHideToggles: false,
   developerChecksOnByDefault: false,
 
@@ -45,6 +46,8 @@ const defaultOptions = {
   showGoodLinkButton: true,
   dismissAnnotations: true,
   dismissAll: true,
+  ignoreHiddenOverflow: '',
+  insertAnnotationBefore: '',
 
   // Readability
   readabilityPlugin: true,
@@ -68,6 +71,7 @@ const defaultOptions = {
   susAltStopWords: '',
   linkStopWords: '',
   extraPlaceholderStopWords: '',
+  imageWithinLightbox: '',
 
   // All checks
   checks: {
