@@ -1,7 +1,7 @@
 
 /*!
   * Sa11y, the accessibility quality assurance assistant.
-  * @version 4.1.1
+  * @version 4.1.3
   * @author Adam Chaboryk
   * @license GPL-2.0-or-later
   * @copyright © 2020 - 2025 Toronto Metropolitan University.
@@ -350,7 +350,7 @@ const Constants = (function myConstants() {
     // Check for document types.
     const documentSources = option.checks.QA_DOCUMENT.sources;
     const defaultDocumentSources = 'a[href$=".doc"], a[href$=".docx"], a[href*=".doc?"], a[href*=".docx?"], a[href$=".ppt"], a[href$=".pptx"], a[href*=".ppt?"], a[href*=".pptx?"], a[href^="https://drive.google.com/file"], a[href^="https://docs.google."], a[href^="https://sway."]';
-    if (documentSources.length) {
+    if (documentSources) {
       Global.documentSources = `${defaultDocumentSources}, ${documentSources}`;
     } else {
       Global.documentSources = defaultDocumentSources;
@@ -363,7 +363,7 @@ const Constants = (function myConstants() {
     // Video sources.
     const videoSources = option.checks.EMBED_VIDEO.sources;
     const defaultVideoSources = 'video, [src*="Video"], [src*="video"], [src*="watch"], [src*="youtube.com"], [src*="vimeo.com"], [src*="panopto.com"], [src*="wistia.com"], [src*="dailymotion.com"], [src*="brightcove.com"], [src*="vidyard.com"]';
-    if (videoSources.length) {
+    if (videoSources) {
       const videos = videoSources.split(/\s*[\s,]\s*/).map(($el) => `[src*="${$el}"]`);
       Global.VideoSources = `${defaultVideoSources}, ${videos.join(', ')}`;
     } else {
@@ -373,7 +373,7 @@ const Constants = (function myConstants() {
     // Audio sources.
     const audioSources = option.checks.EMBED_AUDIO.sources;
     const defaultAudioSources = 'audio, [src*="soundcloud.com"], [src*="simplecast.com"], [src*="podbean.com"], [src*="buzzsprout.com"], [src*="blubrry.com"], [src*="transistor.fm"], [src*="fusebox.fm"], [src*="libsyn.com"], [src*="spotify.com"], [src*="podcasts.apple.com"], [src*="castbox.fm"], [src*="megaphone.fm"], [src*="spreaker.com"], [src*="anchor.fm"], [src*="rss.com"], [src*="redcircle.com"]';
-    if (audioSources.length) {
+    if (audioSources) {
       const audio = audioSources.split(/\s*[\s,]\s*/).map(($el) => `[src*="${$el}"]`);
       Global.AudioSources = `${defaultAudioSources}, ${audio.join(', ')}`;
     } else {
@@ -383,7 +383,7 @@ const Constants = (function myConstants() {
     // Data viz sources.
     const dataVizSources = option.checks.EMBED_DATA_VIZ.sources;
     const defaultDataVizSources = '[src*="datastudio"], [src*="tableau"], [src*="lookerstudio"], [src*="powerbi"], [src*="qlik"]';
-    if (dataVizSources.length) {
+    if (dataVizSources) {
       const data = dataVizSources.split(/\s*[\s,]\s*/).map(($el) => `[src*="${$el}"]`);
       Global.VisualizationSources = `${defaultDataVizSources}, ${data.join(', ')}`;
     } else {
@@ -1534,7 +1534,15 @@ const Elements = (function myElements() {
       'document',
       Constants.Exclusions.Headings,
     );
+
+    // Excluded via headerIgore.
     Found.ExcludedHeadings = Found.Headings.filter((heading) => Constants.Exclusions.Headings.some((exclusion) => heading.matches(exclusion)));
+
+    // Excluded via outlineIgnore.
+    Found.ExcludedOutlineHeadings = Found.Headings.filter((heading) => Constants.Exclusions.Outline.some((exclusion) => heading.matches(exclusion)));
+
+    // Merge both headerIgnore and outlineIgnore.
+    Found.OutlineIgnore = Elements.Found.ExcludedOutlineHeadings.concat(Elements.Found.ExcludedHeadings);
 
     // Quality assurance module.
     Found.Paragraphs = Found.Everything.filter(($el) => $el.tagName === 'P'
@@ -2137,7 +2145,7 @@ function removeExportListeners() {
   }
 }
 
-const version = '4.1.1';
+const version = '4.1.2';
 
 var styles = ":host{background:var(--sa11y-panel-bg);border-top:5px solid var(--sa11y-panel-bg-splitter);bottom:0;display:block;height:-moz-fit-content;height:fit-content;left:0;position:fixed;right:0;width:100%;z-index:999999}*{-webkit-font-smoothing:auto!important;color:var(--sa11y-panel-primary);font-family:var(--sa11y-font-face)!important;font-size:var(--sa11y-normal-text);line-height:22px!important}#dialog{margin:20px auto;max-width:900px;padding:20px}h2{font-size:var(--sa11y-large-text);margin-top:0}a{color:var(--sa11y-hyperlink);cursor:pointer;text-decoration:underline}a:focus,a:hover{text-decoration:none}p{margin-top:0}.error{background:var(--sa11y-error);border:2px dashed #f08080;color:var(--sa11y-error-text);margin-bottom:0;padding:5px}";
 
@@ -2903,10 +2911,8 @@ function generatePageOutline(dismissed, headingOutline, option) {
       const dismissedH = heading.dismissedHeading;
       const { isWithinRoot } = heading;
 
-      // Filter out specified headings in outlineIgnore prop.
-      const ignoreArray = Constants.Exclusions.Outline ? Elements.Found.ExcludedHeadings : [];
-
-      if (!ignoreArray.includes($el)) {
+      // Filter out specified headings in outlineIgnore and headerIgnore props.
+      if (!Elements.Found.OutlineIgnore.includes($el)) {
         // Indicate if heading is totally hidden or visually hidden.
         const visibleIcon = (visibility === true) ? '<span class="hidden-icon"></span><span class="visually-hidden">Hidden</span>' : '';
         const visibleStatus = (visibility === true) ? 'class="hidden-h"' : '';
@@ -2915,77 +2921,77 @@ function generatePageOutline(dismissed, headingOutline, option) {
         let append;
         if (issue === 'error' && isWithinRoot === true) {
           append = `
-        <li class="outline-${level}">
-          <a role="button" id="sa11y-link-${i}" tabindex="-1" ${visibleStatus}>
-            <span class="badge error-badge">
-            <span aria-hidden="true">${visibleIcon}
-              <span class="error-icon"></span>
-            </span>
-            <span class="visually-hidden">${Lang._('ERROR')}</span> ${badgeH + level}</span>
-            <strong class="outline-list-item red-text">${headingText}</strong>
-          </a>
-        </li>`;
+            <li class="outline-${level}">
+              <a role="button" id="sa11y-link-${i}" tabindex="-1" ${visibleStatus}>
+                <span class="badge error-badge">
+                <span aria-hidden="true">${visibleIcon}
+                  <span class="error-icon"></span>
+                </span>
+                <span class="visually-hidden">${Lang._('ERROR')}</span> ${badgeH + level}</span>
+                <strong class="outline-list-item red-text">${headingText}</strong>
+              </a>
+            </li>`;
           outlineArray.push(append);
         } else if (issue === 'warning' && !dismissedH && isWithinRoot === true) {
           append = `
-        <li class="outline-${level}">
-          <a role="button" id="sa11y-link-${i}" tabindex="-1" ${visibleStatus}>
-            <span class="badge warning-badge">
-            <span aria-hidden="true">${visibleIcon} &#x3f;</span>
-            <span class="visually-hidden">${Lang._('WARNING')}</span> ${badgeH + level}</span>
-            <strong class="outline-list-item yellow-text">${headingText}</strong>
-          </a>
-        </li>`;
+            <li class="outline-${level}">
+              <a role="button" id="sa11y-link-${i}" tabindex="-1" ${visibleStatus}>
+                <span class="badge warning-badge">
+                <span aria-hidden="true">${visibleIcon} &#x3f;</span>
+                <span class="visually-hidden">${Lang._('WARNING')}</span> ${badgeH + level}</span>
+                <strong class="outline-list-item yellow-text">${headingText}</strong>
+              </a>
+            </li>`;
           outlineArray.push(append);
         } else {
           append = `
-        <li class="outline-${level}">
-          <a role="button" id="sa11y-link-${i}" tabindex="-1" ${visibleStatus}>
-            <span class="badge">${visibleIcon} ${badgeH + level}</span>
-            <span class="outline-list-item">${headingText}</span>
-          </a>
-        </li>`;
+            <li class="outline-${level}">
+              <a role="button" id="sa11y-link-${i}" tabindex="-1" ${visibleStatus}>
+                <span class="badge">${visibleIcon} ${badgeH + level}</span>
+                <span class="outline-list-item">${headingText}</span>
+              </a>
+            </li>`;
           outlineArray.push(append);
         }
+      }
 
-        /**
+      /**
         * Append heading labels.
-        */
-        const label = document.createElement('sa11y-heading-label');
-        const anchor = document.createElement('sa11y-heading-anchor');
-        label.hidden = true;
+      */
+      const label = document.createElement('sa11y-heading-label');
+      const anchor = document.createElement('sa11y-heading-anchor');
+      label.hidden = true;
 
-        // If heading is in a hidden container, place the anchor just before it's most visible parent.
-        if (parent !== null) {
-          $el.insertAdjacentElement('beforeend', label);
-          const hiddenParent = parent.previousElementSibling;
-          anchor.setAttribute('id', `sa11y-h${i}`);
-          if (hiddenParent) {
-            hiddenParent.insertAdjacentElement('beforebegin', anchor);
-            hiddenParent.setAttribute('data-sa11y-parent', `h${i}`);
-          } else {
-            parent.parentNode.insertAdjacentElement('beforebegin', anchor);
-            parent.parentNode.setAttribute('data-sa11y-parent', `h${i}`);
-          }
+      // If heading is in a hidden container, place the anchor just before it's most visible parent.
+      if (parent !== null) {
+        $el.insertAdjacentElement('beforeend', label);
+        const hiddenParent = parent.previousElementSibling;
+        anchor.setAttribute('id', `sa11y-h${i}`);
+        if (hiddenParent) {
+          hiddenParent.insertAdjacentElement('beforebegin', anchor);
+          hiddenParent.setAttribute('data-sa11y-parent', `h${i}`);
         } else {
-          // If the heading isn't hidden, append visible label.
-          $el.insertAdjacentElement('beforeend', label);
-
-          // Create anchor above visible label.
-          label.insertAdjacentElement('beforebegin', anchor);
-          anchor.setAttribute('id', `sa11y-h${i}`);
+          parent.parentNode.insertAdjacentElement('beforebegin', anchor);
+          parent.parentNode.setAttribute('data-sa11y-parent', `h${i}`);
         }
+      } else {
+        // If the heading isn't hidden, append visible label.
+        $el.insertAdjacentElement('beforeend', label);
 
-        // Populate heading label.
-        const content = document.createElement('span');
-        content.classList.add('heading-label');
-        content.innerHTML = `H${level}`;
-        label.shadowRoot.appendChild(content);
+        // Create anchor above visible label.
+        label.insertAdjacentElement('beforebegin', anchor);
+        anchor.setAttribute('id', `sa11y-h${i}`);
+      }
 
-        // Make heading labels visible when panel is open.
-        if (store.getItem('sa11y-outline') === 'Opened') {
-          label.hidden = false;
-        }
+      // Populate heading label.
+      const content = document.createElement('span');
+      content.classList.add('heading-label');
+      content.innerHTML = `H${level}`;
+      label.shadowRoot.appendChild(content);
+
+      // Make heading labels visible when panel is open.
+      if (store.getItem('sa11y-outline') === 'Opened') {
+        label.hidden = false;
       }
     });
 
