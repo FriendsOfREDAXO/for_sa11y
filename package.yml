@@ -1,5 +1,5 @@
 package: for_sa11y
-version: '4.4.13'
+version: '4.4.14'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/addon_key
 perm: for_sa11y[]
