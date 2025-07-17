@@ -50,16 +50,22 @@ class Sa11y
   
   <script nonce="<?=rex_response::getNonce()?>">     
   Sa11y.Lang.addI18n(Sa11yLang' . $lang["setup"] . '.strings);
-  const sa11y = new Sa11y.Sa11y();
   
-  // Konfiguration nach Initialisierung überschreiben
-  sa11y.options.checkRoot = \'' . $root . '\';
-  sa11y.options.readabilityLang = \'' . $lang["text"] . '\';
-  sa11y.options.containerIgnore = \'' . $ignore . '\';
-  sa11y.options.exportResultsPlugin = true;
+  // Standard-Konfiguration mit benutzerdefinierten Einstellungen mergen
+  const sa11yConfig = {
+    checkRoot: \'' . $root . '\',
+    readabilityLang: \'' . $lang["text"] . '\',
+    containerIgnore: \'' . $ignore . '\',
+    exportResultsPlugin: true
+  };
   
-  // Custom settings anwenden falls vorhanden
-  ' . (!empty($custom) ? 'Object.assign(sa11y.options, {' . $custom . '});' : '') . '
+  ' . (!empty($custom) ? '
+  // Custom settings hinzufügen
+  const customConfig = {' . $custom . '};
+  Object.assign(sa11yConfig, customConfig);
+  ' : '') . '
+  
+  const sa11y = new Sa11y.Sa11y(sa11yConfig);
 </script>        
 ';
             return $js;
