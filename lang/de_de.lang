@@ -9,3 +9,83 @@ for_sa11y_custom_settings = Individuelle Einstellungen
 for_sa11y_ignore = Zu ignorierende Selektoren
 perm_general_for_sa11y[sa11yCheck] =  FOR Sa11y: Check erlaubt
 perm_general_for_sa11y[settings] =  FOR Sa11y: Konfiguration
+
+# Custom Settings Beispiele
+custom_settings_examples_title = Beispiele für individuelle Einstellungen
+custom_settings_docs_link = Vollständige Dokumentation aller verfügbaren Optionen
+
+custom_settings_usage_tips = Wichtige Hinweise zur Verwendung
+custom_settings_tip_1_title = Nur die Optionen eintragen
+custom_settings_tip_1_desc = Tragen Sie nur die einzelnen Optionen ein, nicht die umschließenden geschweiften Klammern <code>Sa11y.Sa11y({ })</code>. Das AddOn fügt diese automatisch hinzu.
+
+custom_settings_tip_2_title = Kommas nicht vergessen
+custom_settings_tip_2_desc = Jede Zeile muss mit einem Komma enden (außer der letzten). Fehlende Kommas führen zu JavaScript-Fehlern.
+
+custom_settings_tip_3_title = Strings in einfachen Anführungszeichen
+custom_settings_tip_3_desc = Bei HTML-Code in Strings verwenden Sie einfache Anführungszeichen <code>\'</code> statt doppelter, um Konflikte zu vermeiden.
+
+custom_settings_tip_4_title = Browser-Konsole prüfen
+custom_settings_tip_4_desc = Bei Problemen öffnen Sie die Browser-Entwicklertools (F12) und prüfen Sie die Konsole auf Fehlermeldungen.
+
+custom_settings_tip_5_title = Einstellungen werden zwischengespeichert
+custom_settings_tip_5_desc = Nach Änderungen der Konfiguration wird der Browser-LocalStorage automatisch zurückgesetzt, damit die neuen Einstellungen sofort wirksam werden.
+
+custom_settings_example_panel = Panel-Position anpassen
+custom_settings_example_panel_desc = Bestimmt die Position des Sa11y-Panels auf der Seite.
+custom_settings_options = Mögliche Werte
+
+custom_settings_example_delay = Prüfung verzögern
+custom_settings_example_delay_desc = Verzögert den Start der Barrierefreiheits-Prüfung um die angegebene Zeit in Millisekunden.
+custom_settings_delay_note = Nützlich bei dynamisch geladenen Inhalten oder wenn JavaScript-Frameworks die Seite nach dem Laden manipulieren.
+
+custom_settings_example_about = Eigener Info-Text
+custom_settings_example_about_desc = Zeigt einen benutzerdefinierten Text im "Über"-Bereich des Panels an.
+
+custom_settings_example_buttons = Buttons ausblenden
+custom_settings_example_buttons_desc = Blendet die "Gute Bilder"- und "Gute Links"-Buttons im Panel aus.
+
+custom_settings_example_contrast = Kontrast-Plugin aktivieren
+custom_settings_example_contrast_desc = Aktiviert die erweiterte Kontrast-Prüfung für Text- und Hintergrundfarben.
+
+custom_settings_example_forms = Formular-Labels-Plugin
+custom_settings_example_forms_desc = Aktiviert die Prüfung von Formular-Labels und ARIA-Attributen in Formularen.
+
+custom_settings_example_custom_checks = Eigene Prüfungen (Custom Checks)
+custom_settings_example_custom_checks_desc = Definieren Sie eigene Barrierefreiheits-Prüfungen für projektspezifische Anforderungen.
+custom_settings_custom_checks_note = Severity-Optionen: <code>error</code> (rot), <code>warning</code> (gelb), <code>good</code> (grün). Weitere Infos in der Sa11y-Dokumentation.
+
+custom_settings_example_readability = Lesbarkeits-Prüfung
+custom_settings_example_readability_desc = Konfiguriert die Lesbarkeits-Prüfung basierend auf dem Flesch-Reading-Ease-Index.
+custom_settings_readability_note = Die Prüfung analysiert Satzlänge und Wortkomplexität. Passen Sie <code>readabilityRoot</code> an den Hauptinhaltsbereich an.
+
+custom_settings_example_spa = Single Page Applications (SPA)
+custom_settings_example_spa_desc = Erkennt URL-Änderungen automatisch und prüft die Seite erneut. Nützlich für JavaScript-Frameworks wie React, Vue oder Angular.
+
+custom_settings_example_links = Unerwünschte Links kennzeichnen
+custom_settings_example_links_desc = Warnt vor Links zu Entwicklungs- oder Staging-Umgebungen, die nicht auf der Live-Site sein sollten.
+custom_settings_links_note = Verwenden Sie CSS-Selektoren mit Attribut-Matches. Mehrere Selektoren mit Komma trennen.
+
+custom_settings_example_apca = APCA Kontrast-Algorithmus
+custom_settings_example_apca_desc = Nutzt den Advanced Perceptual Contrast Algorithm (APCA), die Kandidaten-Methode für WCAG 3.
+custom_settings_apca_note = <strong>Hinweis:</strong> APCA ist noch in Beta und sollte nicht für WCAG 2 Konformität verwendet werden.
+
+custom_settings_example_checks_config = Einzelne Checks anpassen
+custom_settings_example_checks_config_desc = Deaktivieren Sie bestimmte Prüfungen oder passen Sie deren Verhalten, Schweregrad und Meldungen an.
+
+custom_settings_example_readability = Lesbarkeits-Prüfung
+custom_settings_example_readability_desc = Konfiguriert die Lesbarkeits-Prüfung basierend auf dem Flesch-Reading-Ease-Index.
+custom_settings_readability_note = Die Prüfung analysiert Satzlänge und Wortkomplexität. Passen Sie <code>readabilityRoot</code> an den Hauptinhaltsbereich an.
+
+custom_settings_example_spa = Single Page Applications (SPA)
+custom_settings_example_spa_desc = Erkennt URL-Änderungen automatisch und prüft die Seite erneut. Nützlich für JavaScript-Frameworks wie React, Vue oder Angular.
+
+custom_settings_example_links = Unerwünschte Links kennzeichnen
+custom_settings_example_links_desc = Warnt vor Links zu Entwicklungs- oder Staging-Umgebungen, die nicht auf der Live-Site sein sollten.
+custom_settings_links_note = Verwenden Sie CSS-Selektoren mit Attribut-Matches. Mehrere Selektoren mit Komma trennen.
+
+custom_settings_example_apca = APCA Kontrast-Algorithmus
+custom_settings_example_apca_desc = Nutzt den Advanced Perceptual Contrast Algorithm (APCA), die Kandidaten-Methode für WCAG 3.
+custom_settings_apca_note = <strong>Hinweis:</strong> APCA ist noch in Beta und sollte nicht für WCAG 2 Konformität verwendet werden.
+
+custom_settings_example_checks_config = Einzelne Checks anpassen
+custom_settings_example_checks_config_desc = Deaktivieren Sie bestimmte Prüfungen oder passen Sie deren Verhalten, Schweregrad und Meldungen an.

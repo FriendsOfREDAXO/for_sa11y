@@ -9,3 +9,83 @@ for_sa11y_ignore = Ignore selectors
 for_sa11y_custom_settings = Custom Settings
 perm_general_for_sa11y[sa11yCheck] =  FOR Sa11y: Allowed to check
 perm_general_for_sa11y[settings] =  FOR Sa11y: Settings
+
+# Custom Settings Examples
+custom_settings_examples_title = Custom Settings Examples
+custom_settings_docs_link = Complete documentation of all available options
+
+custom_settings_usage_tips = Important Usage Notes
+custom_settings_tip_1_title = Enter options only
+custom_settings_tip_1_desc = Enter only the individual options, not the surrounding curly braces <code>Sa11y.Sa11y({ })</code>. The addon adds these automatically.
+
+custom_settings_tip_2_title = Don't forget commas
+custom_settings_tip_2_desc = Each line must end with a comma (except the last one). Missing commas will cause JavaScript errors.
+
+custom_settings_tip_3_title = Use single quotes for strings
+custom_settings_tip_3_desc = For HTML code in strings, use single quotes <code>\'</code> instead of double quotes to avoid conflicts.
+
+custom_settings_tip_4_title = Check browser console
+custom_settings_tip_4_desc = If you encounter problems, open the browser developer tools (F12) and check the console for error messages.
+
+custom_settings_tip_5_title = Settings are cached
+custom_settings_tip_5_desc = After configuration changes, the browser LocalStorage is automatically reset so new settings take effect immediately.
+
+custom_settings_example_panel = Adjust panel position
+custom_settings_example_panel_desc = Determines the position of the Sa11y panel on the page.
+custom_settings_options = Possible values
+
+custom_settings_example_delay = Delay check
+custom_settings_example_delay_desc = Delays the start of the accessibility check by the specified time in milliseconds.
+custom_settings_delay_note = Useful for dynamically loaded content or when JavaScript frameworks manipulate the page after loading.
+
+custom_settings_example_about = Custom info text
+custom_settings_example_about_desc = Displays custom text in the "About" section of the panel.
+
+custom_settings_example_buttons = Hide buttons
+custom_settings_example_buttons_desc = Hides the "Good Images" and "Good Links" buttons in the panel.
+
+custom_settings_example_contrast = Enable contrast plugin
+custom_settings_example_contrast_desc = Enables advanced contrast checking for text and background colors.
+
+custom_settings_example_forms = Form labels plugin
+custom_settings_example_forms_desc = Enables checking of form labels and ARIA attributes in forms.
+
+custom_settings_example_custom_checks = Custom Checks
+custom_settings_example_custom_checks_desc = Define your own accessibility checks for project-specific requirements.
+custom_settings_custom_checks_note = Severity options: <code>error</code> (red), <code>warning</code> (yellow), <code>good</code> (green). More info in the Sa11y documentation.
+
+custom_settings_example_readability = Readability Check
+custom_settings_example_readability_desc = Configures the readability check based on the Flesch Reading Ease index.
+custom_settings_readability_note = The check analyzes sentence length and word complexity. Adjust <code>readabilityRoot</code> to your main content area.
+
+custom_settings_example_spa = Single Page Applications (SPA)
+custom_settings_example_spa_desc = Automatically detects URL changes and re-checks the page. Useful for JavaScript frameworks like React, Vue or Angular.
+
+custom_settings_example_links = Flag unwanted links
+custom_settings_example_links_desc = Warns about links to development or staging environments that shouldn't be on the live site.
+custom_settings_links_note = Use CSS selectors with attribute matches. Separate multiple selectors with commas.
+
+custom_settings_example_apca = APCA Contrast Algorithm
+custom_settings_example_apca_desc = Uses the Advanced Perceptual Contrast Algorithm (APCA), the candidate method for WCAG 3.
+custom_settings_apca_note = <strong>Note:</strong> APCA is still in beta and should not be used for WCAG 2 conformance.
+
+custom_settings_example_checks_config = Customize individual checks
+custom_settings_example_checks_config_desc = Disable specific checks or adjust their behavior, severity, and messages.
+
+custom_settings_example_readability = Readability Check
+custom_settings_example_readability_desc = Configures the readability check based on the Flesch Reading Ease index.
+custom_settings_readability_note = The check analyzes sentence length and word complexity. Adjust <code>readabilityRoot</code> to your main content area.
+
+custom_settings_example_spa = Single Page Applications (SPA)
+custom_settings_example_spa_desc = Automatically detects URL changes and re-checks the page. Useful for JavaScript frameworks like React, Vue or Angular.
+
+custom_settings_example_links = Flag unwanted links
+custom_settings_example_links_desc = Warns about links to development or staging environments that shouldn't be on the live site.
+custom_settings_links_note = Use CSS selectors with attribute matches. Separate multiple selectors with commas.
+
+custom_settings_example_apca = APCA Contrast Algorithm
+custom_settings_example_apca_desc = Uses the Advanced Perceptual Contrast Algorithm (APCA), the candidate method for WCAG 3.
+custom_settings_apca_note = <strong>Note:</strong> APCA is still in beta and should not be used for WCAG 2 conformance.
+
+custom_settings_example_checks_config = Customize individual checks
+custom_settings_example_checks_config_desc = Disable specific checks or adjust their behavior, severity, and messages.

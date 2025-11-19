@@ -1,10 +1,13 @@
 <?php
+
 namespace FriendsOfRedaxo\Sa11y;
+
 use rex;
 use rex_addon;
-use rex_clang;
 use rex_backend_login;
-use rex_category;
+use rex_clang;
+
+use function array_key_exists;
 
 class Sa11y
 {
@@ -13,26 +16,38 @@ class Sa11y
      */
     public static function get(): string
     {
-        if ((rex_backend_login::createUser() && !rex::getUser()->isAdmin() && !rex::getUser()->hasPerm('for_sa11y[sa11yCheck]')) || rex_addon::get('for_sa11y')->getConfig('active')  === 'false') {
+        $user = rex::getUser();
+        if ((!$user || (!$user->isAdmin() && !$user->hasPerm('for_sa11y[sa11yCheck]'))) || 'false' === rex_addon::get('for_sa11y')->getConfig('active')) {
             return '';
         }
 
-        $root = rex_escape(rex_addon::get('for_sa11y')->getConfig('root','body'));
-        $ignore = rex_escape(rex_addon::get('for_sa11y')->getConfig('ignore')); 
-        $custom = rex_addon::get('for_sa11y')->getConfig('custom_settings'); 
-        
-        if (rex_backend_login::createUser() !== null && rex_backend_login::hasSession()) {
-            $user = rex_backend_login::createUser();
+        $root = (string) rex_escape(rex_addon::get('for_sa11y')->getConfig('root', 'body'));
+        $ignore = (string) rex_escape(rex_addon::get('for_sa11y')->getConfig('ignore'));
+        $custom = (string) rex_addon::get('for_sa11y')->getConfig('custom_settings');
+
+        // Config-Hash generieren für LocalStorage-Invalidierung
+        $configHash = md5(serialize([
+            'root' => $root,
+            'ignore' => $ignore,
+            'custom' => $custom,
+            'version' => rex_addon::get('for_sa11y')->getVersion(),
+        ]));
+
+        if (null !== rex_backend_login::createUser() && rex_backend_login::hasSession()) {
+            $backendUser = rex_backend_login::createUser();
+            if (!$backendUser) {
+                return '';
+            }
             $supportedLanguages = [
                 'de_de' => ['js' => 'de', 'setup' => 'De'],
                 'en_gb' => ['js' => 'en', 'setup' => 'En'],
                 'es_es' => ['js' => 'es', 'setup' => 'Es'],
                 'pt_br' => ['js' => 'pt', 'setup' => 'Pt'],
                 'it_it' => ['js' => 'it', 'setup' => 'It'],
-                'sv_se' => ['js' => 'sv', 'setup' => 'Sv']
+                'sv_se' => ['js' => 'sv', 'setup' => 'Sv'],
             ];
 
-            $userLanguage = $user->getLanguage();
+            $userLanguage = $backendUser->getLanguage();
             if (array_key_exists($userLanguage, $supportedLanguages)) {
                 $lang = $supportedLanguages[$userLanguage];
             } else {
@@ -40,19 +55,40 @@ class Sa11y
                 $lang = ['js' => 'de', 'setup' => 'De'];
             }
 
-            $lang["text"] = rex_clang::getCurrent()->getCode();
+            $lang['text'] = rex_clang::getCurrent()->getCode();
 
             $addon = rex_addon::get('for_sa11y');
             $js = '      
-      <link rel="stylesheet" href="' . $addon->getAssetsUrl("vendor/sa11y/dist/css/sa11y.min.css") . '"/>
-      <script src="' . $addon->getAssetsUrl("vendor/sa11y/dist/js/sa11y.umd.min.js") . '"></script>
-      <script src="' . $addon->getAssetsUrl("vendor/sa11y/dist/js/lang/" . $lang['js'] . ".umd.js") . '"></script>
+      <link rel="stylesheet" href="' . $addon->getAssetsUrl('vendor/sa11y/dist/css/sa11y.min.css') . '"/>
+      <script src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/sa11y.umd.min.js') . '"></script>
+      <script src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/lang/' . $lang['js'] . '.umd.js') . '"></script>
   
-  <script nonce="<?=rex_response::getNonce()?>">     
-  Sa11y.Lang.addI18n(Sa11yLang' . $lang["setup"] . '.strings);
+  <script nonce="<?=rex_response::getNonce()?>">
+  // LocalStorage-Invalidierung bei Config-Änderungen
+  (function() {
+    const currentConfigHash = "' . $configHash . '";
+    const storedConfigHash = localStorage.getItem("sa11y_config_hash");
+    
+    if (storedConfigHash && storedConfigHash !== currentConfigHash) {
+      // Config hat sich geändert - LocalStorage aufräumen
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith("sa11y")) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key));
+    }
+    
+    // Aktuellen Hash speichern
+    localStorage.setItem("sa11y_config_hash", currentConfigHash);
+  })();
+     
+  Sa11y.Lang.addI18n(Sa11yLang' . $lang['setup'] . '.strings);
   const sa11y = new Sa11y.Sa11y({
     checkRoot: \'' . $root . '\',
-    readabilityLang: \'' . $lang["text"] . '\',
+    readabilityLang: \'' . $lang['text'] . '\',
     containerIgnore: \'' . $ignore . '\',
     exportResultsPlugin: true,
     ' . $custom . '
