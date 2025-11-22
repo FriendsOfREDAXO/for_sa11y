@@ -1,30 +1,51 @@
-# FOR [Sa11y](https://sa11y.netlify.app)
+# FOR Sa11y - REDAXO AddOn
 
-![Sa11y, the accessibility quality assurance tool.](https://ryersondmp.github.io/sa11y/assets/github-banner.png)
+FOR Sa11y fügt ["Sa11y"](https://sa11y.netlify.app) zum REDAXO-Frontend hinzu, wenn ein Benutzer eingeloggt ist.  
+ 
+Sa11y hebt Probleme mit der Barrierefreiheit von Inhalten visuell an der Quelle hervor und gibt einfache Tooltips mit Hinweisen zur Behebung. 
 
-FOR sa11y stellt, wenn Benutzer eingeloggt sind, ["Sa11y"](https://sa11y.netlify.app) im Frontend bereit.  
+Das AddOn hilft dabei, Probleme mit der Barrierefreiheit auf der Website zu reduzieren und dient als redaktionelle Hilfestellung. 
 
-Sa11y hebt Probleme mit der Barrierefreiheit von Inhalten visuell an der Quelle hervor und gibt Hilfestellungen zur Behebung der Probleme.
-
-Das AddOn hilft dabei, Probleme mit der Barrierefreiheit auf der Website zu entdecken und zu reduzieren. Es sollte beachtet werden, dass es sich hierbei nur um ein Hilfsmittel handelt und es daher kein zuverlässiges Werkzeug zur Überprüfung der Zugänglichkeit einer Website ist. Hierfür sollten Experten zu Rate gezogen werden. Als redaktionelle Hilfestellung und zum ersten Auffinden von Problemen ist es jedoch sehr nützlich. 
+![Sa11y, the accessibility quality assurance tool.](https://ryersondmp.github.io/sa11y/assets/github-banner.png) 
 
 ## HowTo: 
 
-- AddOn installieren
-- Folgenden Code ame Ende oder Anfang von `<body>` einfügen: 
+- AddOn installieren 
+- Folgenden Code am Ende oder Anfang von `<body>` einfügen: 
 
 ```php
-    <?=\FriendsOfRedaxo\Sa11y\Sa11y::get()?>
+  <?=\FriendsOfRedaxo\Sa11y\Sa11y::get()?>
 ```
 
-AddOn-Lead: 
+## Custom props und Konfigurationseinstellungen 
+
+Auf der Konfigurationsseite können Sie die Props hinzufügen oder überschreiben. 
+[https://sa11y.netlify.app/developers/props/](https://sa11y.netlify.app/developers/props/)
+
+### Beispiel
+
+```js
+panelPosition: "top-right",
+aboutContent: '<h2>Hilfe</h2><p>Fragen? Wenden Sie sich bitte an die REDAXO Community</p>',
+delayCheck: 1000,
+showGoodImageButton: false,
+showGoodLinkButton: false,
+```
+
+
+## Für Entwickler: Aktualisierung des Vendors
+
+Es ist nicht notwendig, den Vendor selbst zu aktualisieren. Eine GitHub-Action übernimmt dies.  
+
+
+## AddOn-Lead: 
 [Thomas Skerbis](https://github.com/skerbis) 
 
-Credits:
+## Credits:
 - Many thanks to: [Adam Chaboryk](https://github.com/adamchaboryk), creator of Sa11y
 - [Digital Media Projects team at TMU](https://github.com/ryersondmp)
 - German Translation:  @elricco @ansichtsache
 
-Vendor: 
+## Vendor: 
 - Licensed under: Sa11y - License & GNU General Public License
 - Link to license: https://github.com/ryersondmp/sa11y/blob/master/LICENSE.md
