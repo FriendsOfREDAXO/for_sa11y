@@ -16,8 +16,12 @@ class Sa11y
      */
     public static function get(): string
     {
-        $user = rex::getUser();
-        if ((!$user || (!$user->isAdmin() && !$user->hasPerm('for_sa11y[sa11yCheck]'))) || 'false' === rex_addon::get('for_sa11y')->getConfig('active')) {
+        $user = rex_backend_login::createUser();
+        if (!$user || !rex_backend_login::hasSession()) {
+            return '';
+        }
+
+        if ((!$user->isAdmin() && !$user->hasPerm('for_sa11y[sa11yCheck]')) || 'false' === rex_addon::get('for_sa11y')->getConfig('active')) {
             return '';
         }
 
@@ -33,32 +37,27 @@ class Sa11y
             'version' => rex_addon::get('for_sa11y')->getVersion(),
         ]));
 
-        if (null !== rex_backend_login::createUser() && rex_backend_login::hasSession()) {
-            $backendUser = rex_backend_login::createUser();
-            if (!$backendUser) {
-                return '';
-            }
-            $supportedLanguages = [
-                'de_de' => ['js' => 'de', 'setup' => 'De'],
-                'en_gb' => ['js' => 'en', 'setup' => 'En'],
-                'es_es' => ['js' => 'es', 'setup' => 'Es'],
-                'pt_br' => ['js' => 'pt', 'setup' => 'Pt'],
-                'it_it' => ['js' => 'it', 'setup' => 'It'],
-                'sv_se' => ['js' => 'sv', 'setup' => 'Sv'],
-            ];
+        $supportedLanguages = [
+            'de_de' => ['js' => 'de', 'setup' => 'De'],
+            'en_gb' => ['js' => 'en', 'setup' => 'En'],
+            'es_es' => ['js' => 'es', 'setup' => 'Es'],
+            'pt_br' => ['js' => 'pt', 'setup' => 'Pt'],
+            'it_it' => ['js' => 'it', 'setup' => 'It'],
+            'sv_se' => ['js' => 'sv', 'setup' => 'Sv'],
+        ];
 
-            $userLanguage = $backendUser->getLanguage();
-            if (array_key_exists($userLanguage, $supportedLanguages)) {
-                $lang = $supportedLanguages[$userLanguage];
-            } else {
-                // Standard-Spracheinstellungen, falls die Benutzersprache nicht unterstützt wird
-                $lang = ['js' => 'de', 'setup' => 'De'];
-            }
+        $userLanguage = $user->getLanguage();
+        if (array_key_exists($userLanguage, $supportedLanguages)) {
+            $lang = $supportedLanguages[$userLanguage];
+        } else {
+            // Standard-Spracheinstellungen, falls die Benutzersprache nicht unterstützt wird
+            $lang = ['js' => 'de', 'setup' => 'De'];
+        }
 
-            $lang['text'] = rex_clang::getCurrent()->getCode();
+        $lang['text'] = rex_clang::getCurrent()->getCode();
 
-            $addon = rex_addon::get('for_sa11y');
-            $js = '      
+        $addon = rex_addon::get('for_sa11y');
+        $js = '      
       <link rel="stylesheet" href="' . $addon->getAssetsUrl('vendor/sa11y/dist/css/sa11y.min.css') . '"/>
       <script src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/sa11y.umd.min.js') . '"></script>
       <script src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/lang/' . $lang['js'] . '.umd.js') . '"></script>
@@ -95,8 +94,6 @@ class Sa11y
   });
 </script>        
 ';
-            return $js;
-        }
-        return '';
+        return $js;
     }
 }
