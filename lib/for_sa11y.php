@@ -62,7 +62,7 @@ class Sa11y
       <script src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/sa11y.umd.min.js') . '"></script>
       <script src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/lang/' . $lang['js'] . '.umd.js') . '"></script>
   
-  <script nonce="<?=rex_response::getNonce()?>">
+  <script nonce="' . rex_response::getNonce() . '">
   // LocalStorage-Invalidierung bei Config-Änderungen
   (function() {
     const currentConfigHash = "' . $configHash . '";
