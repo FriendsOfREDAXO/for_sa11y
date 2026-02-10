@@ -6,6 +6,7 @@ use rex;
 use rex_addon;
 use rex_backend_login;
 use rex_clang;
+use rex_response;
 
 use function array_key_exists;
 
