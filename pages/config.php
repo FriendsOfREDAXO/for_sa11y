@@ -66,7 +66,7 @@ $fragment = new rex_fragment();
 $fragment->setVar('class', 'edit', false);
 $fragment->setVar('title', $package->i18n('for_sa11y_section_basic'), false);
 $fragment->setVar('body', $form->get(), false);
-echo $fragment->parse('core/page/section.php');
+echo '<div id="for-sa11y-section-basic">' . $fragment->parse('core/page/section.php') . '</div>';
 
 if ($isAdmin) {
     // ==============================
@@ -110,9 +110,7 @@ if ($isAdmin) {
     $fragment->setVar('class', 'edit', false);
     $fragment->setVar('title', $package->i18n('for_sa11y_section_display'), false);
     $fragment->setVar('body', $form->get(), false);
-    echo $fragment->parse('core/page/section.php');
-
-    // ==============================
+echo '<div id="for-sa11y-section-display">' . $fragment->parse('core/page/section.php') . '</div>';
     // Sektion 3: Plugins
     // ==============================
     $form = rex_config_form::factory('for_sa11y', 'plugins');
@@ -180,9 +178,7 @@ if ($isAdmin) {
     $fragment->setVar('class', 'edit', false);
     $fragment->setVar('title', $package->i18n('for_sa11y_section_plugins'), false);
     $fragment->setVar('body', $form->get(), false);
-    echo $fragment->parse('core/page/section.php');
-
-    // ==============================
+echo '<div id="for-sa11y-section-plugins">' . $fragment->parse('core/page/section.php') . '</div>';
     // Sektion 4: Links & Inhalte
     // ==============================
     $form = rex_config_form::factory('for_sa11y', 'links');
@@ -195,9 +191,7 @@ if ($isAdmin) {
     $fragment->setVar('class', 'edit', false);
     $fragment->setVar('title', $package->i18n('for_sa11y_section_advanced'), false);
     $fragment->setVar('body', $form->get(), false);
-    echo $fragment->parse('core/page/section.php');
-
-    // ==============================
+echo '<div id="for-sa11y-section-links">' . $fragment->parse('core/page/section.php') . '</div>';
     // Sektion 4b: Erweiterte Einstellungen
     // ==============================
     $form = rex_config_form::factory('for_sa11y', 'advanced');
@@ -253,9 +247,7 @@ if ($isAdmin) {
     $fragment->setVar('class', 'edit', false);
     $fragment->setVar('title', $package->i18n('for_sa11y_section_extended'), false);
     $fragment->setVar('body', $form->get(), false);
-    echo $fragment->parse('core/page/section.php');
-
-    // ==============================
+echo '<div id="for-sa11y-section-advanced">' . $fragment->parse('core/page/section.php') . '</div>';
     // Sektion 5: Erweiterte JS-Einstellungen (Custom Settings)
     // ==============================
     $form = rex_config_form::factory('for_sa11y', 'custom');
@@ -268,9 +260,7 @@ if ($isAdmin) {
     $fragment->setVar('class', 'edit', false);
     $fragment->setVar('title', $package->i18n('for_sa11y_custom_settings'), false);
     $fragment->setVar('body', $form->get(), false);
-    echo $fragment->parse('core/page/section.php');
-
-    // ==============================
+echo '<div id="for-sa11y-section-custom">' . $fragment->parse('core/page/section.php') . '</div>';
     // Beispiel-Accordion (eingeklappt)
     // ==============================
     $accordion = '<div class="panel-group" id="sa11y-examples-accordion">';

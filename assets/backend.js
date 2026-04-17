@@ -73,4 +73,33 @@
     }
 
     $(document).on('rex:ready', initPanelPositionPreview);
+
+    /* ------------------------------------------------------------------ */
+    /* Nach Formular-Speichern: zurück zur gespeicherten Sektion scrollen   */
+    /* ------------------------------------------------------------------ */
+    function initSectionScrollRestore() {
+        // Vor dem Submit: Sektion-ID merken
+        document.querySelectorAll('div[id^="for-sa11y-section-"] form').forEach(function (form) {
+            form.addEventListener('submit', function () {
+                var section = form.closest('div[id^="for-sa11y-section-"]');
+                if (section) {
+                    sessionStorage.setItem('for_sa11y_scroll_to', section.id);
+                }
+            });
+        });
+
+        // Nach Reload: zur gemerkten Sektion scrollen
+        var target = sessionStorage.getItem('for_sa11y_scroll_to');
+        if (target) {
+            sessionStorage.removeItem('for_sa11y_scroll_to');
+            var el = document.getElementById(target);
+            if (el) {
+                setTimeout(function () {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 150);
+            }
+        }
+    }
+
+    $(document).on('rex:ready', initSectionScrollRestore);
 }());
