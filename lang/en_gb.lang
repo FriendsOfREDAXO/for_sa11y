@@ -82,6 +82,20 @@ for_sa11y_developer_checks_on_by_default_notice = Activates developer checks aut
 for_sa11y_auto_detect_shadow_components = Auto-detect Shadow DOM components
 for_sa11y_auto_detect_shadow_components_notice = Automatically scans the page for Web Components / Shadow DOM elements and checks their content for accessibility. Slightly slower than specifying components manually.
 
+for_sa11y_exclude_url_params = Do not run Sa11y for URL parameters
+for_sa11y_exclude_url_params_notice = Comma-separated list of URL parameters that will prevent Sa11y from running. Use parameter names to check for their presence (e.g. <code>pdf, print</code>), or <code>key=value</code> for an exact match (e.g. <code>mode=print, export=1</code>).
+
+for_sa11y_new_version_available = Sa11y %s is available (current: %s).
+for_sa11y_new_version_release_notes = View release notes
+
+# Link Checker
+for_sa11y_link_checker = Enable link checker
+for_sa11y_link_checker_notice = Checks all links on the page live via HEAD requests in the background. Broken links receive a red badge with the HTTP status code. Runs non-blocking after the page has loaded.
+for_sa11y_link_checker_check_external = Check external links
+for_sa11y_link_checker_check_external_notice = Also checks links to other domains. For external links, only completely unreachable servers (network errors) can be detected. CORS prevents reading status codes.
+for_sa11y_link_checker_ignore = Ignored selectors (link checker)
+for_sa11y_link_checker_ignore_notice = CSS selectors whose links should be excluded from the link checker. Comma-separated, e.g. <code>nav a, .footer a, .breadcrumb a</code>
+
 for_sa11y_custom_settings_notice = JavaScript options in <code>key: value,</code> format – only for advanced Sa11y options not configurable above.
 
 # Custom Settings Examples

@@ -10,6 +10,7 @@ use rex_clang;
 use rex_response;
 
 use function array_key_exists;
+use function rex_get;
 
 class Sa11y
 {
@@ -29,6 +30,26 @@ class Sa11y
             return '';
         }
 
+        // URL-Parameter-Ausschluss: Sa11y nicht ausführen wenn bestimmte Parameter gesetzt sind
+        $excludeParams = (string) $addon->getConfig('exclude_url_params', '');
+        if ($excludeParams !== '') {
+            foreach (array_map('trim', explode(',', $excludeParams)) as $param) {
+                if ($param === '') {
+                    continue;
+                }
+                if (str_contains($param, '=')) {
+                    [$key, $val] = explode('=', $param, 2);
+                    if (rex_get(trim($key), 'string', '') === trim($val)) {
+                        return '';
+                    }
+                } else {
+                    if ('' !== rex_get($param, 'string', '')) {
+                        return '';
+                    }
+                }
+            }
+        }
+
         $root = (string) rex_escape($addon->getConfig('root', 'body'));
         $ignore = (string) rex_escape($addon->getConfig('ignore'));
         $custom = (string) $addon->getConfig('custom_settings');
@@ -46,6 +67,18 @@ class Sa11y
         ]));
 
         $lang = self::detectLanguage($user->getLanguage());
+
+        // Link-Checker: Sa11y "listen" mode aktivieren wenn Link-Checker aktiv
+        $linkCheckerOptions = '';
+        if ((int) $addon->getConfig('link_checker', 0) === 1) {
+            $lcIgnore   = rex_escape((string) $addon->getConfig('link_checker_ignore', ''));
+            $lcExternal = (int) $addon->getConfig('link_checker_check_external', 0) === 1 ? '1' : '0';
+            // "listen" mode: Sa11y wartet auf sa11y-resume Event vom Link-Checker.
+            // delayCustomCheck: 20s Timeout damit Sa11y nicht abbricht während Netzwerk-Checks laufen.
+            $linkCheckerOptions = '
+    customChecks: "listen",
+    delayCustomCheck: 20000,';
+        }
 
         $js = '
       <link rel="stylesheet" href="' . $addon->getAssetsUrl('vendor/sa11y/dist/css/sa11y.min.css') . '"/>
@@ -72,15 +105,22 @@ class Sa11y
   })();
 
   Sa11y.Lang.addI18n(Sa11yLang' . $lang['setup'] . '.strings);
-  const sa11y = new Sa11y.Sa11y({
+  window.sa11yInstance = new Sa11y.Sa11y({
     checkRoot: \'' . $root . '\',
     readabilityLang: \'' . $lang['text'] . '\',
     containerIgnore: \'' . $ignore . '\',
-    ' . $jsOptions . '
+    ' . $jsOptions . $linkCheckerOptions . '
     ' . $custom . '
   });
 </script>
 ';
+
+        // Link-Checker Script
+        if ((int) $addon->getConfig('link_checker', 0) === 1) {
+            $js .= '<div id="sa11y-lc-config" hidden data-ignore="' . $lcIgnore . '" data-external="' . $lcExternal . '"></div>';
+            $js .= '<script src="' . $addon->getAssetsUrl('sa11y-linkchecker.js') . '"></script>';
+        }
+
         return $js;
     }
 
@@ -106,23 +146,25 @@ class Sa11y
         }
 
         // Plugins
+        // Sa11y 5 Defaults: contrastPlugin=true, formLabelsPlugin=true, readabilityPlugin=true
+        // → muss explizit auf false gesetzt werden wenn deaktiviert
         $contrastPlugin = (int) $addon->getConfig('contrast_plugin', 0);
         if ($contrastPlugin === 1) {
-            $options[] = 'contrastPlugin: true';
             $contrastAlgorithm = strtoupper((string) $addon->getConfig('contrast_algorithm', 'AA'));
             if ($contrastAlgorithm !== 'AA' && in_array($contrastAlgorithm, ['AAA', 'APCA'], true)) {
                 $options[] = 'contrastAlgorithm: "' . $contrastAlgorithm . '"';
             }
+        } else {
+            $options[] = 'contrastPlugin: false';
         }
 
         $formLabelsPlugin = (int) $addon->getConfig('form_labels_plugin', 0);
-        if ($formLabelsPlugin === 1) {
-            $options[] = 'formLabelsPlugin: true';
+        if ($formLabelsPlugin !== 1) {
+            $options[] = 'formLabelsPlugin: false';
         }
 
         $readabilityPlugin = (int) $addon->getConfig('readability_plugin', 0);
         if ($readabilityPlugin === 1) {
-            $options[] = 'readabilityPlugin: true';
             $readabilityRoot = (string) $addon->getConfig('readability_root', 'body');
             if ($readabilityRoot !== '' && $readabilityRoot !== 'body') {
                 $options[] = 'readabilityRoot: "' . rex_escape($readabilityRoot) . '"';
@@ -131,6 +173,8 @@ class Sa11y
             if ($readabilityIgnore !== '') {
                 $options[] = 'readabilityIgnore: "' . rex_escape($readabilityIgnore) . '"';
             }
+        } else {
+            $options[] = 'readabilityPlugin: false';
         }
 
         $exportResultsPlugin = (int) $addon->getConfig('export_results_plugin', 1);

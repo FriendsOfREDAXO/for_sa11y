@@ -87,6 +87,20 @@ for_sa11y_developer_checks_on_by_default_notice = Aktiviert die Developer-Prüfu
 for_sa11y_auto_detect_shadow_components = Shadow DOM automatisch erkennen
 for_sa11y_auto_detect_shadow_components_notice = Durchsucht die Seite automatisch nach Web Components / Shadow-DOM-Elementen und prüft deren Inhalte auf Barrierefreiheit. Leicht langsamer als manuelle Angabe.
 
+for_sa11y_exclude_url_params = Sa11y nicht ausführen bei URL-Parametern
+for_sa11y_exclude_url_params_notice = Kommagetrennte Liste von URL-Parametern, bei denen Sa11y nicht gestartet wird. Parameternames prüfen ob vorhanden (z. B. <code>pdf, print</code>), oder <code>key=wert</code> für exakten Wert (z. B. <code>mode=print, export=1</code>).
+
+for_sa11y_new_version_available = Sa11y %s ist verfügbar (aktuell: %s).
+for_sa11y_new_version_release_notes = Release Notes ansehen
+
+# Link-Checker
+for_sa11y_link_checker = Link-Checker aktivieren
+for_sa11y_link_checker_notice = Prüft alle Links auf der Seite live per HEAD-Request im Hintergrund. Defekte Links erhalten ein rotes Badge mit dem HTTP-Statuscode. Läuft nicht-blockierend nach dem Seitenaufbau.
+for_sa11y_link_checker_check_external = Externe Links prüfen
+for_sa11y_link_checker_check_external_notice = Prüft auch Links zu anderen Domains. Bei externen Links kann nur erkannt werden, ob der Server <em>komplett</em> nicht erreichbar ist (Netzwerkfehler). CORS verhindert das Lesen von Statuscodes.
+for_sa11y_link_checker_ignore = Ignorierte Selektoren (Link-Checker)
+for_sa11y_link_checker_ignore_notice = CSS-Selektoren, deren Links vom Link-Checker ausgeschlossen werden sollen. Kommagetrennt, z.B. <code>nav a, .footer a, .breadcrumb a</code>
+
 for_sa11y_custom_settings_notice = JavaScript-Optionen im Format <code>key: value,</code> – nur für erweiterte Sa11y-Optionen, die nicht oben konfigurierbar sind.
 
 # Custom Settings Beispiele

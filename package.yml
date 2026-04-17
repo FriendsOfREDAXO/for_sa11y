@@ -29,10 +29,10 @@ default_config:
     detect_spa_routing: 0
 
     # Plugins
-    contrast_plugin: 0
+    contrast_plugin: 1
     contrast_algorithm: 'AA'
-    form_labels_plugin: 0
-    readability_plugin: 0
+    form_labels_plugin: 1
+    readability_plugin: 1
     readability_root: 'body'
     readability_ignore: ''
     export_results_plugin: 1
@@ -41,6 +41,10 @@ default_config:
 
     # Erweiterte Einstellungen
     do_not_run: ''
+    exclude_url_params: ''
+    link_checker: 0
+    link_checker_check_external: 0
+    link_checker_ignore: 'nav a, .footer a'
     developer_plugin: 0
     developer_checks_on_by_default: 0
     auto_detect_shadow_components: 0

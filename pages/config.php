@@ -3,6 +3,42 @@ $package = rex_addon::get('for_sa11y');
 $isAdmin = rex::getUser()?->isAdmin();
 
 // ==============================
+// Sa11y Versionscheck (1x täglich)
+// ==============================
+$versionCheckTime = (int) $package->getConfig('_version_check_time', 0);
+if (time() - $versionCheckTime > 86400) {
+    try {
+        $socket = rex_socket::factoryUrl('https://api.github.com/repos/ryersondmp/sa11y/releases/latest');
+        $socket->addHeader('User-Agent', 'REDAXO for_sa11y/' . $package->getVersion());
+        $socket->setTimeout(5);
+        $response = $socket->doGet();
+        if ($response->isOk()) {
+            $data = json_decode($response->getBody(), true);
+            if (is_array($data) && isset($data['tag_name'])) {
+                $tag = ltrim((string) $data['tag_name'], 'v');
+                if (preg_match('/^\d[\d.]*$/', $tag)) {
+                    $package->setConfig('_latest_sa11y_version', $tag);
+                }
+            }
+        }
+    } catch (\Exception $e) {
+        // Netzwerkfehler ignorieren
+    }
+    $package->setConfig('_version_check_time', time());
+}
+
+$bundledVersion = trim((string) rex_file::get(rex_path::addon('for_sa11y', '.sa11y_version')));
+$latestVersion  = (string) $package->getConfig('_latest_sa11y_version', $bundledVersion);
+if ($latestVersion !== '' && $bundledVersion !== '' && version_compare($latestVersion, $bundledVersion, '>')) {
+    echo rex_view::warning(
+        $package->i18n('for_sa11y_new_version_available', $latestVersion, $bundledVersion)
+        . ' <a href="https://github.com/ryersondmp/sa11y/releases/tag/' . rex_escape($latestVersion) . '" target="_blank" rel="noopener noreferrer">'
+        . $package->i18n('for_sa11y_new_version_release_notes')
+        . '</a>'
+    );
+}
+
+// ==============================
 // Sektion 1: Grundeinstellungen
 // ==============================
 $form = rex_config_form::factory('for_sa11y', 'basic');
@@ -48,14 +84,23 @@ if ($isAdmin) {
     $field->setLabel($package->i18n('for_sa11y_delay_check'));
     $field->setNotice($package->i18n('for_sa11y_delay_check_notice'));
 
-    $field = $form->addCheckboxField('show_good_image_button');
-    $field->addOption(rex_i18n::rawMsg('for_sa11y_show_good_image_button'), 1);
+    $field = $form->addSelectField('show_good_image_button');
+    $field->setLabel(rex_i18n::rawMsg('for_sa11y_show_good_image_button'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
 
-    $field = $form->addCheckboxField('show_good_link_button');
-    $field->addOption(rex_i18n::rawMsg('for_sa11y_show_good_link_button'), 1);
+    $field = $form->addSelectField('show_good_link_button');
+    $field->setLabel(rex_i18n::rawMsg('for_sa11y_show_good_link_button'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
 
-    $field = $form->addCheckboxField('detect_spa_routing');
-    $field->addOption($package->i18n('for_sa11y_detect_spa_routing'), 1);
+    $field = $form->addSelectField('detect_spa_routing');
+    $field->setLabel($package->i18n('for_sa11y_detect_spa_routing'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
     $field->setNotice($package->i18n('for_sa11y_detect_spa_routing_notice'));
 
     $fragment = new rex_fragment();
@@ -69,8 +114,11 @@ if ($isAdmin) {
     // ==============================
     $form = rex_config_form::factory('for_sa11y', 'plugins');
 
-    $field = $form->addCheckboxField('contrast_plugin');
-    $field->addOption($package->i18n('for_sa11y_contrast_plugin'), 1);
+    $field = $form->addSelectField('contrast_plugin');
+    $field->setLabel($package->i18n('for_sa11y_contrast_plugin'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
     $field->setNotice($package->i18n('for_sa11y_contrast_plugin_notice'));
 
     $field = $form->addSelectField('contrast_algorithm');
@@ -82,12 +130,18 @@ if ($isAdmin) {
     $select->addOption($package->i18n('for_sa11y_contrast_algorithm_apca'), 'APCA');
     $field->setNotice($package->i18n('for_sa11y_contrast_algorithm_notice'));
 
-    $field = $form->addCheckboxField('form_labels_plugin');
-    $field->addOption($package->i18n('for_sa11y_form_labels_plugin'), 1);
+    $field = $form->addSelectField('form_labels_plugin');
+    $field->setLabel($package->i18n('for_sa11y_form_labels_plugin'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
     $field->setNotice($package->i18n('for_sa11y_form_labels_plugin_notice'));
 
-    $field = $form->addCheckboxField('readability_plugin');
-    $field->addOption($package->i18n('for_sa11y_readability_plugin'), 1);
+    $field = $form->addSelectField('readability_plugin');
+    $field->setLabel($package->i18n('for_sa11y_readability_plugin'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
     $field->setNotice($package->i18n('for_sa11y_readability_plugin_notice'));
 
     $field = $form->addInputField('text', 'readability_root', null, ['class' => 'form-control']);
@@ -98,16 +152,25 @@ if ($isAdmin) {
     $field->setLabel($package->i18n('for_sa11y_readability_ignore'));
     $field->setNotice($package->i18n('for_sa11y_readability_ignore_notice'));
 
-    $field = $form->addCheckboxField('export_results_plugin');
-    $field->addOption($package->i18n('for_sa11y_export_results_plugin'), 1);
+    $field = $form->addSelectField('export_results_plugin');
+    $field->setLabel($package->i18n('for_sa11y_export_results_plugin'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
     $field->setNotice($package->i18n('for_sa11y_export_results_plugin_notice'));
 
-    $field = $form->addCheckboxField('lang_of_parts_plugin');
-    $field->addOption($package->i18n('for_sa11y_lang_of_parts_plugin'), 1);
+    $field = $form->addSelectField('lang_of_parts_plugin');
+    $field->setLabel($package->i18n('for_sa11y_lang_of_parts_plugin'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
     $field->setNotice($package->i18n('for_sa11y_lang_of_parts_plugin_notice'));
 
-    $field = $form->addCheckboxField('lang_of_parts_cache');
-    $field->addOption($package->i18n('for_sa11y_lang_of_parts_cache'), 1);
+    $field = $form->addSelectField('lang_of_parts_cache');
+    $field->setLabel($package->i18n('for_sa11y_lang_of_parts_cache'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
     $field->setNotice($package->i18n('for_sa11y_lang_of_parts_cache_notice'));
 
     $fragment = new rex_fragment();
@@ -140,17 +203,48 @@ if ($isAdmin) {
     $field->setLabel($package->i18n('for_sa11y_do_not_run'));
     $field->setNotice($package->i18n('for_sa11y_do_not_run_notice'));
 
-    $field = $form->addCheckboxField('developer_plugin');
-    $field->addOption($package->i18n('for_sa11y_developer_plugin'), 1);
+    $field = $form->addSelectField('developer_plugin');
+    $field->setLabel($package->i18n('for_sa11y_developer_plugin'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
     $field->setNotice($package->i18n('for_sa11y_developer_plugin_notice'));
 
-    $field = $form->addCheckboxField('developer_checks_on_by_default');
-    $field->addOption($package->i18n('for_sa11y_developer_checks_on_by_default'), 1);
+    $field = $form->addSelectField('developer_checks_on_by_default');
+    $field->setLabel($package->i18n('for_sa11y_developer_checks_on_by_default'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
     $field->setNotice($package->i18n('for_sa11y_developer_checks_on_by_default_notice'));
 
-    $field = $form->addCheckboxField('auto_detect_shadow_components');
-    $field->addOption($package->i18n('for_sa11y_auto_detect_shadow_components'), 1);
+    $field = $form->addSelectField('auto_detect_shadow_components');
+    $field->setLabel($package->i18n('for_sa11y_auto_detect_shadow_components'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
     $field->setNotice($package->i18n('for_sa11y_auto_detect_shadow_components_notice'));
+
+    $field = $form->addInputField('text', 'exclude_url_params', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_exclude_url_params'));
+    $field->setNotice($package->i18n('for_sa11y_exclude_url_params_notice'));
+
+    $field = $form->addSelectField('link_checker');
+    $field->setLabel($package->i18n('for_sa11y_link_checker'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
+    $field->setNotice($package->i18n('for_sa11y_link_checker_notice'));
+
+    $field = $form->addSelectField('link_checker_check_external');
+    $field->setLabel($package->i18n('for_sa11y_link_checker_check_external'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
+    $field->setNotice($package->i18n('for_sa11y_link_checker_check_external_notice'));
+
+    $field = $form->addInputField('text', 'link_checker_ignore', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_link_checker_ignore'));
+    $field->setNotice($package->i18n('for_sa11y_link_checker_ignore_notice'));
 
     $fragment = new rex_fragment();
     $fragment->setVar('class', 'edit', false);
