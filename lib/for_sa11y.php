@@ -4,6 +4,7 @@ namespace FriendsOfRedaxo\Sa11y;
 
 use rex;
 use rex_addon;
+use rex_addon_interface;
 use rex_backend_login;
 use rex_clang;
 use rex_response;
@@ -86,13 +87,15 @@ class Sa11y
     /**
      * Baut die JS-Optionen aus den Addon-Konfigurationswerten zusammen.
      */
-    private static function buildJsOptions(rex_addon $addon): string
+    private static function buildJsOptions(rex_addon_interface $addon): string
     {
         $options = [];
 
-        // Panel-Position
-        $panelPosition = (string) $addon->getConfig('panel_position', 'bottom-right');
-        if ($panelPosition !== 'bottom-right') {
+        // Panel-Position (Sa11y 5: right, left, top-right, top-left)
+        $panelPosition = (string) $addon->getConfig('panel_position', 'right');
+        // Migrate old Sa11y 4 values
+        $panelPosition = str_replace(['bottom-right', 'bottom-left'], ['right', 'left'], $panelPosition);
+        if ($panelPosition !== 'right') {
             $options[] = 'panelPosition: "' . rex_escape($panelPosition) . '"';
         }
 
@@ -106,6 +109,10 @@ class Sa11y
         $contrastPlugin = (int) $addon->getConfig('contrast_plugin', 0);
         if ($contrastPlugin === 1) {
             $options[] = 'contrastPlugin: true';
+            $contrastAlgorithm = strtoupper((string) $addon->getConfig('contrast_algorithm', 'AA'));
+            if ($contrastAlgorithm !== 'AA' && in_array($contrastAlgorithm, ['AAA', 'APCA'], true)) {
+                $options[] = 'contrastAlgorithm: "' . $contrastAlgorithm . '"';
+            }
         }
 
         $formLabelsPlugin = (int) $addon->getConfig('form_labels_plugin', 0);
@@ -119,6 +126,10 @@ class Sa11y
             $readabilityRoot = (string) $addon->getConfig('readability_root', 'body');
             if ($readabilityRoot !== '' && $readabilityRoot !== 'body') {
                 $options[] = 'readabilityRoot: "' . rex_escape($readabilityRoot) . '"';
+            }
+            $readabilityIgnore = (string) $addon->getConfig('readability_ignore', '');
+            if ($readabilityIgnore !== '') {
+                $options[] = 'readabilityIgnore: "' . rex_escape($readabilityIgnore) . '"';
             }
         }
 
@@ -142,20 +153,43 @@ class Sa11y
             $options[] = 'detectSPArouting: true';
         }
 
-        // Links to flag
-        $linksToFlag = (string) $addon->getConfig('links_to_flag', '');
-        if ($linksToFlag !== '') {
-            $options[] = 'linksToFlag: "' . rex_escape($linksToFlag) . '"';
-        }
-
         // About Content
         $aboutContent = (string) $addon->getConfig('about_content', '');
         if ($aboutContent !== '') {
             $options[] = "aboutContent: '" . str_replace("'", "\\'", $aboutContent) . "'";
         }
 
-        if ($options === []) {
-            return '';
+        // Language of Parts Plugin (Sa11y 5.0 - experimentell)
+        $langOfPartsPlugin = (int) $addon->getConfig('lang_of_parts_plugin', 0);
+        if ($langOfPartsPlugin === 1) {
+            $options[] = 'langOfPartsPlugin: true';
+            $langOfPartsCache = (int) $addon->getConfig('lang_of_parts_cache', 1);
+            if ($langOfPartsCache !== 1) {
+                $options[] = 'langOfPartsCache: false';
+            }
+        }
+
+        // Seiten/Sektionen komplett ausschließen
+        $doNotRun = (string) $addon->getConfig('do_not_run', '');
+        if ($doNotRun !== '') {
+            $options[] = 'doNotRun: "' . rex_escape($doNotRun) . '"';
+        }
+
+        // Developer Plugin
+        $developerPlugin = (int) $addon->getConfig('developer_plugin', 0);
+        if ($developerPlugin !== 1) {
+            $options[] = 'developerPlugin: false';
+        } else {
+            $developerChecksOnByDefault = (int) $addon->getConfig('developer_checks_on_by_default', 0);
+            if ($developerChecksOnByDefault === 1) {
+                $options[] = 'developerChecksOnByDefault: true';
+            }
+        }
+
+        // Shadow DOM / Web Components
+        $autoDetectShadow = (int) $addon->getConfig('auto_detect_shadow_components', 0);
+        if ($autoDetectShadow === 1) {
+            $options[] = 'autoDetectShadowComponents: true';
         }
 
         return implode(",\n    ", $options) . ',';
@@ -169,12 +203,18 @@ class Sa11y
     private static function detectLanguage(string $userLanguage): array
     {
         $supportedLanguages = [
-            'de_de' => ['js' => 'de', 'setup' => 'De'],
-            'en_gb' => ['js' => 'en', 'setup' => 'En'],
-            'es_es' => ['js' => 'es', 'setup' => 'Es'],
-            'pt_br' => ['js' => 'pt', 'setup' => 'Pt'],
-            'it_it' => ['js' => 'it', 'setup' => 'It'],
-            'sv_se' => ['js' => 'sv', 'setup' => 'Sv'],
+            'de_de' => ['js' => 'de',   'setup' => 'De'],
+            'en_gb' => ['js' => 'en',   'setup' => 'En'],
+            'en_us' => ['js' => 'enUS', 'setup' => 'EnUS'],
+            'es_es' => ['js' => 'es',   'setup' => 'Es'],
+            'fr_fr' => ['js' => 'fr',   'setup' => 'Fr'],
+            'it_it' => ['js' => 'it',   'setup' => 'It'],
+            'nl_nl' => ['js' => 'nl',   'setup' => 'Nl'],
+            'pl_pl' => ['js' => 'pl',   'setup' => 'Pl'],
+            'pt_br' => ['js' => 'ptBR', 'setup' => 'PtBR'],
+            'pt_pt' => ['js' => 'ptPT', 'setup' => 'PtPT'],
+            'sv_se' => ['js' => 'sv',   'setup' => 'Sv'],
+            'uk_ua' => ['js' => 'ua',   'setup' => 'Ua'],
         ];
 
         if (array_key_exists($userLanguage, $supportedLanguages)) {

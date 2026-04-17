@@ -5,7 +5,7 @@ $isAdmin = rex::getUser()?->isAdmin();
 // ==============================
 // Sektion 1: Grundeinstellungen
 // ==============================
-$form = rex_config_form::factory('for_sa11y');
+$form = rex_config_form::factory('for_sa11y', 'basic');
 
 $field = $form->addSelectField('active');
 $field->setLabel($package->i18n('for_sa11y_active_label'));
@@ -33,14 +33,14 @@ if ($isAdmin) {
     // ==============================
     // Sektion 2: Anzeige & Verhalten
     // ==============================
-    $form = rex_config_form::factory('for_sa11y');
+    $form = rex_config_form::factory('for_sa11y', 'display');
 
     $field = $form->addSelectField('panel_position');
     $field->setLabel($package->i18n('for_sa11y_panel_position'));
     $select = $field->getSelect();
     $select->setSize(1);
-    $select->addOption($package->i18n('for_sa11y_panel_position_bottom_right'), 'bottom-right');
-    $select->addOption($package->i18n('for_sa11y_panel_position_bottom_left'), 'bottom-left');
+    $select->addOption($package->i18n('for_sa11y_panel_position_right'), 'right');
+    $select->addOption($package->i18n('for_sa11y_panel_position_left'), 'left');
     $select->addOption($package->i18n('for_sa11y_panel_position_top_right'), 'top-right');
     $select->addOption($package->i18n('for_sa11y_panel_position_top_left'), 'top-left');
 
@@ -49,10 +49,10 @@ if ($isAdmin) {
     $field->setNotice($package->i18n('for_sa11y_delay_check_notice'));
 
     $field = $form->addCheckboxField('show_good_image_button');
-    $field->addOption($package->i18n('for_sa11y_show_good_image_button'), 1);
+    $field->addOption(rex_i18n::rawMsg('for_sa11y_show_good_image_button'), 1);
 
     $field = $form->addCheckboxField('show_good_link_button');
-    $field->addOption($package->i18n('for_sa11y_show_good_link_button'), 1);
+    $field->addOption(rex_i18n::rawMsg('for_sa11y_show_good_link_button'), 1);
 
     $field = $form->addCheckboxField('detect_spa_routing');
     $field->addOption($package->i18n('for_sa11y_detect_spa_routing'), 1);
@@ -67,11 +67,20 @@ if ($isAdmin) {
     // ==============================
     // Sektion 3: Plugins
     // ==============================
-    $form = rex_config_form::factory('for_sa11y');
+    $form = rex_config_form::factory('for_sa11y', 'plugins');
 
     $field = $form->addCheckboxField('contrast_plugin');
     $field->addOption($package->i18n('for_sa11y_contrast_plugin'), 1);
     $field->setNotice($package->i18n('for_sa11y_contrast_plugin_notice'));
+
+    $field = $form->addSelectField('contrast_algorithm');
+    $field->setLabel($package->i18n('for_sa11y_contrast_algorithm'));
+    $select = $field->getSelect();
+    $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_contrast_algorithm_aa'), 'AA');
+    $select->addOption($package->i18n('for_sa11y_contrast_algorithm_aaa'), 'AAA');
+    $select->addOption($package->i18n('for_sa11y_contrast_algorithm_apca'), 'APCA');
+    $field->setNotice($package->i18n('for_sa11y_contrast_algorithm_notice'));
 
     $field = $form->addCheckboxField('form_labels_plugin');
     $field->addOption($package->i18n('for_sa11y_form_labels_plugin'), 1);
@@ -85,9 +94,21 @@ if ($isAdmin) {
     $field->setLabel($package->i18n('for_sa11y_readability_root'));
     $field->setNotice($package->i18n('for_sa11y_readability_root_notice'));
 
+    $field = $form->addInputField('text', 'readability_ignore', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_readability_ignore'));
+    $field->setNotice($package->i18n('for_sa11y_readability_ignore_notice'));
+
     $field = $form->addCheckboxField('export_results_plugin');
     $field->addOption($package->i18n('for_sa11y_export_results_plugin'), 1);
     $field->setNotice($package->i18n('for_sa11y_export_results_plugin_notice'));
+
+    $field = $form->addCheckboxField('lang_of_parts_plugin');
+    $field->addOption($package->i18n('for_sa11y_lang_of_parts_plugin'), 1);
+    $field->setNotice($package->i18n('for_sa11y_lang_of_parts_plugin_notice'));
+
+    $field = $form->addCheckboxField('lang_of_parts_cache');
+    $field->addOption($package->i18n('for_sa11y_lang_of_parts_cache'), 1);
+    $field->setNotice($package->i18n('for_sa11y_lang_of_parts_cache_notice'));
 
     $fragment = new rex_fragment();
     $fragment->setVar('class', 'edit', false);
@@ -98,11 +119,7 @@ if ($isAdmin) {
     // ==============================
     // Sektion 4: Links & Inhalte
     // ==============================
-    $form = rex_config_form::factory('for_sa11y');
-
-    $field = $form->addInputField('text', 'links_to_flag', null, ['class' => 'form-control']);
-    $field->setLabel($package->i18n('for_sa11y_links_to_flag'));
-    $field->setNotice($package->i18n('for_sa11y_links_to_flag_notice'));
+    $form = rex_config_form::factory('for_sa11y', 'links');
 
     $field = $form->addTextAreaField('about_content', null, ['class' => 'form-control', 'rows' => 3]);
     $field->setLabel($package->i18n('for_sa11y_about_content'));
@@ -115,9 +132,36 @@ if ($isAdmin) {
     echo $fragment->parse('core/page/section.php');
 
     // ==============================
+    // Sektion 4b: Erweiterte Einstellungen
+    // ==============================
+    $form = rex_config_form::factory('for_sa11y', 'advanced');
+
+    $field = $form->addInputField('text', 'do_not_run', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_do_not_run'));
+    $field->setNotice($package->i18n('for_sa11y_do_not_run_notice'));
+
+    $field = $form->addCheckboxField('developer_plugin');
+    $field->addOption($package->i18n('for_sa11y_developer_plugin'), 1);
+    $field->setNotice($package->i18n('for_sa11y_developer_plugin_notice'));
+
+    $field = $form->addCheckboxField('developer_checks_on_by_default');
+    $field->addOption($package->i18n('for_sa11y_developer_checks_on_by_default'), 1);
+    $field->setNotice($package->i18n('for_sa11y_developer_checks_on_by_default_notice'));
+
+    $field = $form->addCheckboxField('auto_detect_shadow_components');
+    $field->addOption($package->i18n('for_sa11y_auto_detect_shadow_components'), 1);
+    $field->setNotice($package->i18n('for_sa11y_auto_detect_shadow_components_notice'));
+
+    $fragment = new rex_fragment();
+    $fragment->setVar('class', 'edit', false);
+    $fragment->setVar('title', $package->i18n('for_sa11y_section_extended'), false);
+    $fragment->setVar('body', $form->get(), false);
+    echo $fragment->parse('core/page/section.php');
+
+    // ==============================
     // Sektion 5: Erweiterte JS-Einstellungen (Custom Settings)
     // ==============================
-    $form = rex_config_form::factory('for_sa11y');
+    $form = rex_config_form::factory('for_sa11y', 'custom');
 
     $field = $form->addTextAreaField('custom_settings', null, ['class' => 'form-control rex-code', 'rows' => 6]);
     $field->setLabel($package->i18n('for_sa11y_custom_settings'));
@@ -176,6 +220,26 @@ delayCheck: 1000,</code></pre>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#sa11y-examples-accordion" href="#example-ignore-by-test">
+                        <i class="rex-icon fa-code"></i> ' . $package->i18n('custom_settings_example_ignore_by_test') . '
+                    </a>
+                </h4>
+            </div>
+            <div id="example-ignore-by-test" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <p>' . $package->i18n('custom_settings_example_ignore_by_test_desc') . '</p>
+                    <pre><code>ignoreByTest: {
+  QA_FAKE_HEADING: \'p.ignore strong\',
+  IMAGE_ALT_TOO_LONG: \'.hero-image\',
+},</code></pre>
+                </div>
+            </div>
+        </div>';
+
+    $accordion .= '
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#sa11y-examples-accordion" href="#example-custom-checks">
                         <i class="rex-icon fa-code"></i> ' . $package->i18n('custom_settings_example_custom_checks') . '
                     </a>
@@ -224,6 +288,128 @@ delayCheck: 1000,</code></pre>
     dismissAll: true,
   }
 },</code></pre>
+                </div>
+            </div>
+        </div>';
+
+    $accordion .= '
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#sa11y-examples-accordion" href="#example-ignore-selectors">
+                        <i class="rex-icon fa-filter"></i> ' . $package->i18n('custom_settings_example_ignore_selectors') . '
+                    </a>
+                </h4>
+            </div>
+            <div id="example-ignore-selectors" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <p>' . $package->i18n('custom_settings_example_ignore_selectors_desc') . '</p>
+                    <pre><code>// Überschriften ausschließen (z.B. Bootstrap-Akkordeons mit aria-expanded)
+headerIgnore: ".accordion-header, .widget-title",
+
+// Bilder ausschließen
+imageIgnore: ".icon, .logo, [aria-hidden=\'true\']",
+
+// Links ausschließen
+linkIgnore: ".sa11y-ignore, .breadcrumb a",
+
+// Kontrast-Ausnahmen (z.B. deaktivierte Buttons, Platzhaltertext)
+contrastIgnore: ".btn-disabled, ::placeholder",
+
+// Absätze bei Fake-Überschriften-Check ignorieren
+paragraphIgnore: "table p, .meta-info p",</code></pre>
+                </div>
+            </div>
+        </div>';
+
+    $accordion .= '
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#sa11y-examples-accordion" href="#example-alt-placeholder">
+                        <i class="rex-icon fa-image"></i> ' . $package->i18n('custom_settings_example_alt_placeholder') . '
+                    </a>
+                </h4>
+            </div>
+            <div id="example-alt-placeholder" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <p>' . $package->i18n('custom_settings_example_alt_placeholder_desc') . '</p>
+                    <pre><code>// CMS-typische Platzhalter im Alt-Text erkennen und als Fehler markieren
+altPlaceholder: [
+  "bild",
+  "foto",
+  "image",
+  "img",
+  "photo",
+  "picture",
+  "DSC",
+  "_DSC",
+  "thumbnail",
+  "screenshot",
+],</code></pre>
+                    <p><small>' . $package->i18n('custom_settings_example_alt_placeholder_note') . '</small></p>
+                </div>
+            </div>
+        </div>';
+
+    $accordion .= '
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#sa11y-examples-accordion" href="#example-heading-level">
+                        <i class="rex-icon fa-header"></i> ' . $package->i18n('custom_settings_example_heading_level') . '
+                    </a>
+                </h4>
+            </div>
+            <div id="example-heading-level" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <p>' . $package->i18n('custom_settings_example_heading_level_desc') . '</p>
+                    <pre><code>// Wenn der Seiteninhalt mit H2 beginnt (H1 ist im Template)
+initialHeadingLevel: [2],
+
+// Wenn mehrere Startebenen erlaubt sind
+initialHeadingLevel: [1, 2],</code></pre>
+                    <p><small>' . $package->i18n('custom_settings_example_heading_level_note') . '</small></p>
+                </div>
+            </div>
+        </div>';
+
+    $accordion .= '
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#sa11y-examples-accordion" href="#example-shadow-dom">
+                        <i class="rex-icon fa-puzzle-piece"></i> ' . $package->i18n('custom_settings_example_shadow_dom') . '
+                    </a>
+                </h4>
+            </div>
+            <div id="example-shadow-dom" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <p>' . $package->i18n('custom_settings_example_shadow_dom_desc') . '</p>
+                    <pre><code>// Automatische Erkennung (empfohlen, leicht langsamer)
+autoDetectShadowComponents: true,
+
+// Oder gezielt bestimmte Komponenten angeben (schneller)
+shadowComponents: "my-card, rex-media-gallery, custom-nav",</code></pre>
+                </div>
+            </div>
+        </div>';
+
+    $accordion .= '
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#sa11y-examples-accordion" href="#example-fixed-nav">
+                        <i class="rex-icon fa-arrows-v"></i> ' . $package->i18n('custom_settings_example_fixed_nav') . '
+                    </a>
+                </h4>
+            </div>
+            <div id="example-fixed-nav" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <p>' . $package->i18n('custom_settings_example_fixed_nav_desc') . '</p>
+                    <pre><code>// Sticky Header / fixierte Navigation angeben – Tooltips werden
+// unterhalb angezeigt, um nicht verdeckt zu werden
+fixedRoots: "header.sticky, #fixed-nav, .topbar",</code></pre>
                 </div>
             </div>
         </div>';

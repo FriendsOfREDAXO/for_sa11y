@@ -18,8 +18,8 @@ for_sa11y_section_advanced = Advanced Settings
 
 # Panel & Display
 for_sa11y_panel_position = Panel position
-for_sa11y_panel_position_bottom_right = Bottom right
-for_sa11y_panel_position_bottom_left = Bottom left
+for_sa11y_panel_position_right = Right
+for_sa11y_panel_position_left = Left
 for_sa11y_panel_position_top_right = Top right
 for_sa11y_panel_position_top_left = Top left
 
@@ -36,6 +36,12 @@ for_sa11y_detect_spa_routing_notice = Automatically detects URL changes and re-c
 for_sa11y_contrast_plugin = Contrast plugin
 for_sa11y_contrast_plugin_notice = Enables advanced contrast checking for text and background colors.
 
+for_sa11y_contrast_algorithm = Contrast algorithm
+for_sa11y_contrast_algorithm_aa = WCAG 2 AA (default)
+for_sa11y_contrast_algorithm_aaa = WCAG 2 AAA (stricter)
+for_sa11y_contrast_algorithm_apca = APCA (experimental, WCAG 3 candidate)
+for_sa11y_contrast_algorithm_notice = AA is the WCAG 2.1 standard. AAA is stricter. APCA is the new algorithm for WCAG 3 (still in beta).
+
 for_sa11y_form_labels_plugin = Form labels plugin
 for_sa11y_form_labels_plugin_notice = Enables checking of form labels and ARIA attributes.
 
@@ -45,15 +51,36 @@ for_sa11y_readability_plugin_notice = Checks readability based on the Flesch Rea
 for_sa11y_readability_root = Readability selector
 for_sa11y_readability_root_notice = CSS selector for the area to check for readability.
 
+for_sa11y_readability_ignore = Excluded selectors (readability)
+for_sa11y_readability_ignore_notice = CSS selectors for areas to exclude from the readability check. Separate multiple selectors with commas, e.g. <code>.sidebar, .footer</code>
+
 for_sa11y_export_results_plugin = Export results
 for_sa11y_export_results_plugin_notice = Allows exporting the check results.
 
-# Links & Content
-for_sa11y_links_to_flag = Flag unwanted links
-for_sa11y_links_to_flag_notice = CSS selectors for links to flag as unwanted, e.g. <code>a[href*='dev.'], a[href*='staging.']</code>
+for_sa11y_lang_of_parts_plugin = Language Detection (experimental, Chrome only)
+for_sa11y_lang_of_parts_plugin_notice = Experimental AI-based check to verify that the language of the page content matches the declared page language. Requires Google Chrome and the browser Language Detector API.
 
+for_sa11y_lang_of_parts_cache = Language Detection: cache results
+for_sa11y_lang_of_parts_cache_notice = Caches language detection results for up to 200 URLs and only triggers a fresh analysis if content changes are detected. Recommended for better performance.
+
+# Links & Content
 for_sa11y_about_content = Custom info text
 for_sa11y_about_content_notice = HTML text for the "About" section of the Sa11y panel. Leave empty for default text.
+
+# Extended Settings
+for_sa11y_section_extended = Extended Settings
+
+for_sa11y_do_not_run = Do not run (selector)
+for_sa11y_do_not_run_notice = CSS selector: if this element is found on the page, Sa11y will not start. Useful for certain page types like search results or error pages, e.g. <code>.no-sa11y, #search-results</code>
+
+for_sa11y_developer_plugin = Enable developer plugin
+for_sa11y_developer_plugin_notice = Additional checks for developers: ARIA IDs, conflicts, technical accessibility errors.
+
+for_sa11y_developer_checks_on_by_default = Developer checks on by default
+for_sa11y_developer_checks_on_by_default_notice = Activates developer checks automatically without manually enabling them in the panel. Only effective when the developer plugin is enabled.
+
+for_sa11y_auto_detect_shadow_components = Auto-detect Shadow DOM components
+for_sa11y_auto_detect_shadow_components_notice = Automatically scans the page for Web Components / Shadow DOM elements and checks their content for accessibility. Slightly slower than specifying components manually.
 
 for_sa11y_custom_settings_notice = JavaScript options in <code>key: value,</code> format – only for advanced Sa11y options not configurable above.
 
@@ -108,10 +135,6 @@ custom_settings_readability_note = The check analyzes sentence length and word c
 custom_settings_example_spa = Single Page Applications (SPA)
 custom_settings_example_spa_desc = Automatically detects URL changes and re-checks the page. Useful for JavaScript frameworks like React, Vue or Angular.
 
-custom_settings_example_links = Flag unwanted links
-custom_settings_example_links_desc = Warns about links to development or staging environments that shouldn't be on the live site.
-custom_settings_links_note = Use CSS selectors with attribute matches. Separate multiple selectors with commas.
-
 custom_settings_example_apca = APCA Contrast Algorithm
 custom_settings_example_apca_desc = Uses the Advanced Perceptual Contrast Algorithm (APCA), the candidate method for WCAG 3.
 custom_settings_apca_note = <strong>Note:</strong> APCA is still in beta and should not be used for WCAG 2 conformance.
@@ -119,20 +142,22 @@ custom_settings_apca_note = <strong>Note:</strong> APCA is still in beta and sho
 custom_settings_example_checks_config = Customize individual checks
 custom_settings_example_checks_config_desc = Disable specific checks or adjust their behavior, severity, and messages.
 
-custom_settings_example_readability = Readability Check
-custom_settings_example_readability_desc = Configures the readability check based on the Flesch Reading Ease index.
-custom_settings_readability_note = The check analyzes sentence length and word complexity. Adjust <code>readabilityRoot</code> to your main content area.
+custom_settings_example_ignore_by_test = Exclude elements by test (ignoreByTest)
+custom_settings_example_ignore_by_test_desc = Programmatically ignore specific elements for certain test keys, without silencing all other alerts for that element.
 
-custom_settings_example_spa = Single Page Applications (SPA)
-custom_settings_example_spa_desc = Automatically detects URL changes and re-checks the page. Useful for JavaScript frameworks like React, Vue or Angular.
+custom_settings_example_ignore_selectors = Ignore selectors
+custom_settings_example_ignore_selectors_desc = Exclude specific elements from individual checks – for headings, images, links, contrast and paragraphs.
 
-custom_settings_example_links = Flag unwanted links
-custom_settings_example_links_desc = Warns about links to development or staging environments that shouldn't be on the live site.
-custom_settings_links_note = Use CSS selectors with attribute matches. Separate multiple selectors with commas.
+custom_settings_example_alt_placeholder = Detect alt text placeholders
+custom_settings_example_alt_placeholder_desc = Define terms that indicate an automatically generated or meaningless alt text. Sa11y will flag these as errors.
+custom_settings_example_alt_placeholder_note = Case-insensitive. Partial matches work too (e.g. "DSC" matches "DSC04512.jpg").
 
-custom_settings_example_apca = APCA Contrast Algorithm
-custom_settings_example_apca_desc = Uses the Advanced Perceptual Contrast Algorithm (APCA), the candidate method for WCAG 3.
-custom_settings_apca_note = <strong>Note:</strong> APCA is still in beta and should not be used for WCAG 2 conformance.
+custom_settings_example_heading_level = Configure initial heading level
+custom_settings_example_heading_level_desc = In REDAXO, content often starts with an H2 (because H1 is in the template). This option configures Sa11y accordingly.
+custom_settings_example_heading_level_note = Without this setting, Sa11y will report an error if the first heading in the content area is not an H1.
 
-custom_settings_example_checks_config = Customize individual checks
-custom_settings_example_checks_config_desc = Disable specific checks or adjust their behavior, severity, and messages.
+custom_settings_example_shadow_dom = Web Components / Shadow DOM
+custom_settings_example_shadow_dom_desc = Sa11y can check Web Components and Shadow DOM elements. Either automatically or by specifying component selectors.
+
+custom_settings_example_fixed_nav = Fixed header / sticky navigation
+custom_settings_example_fixed_nav_desc = If the page has a fixed navigation bar, tooltips can disappear behind it. With <code>fixedRoots</code>, Sa11y adjusts its tooltip placement accordingly.
