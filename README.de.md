@@ -107,6 +107,40 @@ fixedRoots: '.sticky-header, #cookie-bar',
 
 ---
 
+## Link-Checker (opt-in)
+
+Das AddOn enthält einen optionalen **Live-Link-Checker**, der vollständig im Browser läuft – kein Server-seitiges Crawling erforderlich.
+
+### Funktionsweise
+
+Nach der Aktivierung läuft der Link-Checker im Hintergrund via `requestIdleCallback` kurz nach dem Seitenaufruf.
+Defekte Links werden direkt **im Sa11y-Fehlerpanel** gemeldet und nutzen dasselbe Annotations-System wie alle anderen Prüfungen.
+Jeder defekte Link erhält einen roten Fehler-Annotations-Button; ein Klick öffnet einen Tooltip mit einer verständlichen Erklärung inkl. HTTP-Statuscode:
+
+- **HTTP 404** – Link nicht gefunden
+- **HTTP 5xx** – Serverfehler
+- **Timeout** – Keine Antwort innerhalb von 8 Sekunden
+- **Netzwerkfehler** – Server nicht erreichbar (DNS-Fehler, Verbindung abgewiesen)
+
+### Konfigurationsoptionen
+
+| Einstellung | Beschreibung |
+|---|---|
+| **Link-Checker aktivieren** | Feature ein-/ausschalten |
+| **Externe Links prüfen** | Auch Cross-Origin-URLs prüfen (erkennt nicht erreichbare Server; Statuscode nicht lesbar wegen CORS) |
+| **Ignorier-Selektoren** | Kommagetrennte CSS-Selektoren, die vom Check ausgeschlossen werden (z. B. `nav a, .footer a`) |
+
+### Technische Details
+
+- **Nicht-blockierend** – nutzt `requestIdleCallback` (Fallback: `setTimeout` 6 s), die Seiteninteraktivität wird nie blockiert
+- **HEAD-Request zuerst**, GET-Fallback für Server, die HEAD ablehnen (HTTP 405)
+- **Session-Cache** – Ergebnisse werden für 5 Minuten im `sessionStorage` gespeichert; bei SPA-Navigation werden bereits geprüfte Links nicht erneut angefragt
+- **Parallelität** – maximal 3 gleichzeitige Requests
+- **Externe Links** – werden im `no-cors`-Modus geprüft: eine opake Antwort bedeutet, der Server ist erreichbar; ein `TypeError` bedeutet, er ist nicht erreichbar (Statuscode nicht lesbar wegen CORS)
+- **Sa11y-Integration** – nutzt die native `customChecks: "listen"`-API (Zwei-Pass: Sa11y rendert sofort, defekte Links werden nach den Netzwerk-Checks nachgereicht)
+
+---
+
 ## Upgrade-Hinweise (5.0)
 
 ### Breaking Changes von Sa11y 4.x → 5.0

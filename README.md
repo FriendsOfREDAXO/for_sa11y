@@ -107,6 +107,40 @@ fixedRoots: '.sticky-header, #cookie-bar',
 
 ---
 
+## Link Checker (opt-in)
+
+The AddOn includes an optional **live link checker** that runs entirely in the browser—no server-side crawling required.
+
+### How it works
+
+Once enabled, the link checker runs in the background via `requestIdleCallback` shortly after page load.
+Broken links are reported directly **inside the Sa11y error panel** using the same annotation system as all other checks.
+Each broken link shows a red error annotation button; clicking it opens a tooltip that displays a human-readable explanation including the HTTP status code:
+
+- **HTTP 404** – Link not found
+- **HTTP 5xx** – Server error
+- **Timeout** – No response within 8 seconds
+- **Network error** – Server unreachable (DNS failure, connection refused)
+
+### Configuration options
+
+| Setting | Description |
+|---|---|
+| **Enable Link Checker** | Turns the feature on/off |
+| **Check external links** | Also check cross-origin URLs (detects unreachable servers; cannot read HTTP status due to CORS) |
+| **Ignore selectors** | Comma-separated CSS selectors to exclude from checking (e.g. `nav a, .footer a`) |
+
+### Technical details
+
+- **Non-blocking** – uses `requestIdleCallback` (fallback: `setTimeout` 6 s) so page interactivity is never blocked
+- **HEAD request first**, GET fallback for servers that reject HEAD (HTTP 405)
+- **Session cache** – results are stored in `sessionStorage` for 5 minutes; repeated navigation on a SPA skips already-checked links
+- **Concurrency** – 3 parallel requests at most
+- **External links** – checked via `no-cors` mode: an opaque response means the server is up; a `TypeError` means it’s unreachable (status code is not readable due to CORS)
+- **Sa11y integration** – uses the native `customChecks: "listen"` API (two-pass: Sa11y renders immediately, broken links are injected after network checks complete)
+
+---
+
 ## Upgrade Notes (5.0)
 
 ### Breaking changes from Sa11y 4.x → 5.0
