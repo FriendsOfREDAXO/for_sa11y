@@ -200,7 +200,7 @@ class Sa11y
         // About Content
         $aboutContent = (string) $addon->getConfig('about_content', '');
         if ($aboutContent !== '') {
-            $options[] = "aboutContent: '" . str_replace("'", "\\'", $aboutContent) . "'";
+            $options[] = 'aboutContent: ' . json_encode($aboutContent);
         }
 
         // Language of Parts Plugin (Sa11y 5.0 - experimentell)
@@ -236,6 +236,9 @@ class Sa11y
             $options[] = 'autoDetectShadowComponents: true';
         }
 
+        if (empty($options)) {
+            return '';
+        }
         return implode(",\n    ", $options) . ',';
     }
 

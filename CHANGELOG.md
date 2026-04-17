@@ -42,7 +42,7 @@
 - Prüft alle Links der Seite live per HTTP HEAD-Request im Browser-Hintergrund
 - Defekte Links erscheinen **nativ im Sa11y-Fehlerpanel** (kein separates Badge-UI)
 - Integration via Sa11y 5 `customChecks: "listen"`-API: Zwei-Pass-Ansatz – Sa11y-Panel erscheint sofort, defekte Links folgen nach den Netzwerk-Checks
-- Nicht-blockierend: läuft via `requestIdleCallback` (Fallback: `setTimeout 6s`)
+- Nicht-blockierend: nutzt die native `customChecks: "listen"`-API von Sa11y; Sa11y rendert sofort, defekte Links werden nach den Netzwerk-Checks nachgereicht
 - Ergebnisse werden 5 Minuten im `sessionStorage` gecacht (kein Repeat bei SPA-Navigation)
 - Konfigurierbar: externe Links ein/aus, Ignore-Selektoren
 - HEAD 405-Fallback auf GET für Server, die HEAD nicht unterstützen

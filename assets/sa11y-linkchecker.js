@@ -189,18 +189,40 @@
 
                 /* HEAD blocked (405) → retry with GET if same-origin */
                 if (res.status === 405 && !ext) {
+                    var getController = null;
+                    var getTimerId = null;
+                    var getSignal;
+
+                    if (AbortSignal.timeout) {
+                        getSignal = AbortSignal.timeout(TIMEOUT_MS);
+                    } else {
+                        getController = new AbortController();
+                        getSignal = getController.signal;
+                        getTimerId = setTimeout(function () {
+                            getController.abort();
+                        }, TIMEOUT_MS);
+                    }
+
                     return fetch(href, {
                         method: 'GET',
-                        signal: AbortSignal.timeout ? AbortSignal.timeout(TIMEOUT_MS) : controller.signal,
+                        signal: getSignal,
                         cache: 'no-store',
                         redirect: 'follow',
                     }).then(function (r) {
+                        if (getTimerId) {
+                            clearTimeout(getTimerId);
+                        }
                         cacheSet(href, r.status);
                         if (isBroken(r.status)) {
                             anchor.setAttribute('data-sa11y-broken', String(r.status));
                         } else {
                             anchor.removeAttribute('data-sa11y-broken');
                         }
+                    }).catch(function (err) {
+                        if (getTimerId) {
+                            clearTimeout(getTimerId);
+                        }
+                        throw err;
                     });
                 }
 
@@ -245,28 +267,65 @@
     /* ------------------------------------------------------------------ */
     /* Build human-readable message for a given broken status code         */
     /* ------------------------------------------------------------------ */
+    /* Build human-readable message for a given broken status code         */
+    /* ------------------------------------------------------------------ */
+    function getSa11yLanguage() {
+        var instLang = window.sa11yInstance && typeof window.sa11yInstance.lang === 'string'
+            ? window.sa11yInstance.lang
+            : '';
+        var docLang = document.documentElement && typeof document.documentElement.lang === 'string'
+            ? document.documentElement.lang
+            : '';
+        var lang = (instLang || docLang || 'en').toLowerCase();
+        if (lang.indexOf('de') === 0) {
+            return 'de';
+        }
+        return 'en';
+    }
+
+    function getBrokenLinkMessages() {
+        var language = getSa11yLanguage();
+        var messages = {
+            en: {
+                timeout: 'Link check: Timeout \u2013 the link did not respond within 8 seconds.',
+                unreachable: 'Link check: Server unreachable (DNS error or connection refused).',
+                notFound: 'Link check: Link not found (HTTP ',
+                serverError: 'Link check: Server error (HTTP ',
+                unknown: 'Link check: This link appears to be unreachable.',
+            },
+            de: {
+                timeout: 'Link-Check: Timeout \u2013 der Link hat nicht innerhalb von 8 Sekunden geantwortet.',
+                unreachable: 'Link-Check: Server nicht erreichbar (DNS-Fehler oder Verbindung abgewiesen).',
+                notFound: 'Link-Check: Link nicht gefunden (HTTP ',
+                serverError: 'Link-Check: Serverfehler (HTTP ',
+                unknown: 'Link-Check: Dieser Link scheint nicht erreichbar zu sein.',
+            },
+        };
+        return messages[language] || messages.en;
+    }
+
     function brokenLinkMessage(status) {
         /* Use Sa11y's native badge+link-icon CSS classes (available in tooltip shadow DOM) */
         var badge = '<strong class="badge error-badge">'
             + '<span class="link-icon"></span>'
             + '<span class="visually-hidden">Link</span>'
             + '</strong> ';
+        var m = getBrokenLinkMessages();
 
         if (status === -1) {
-            return badge + 'Link-Check: Timeout – der Link hat nicht innerhalb von 8 Sekunden geantwortet.';
+            return badge + m.timeout;
         }
         if (status === -2) {
-            return badge + 'Link-Check: Server nicht erreichbar (DNS-Fehler oder Verbindung abgewiesen).';
+            return badge + m.unreachable;
         }
         if (status >= 400 && status < 500) {
-            return badge + 'Link-Check: Link nicht gefunden (HTTP ' + status + ').';
+            return badge + m.notFound + status + ')';
         }
         if (status >= 500) {
-            return badge + 'Link-Check: Serverfehler (HTTP ' + status + ').';
+            return badge + m.serverError + status + ')';
         }
-        return badge + 'Link-Check: Dieser Link scheint nicht erreichbar zu sein.';
+        return badge + m.unknown;
     }
-
     /* ------------------------------------------------------------------ */
     /* Push broken link results into Sa11y's live results array            */
     /* ------------------------------------------------------------------ */

@@ -113,7 +113,7 @@ The AddOn includes an optional **live link checker** that runs entirely in the b
 
 ### How it works
 
-Once enabled, the link checker runs in the background via `requestIdleCallback` shortly after page load.
+Once enabled, the link checker runs asynchronously in the background using Sa11y's native `customChecks: "listen"` API.
 Broken links are reported directly **inside the Sa11y error panel** using the same annotation system as all other checks.
 Each broken link shows a red error annotation button; clicking it opens a tooltip that displays a human-readable explanation including the HTTP status code:
 
@@ -132,12 +132,11 @@ Each broken link shows a red error annotation button; clicking it opens a toolti
 
 ### Technical details
 
-- **Non-blocking** – uses `requestIdleCallback` (fallback: `setTimeout` 6 s) so page interactivity is never blocked
+- **Non-blocking** – uses Sa11y's native `customChecks: "listen"` API; Sa11y renders immediately, broken links are injected after network checks complete
 - **HEAD request first**, GET fallback for servers that reject HEAD (HTTP 405)
 - **Session cache** – results are stored in `sessionStorage` for 5 minutes; repeated navigation on a SPA skips already-checked links
 - **Concurrency** – 3 parallel requests at most
-- **External links** – checked via `no-cors` mode: an opaque response means the server is up; a `TypeError` means it’s unreachable (status code is not readable due to CORS)
-- **Sa11y integration** – uses the native `customChecks: "listen"` API (two-pass: Sa11y renders immediately, broken links are injected after network checks complete)
+- **External links** – checked via `no-cors` mode: an opaque response means the server is up; a `TypeError` means it's unreachable (status code is not readable due to CORS)
 
 ---
 

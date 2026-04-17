@@ -113,7 +113,7 @@ Das AddOn enthält einen optionalen **Live-Link-Checker**, der vollständig im B
 
 ### Funktionsweise
 
-Nach der Aktivierung läuft der Link-Checker im Hintergrund via `requestIdleCallback` kurz nach dem Seitenaufruf.
+Nach der Aktivierung läuft der Link-Checker asynchron im Hintergrund und nutzt die native `customChecks: "listen"`-API von Sa11y.
 Defekte Links werden direkt **im Sa11y-Fehlerpanel** gemeldet und nutzen dasselbe Annotations-System wie alle anderen Prüfungen.
 Jeder defekte Link erhält einen roten Fehler-Annotations-Button; ein Klick öffnet einen Tooltip mit einer verständlichen Erklärung inkl. HTTP-Statuscode:
 
@@ -132,12 +132,11 @@ Jeder defekte Link erhält einen roten Fehler-Annotations-Button; ein Klick öff
 
 ### Technische Details
 
-- **Nicht-blockierend** – nutzt `requestIdleCallback` (Fallback: `setTimeout` 6 s), die Seiteninteraktivität wird nie blockiert
-- **HEAD-Request zuerst**, GET-Fallback für Server, die HEAD ablehnen (HTTP 405)
+- **Nicht-blockierend** – nutzt die native `customChecks: "listen"`-API von Sa11y; Sa11y rendert sofort, defekte Links werden nach den Netzwerk-Checks nachgereicht
+- **HEAD-Request zuerst**, GET-Fallback für Server, die HEAD ablehnen (HTTP 405)
 - **Session-Cache** – Ergebnisse werden für 5 Minuten im `sessionStorage` gespeichert; bei SPA-Navigation werden bereits geprüfte Links nicht erneut angefragt
 - **Parallelität** – maximal 3 gleichzeitige Requests
 - **Externe Links** – werden im `no-cors`-Modus geprüft: eine opake Antwort bedeutet, der Server ist erreichbar; ein `TypeError` bedeutet, er ist nicht erreichbar (Statuscode nicht lesbar wegen CORS)
-- **Sa11y-Integration** – nutzt die native `customChecks: "listen"`-API (Zwei-Pass: Sa11y rendert sofort, defekte Links werden nach den Netzwerk-Checks nachgereicht)
 
 ---
 
