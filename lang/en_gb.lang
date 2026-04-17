@@ -6,9 +6,56 @@ for_sa11y_active_false = no
 for_sa11y_active_true = yes
 for_sa11y_root = Root selector
 for_sa11y_ignore = Ignore selectors
-for_sa11y_custom_settings = Custom Settings
+for_sa11y_custom_settings = Custom Settings (advanced)
 perm_general_for_sa11y[sa11yCheck] =  FOR Sa11y: Allowed to check
 perm_general_for_sa11y[settings] =  FOR Sa11y: Settings
+
+# Basic settings
+for_sa11y_section_basic = Basic Settings
+for_sa11y_section_plugins = Plugins
+for_sa11y_section_display = Display & Behavior
+for_sa11y_section_advanced = Advanced Settings
+
+# Panel & Display
+for_sa11y_panel_position = Panel position
+for_sa11y_panel_position_bottom_right = Bottom right
+for_sa11y_panel_position_bottom_left = Bottom left
+for_sa11y_panel_position_top_right = Top right
+for_sa11y_panel_position_top_left = Top left
+
+for_sa11y_delay_check = Delay check (ms)
+for_sa11y_delay_check_notice = Delay in milliseconds before starting the check. Useful for dynamically loaded content. (0 = no delay)
+
+for_sa11y_show_good_image_button = Show "Good Images" button
+for_sa11y_show_good_link_button = Show "Good Links" button
+
+for_sa11y_detect_spa_routing = Detect SPA routing
+for_sa11y_detect_spa_routing_notice = Automatically detects URL changes and re-checks the page. For JavaScript frameworks (React, Vue, Angular).
+
+# Plugins
+for_sa11y_contrast_plugin = Contrast plugin
+for_sa11y_contrast_plugin_notice = Enables advanced contrast checking for text and background colors.
+
+for_sa11y_form_labels_plugin = Form labels plugin
+for_sa11y_form_labels_plugin_notice = Enables checking of form labels and ARIA attributes.
+
+for_sa11y_readability_plugin = Readability plugin
+for_sa11y_readability_plugin_notice = Checks readability based on the Flesch Reading Ease index.
+
+for_sa11y_readability_root = Readability selector
+for_sa11y_readability_root_notice = CSS selector for the area to check for readability.
+
+for_sa11y_export_results_plugin = Export results
+for_sa11y_export_results_plugin_notice = Allows exporting the check results.
+
+# Links & Content
+for_sa11y_links_to_flag = Flag unwanted links
+for_sa11y_links_to_flag_notice = CSS selectors for links to flag as unwanted, e.g. <code>a[href*='dev.'], a[href*='staging.']</code>
+
+for_sa11y_about_content = Custom info text
+for_sa11y_about_content_notice = HTML text for the "About" section of the Sa11y panel. Leave empty for default text.
+
+for_sa11y_custom_settings_notice = JavaScript options in <code>key: value,</code> format – only for advanced Sa11y options not configurable above.
 
 # Custom Settings Examples
 custom_settings_examples_title = Custom Settings Examples

@@ -19,3 +19,15 @@ default_config:
     root: 'body'
     active: 'true'
     ignore: '.rex-minibar,.consent_manager-wrapper,.sa11y-ignore'
+    panel_position: 'bottom-right'
+    delay_check: 0
+    contrast_plugin: 0
+    form_labels_plugin: 0
+    readability_plugin: 0
+    readability_root: 'body'
+    export_results_plugin: 1
+    show_good_image_button: 1
+    show_good_link_button: 1
+    detect_spa_routing: 0
+    links_to_flag: ''
+    about_content: ''

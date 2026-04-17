@@ -5,10 +5,57 @@ for_sa11y_active_label = Aktiv
 for_sa11y_active_false = nein
 for_sa11y_active_true = ja
 for_sa11y_root = Prüfen ab Selektor
-for_sa11y_custom_settings = Individuelle Einstellungen
+for_sa11y_custom_settings = Individuelle Einstellungen (erweitert)
 for_sa11y_ignore = Zu ignorierende Selektoren
 perm_general_for_sa11y[sa11yCheck] =  FOR Sa11y: Check erlaubt
 perm_general_for_sa11y[settings] =  FOR Sa11y: Konfiguration
+
+# Basis-Einstellungen
+for_sa11y_section_basic = Grundeinstellungen
+for_sa11y_section_plugins = Plugins
+for_sa11y_section_display = Anzeige & Verhalten
+for_sa11y_section_advanced = Erweiterte Einstellungen
+
+# Panel & Anzeige
+for_sa11y_panel_position = Panel-Position
+for_sa11y_panel_position_bottom_right = Unten rechts
+for_sa11y_panel_position_bottom_left = Unten links
+for_sa11y_panel_position_top_right = Oben rechts
+for_sa11y_panel_position_top_left = Oben links
+
+for_sa11y_delay_check = Prüfung verzögern (ms)
+for_sa11y_delay_check_notice = Verzögerung in Millisekunden vor dem Start der Prüfung. Nützlich bei dynamisch geladenen Inhalten. (0 = keine Verzögerung)
+
+for_sa11y_show_good_image_button = Button "Gute Bilder" anzeigen
+for_sa11y_show_good_link_button = Button "Gute Links" anzeigen
+
+for_sa11y_detect_spa_routing = SPA-Routing erkennen
+for_sa11y_detect_spa_routing_notice = Erkennt URL-Änderungen automatisch und prüft die Seite erneut. Für JavaScript-Frameworks (React, Vue, Angular).
+
+# Plugins
+for_sa11y_contrast_plugin = Kontrast-Plugin
+for_sa11y_contrast_plugin_notice = Aktiviert die erweiterte Kontrast-Prüfung für Text- und Hintergrundfarben.
+
+for_sa11y_form_labels_plugin = Formular-Labels-Plugin
+for_sa11y_form_labels_plugin_notice = Aktiviert die Prüfung von Formular-Labels und ARIA-Attributen.
+
+for_sa11y_readability_plugin = Lesbarkeits-Plugin
+for_sa11y_readability_plugin_notice = Prüft die Lesbarkeit basierend auf dem Flesch-Reading-Ease-Index.
+
+for_sa11y_readability_root = Lesbarkeits-Selektor
+for_sa11y_readability_root_notice = CSS-Selektor für den Bereich, der auf Lesbarkeit geprüft werden soll.
+
+for_sa11y_export_results_plugin = Ergebnisse exportieren
+for_sa11y_export_results_plugin_notice = Ermöglicht den Export der Prüfergebnisse.
+
+# Links & Inhalte
+for_sa11y_links_to_flag = Unerwünschte Links kennzeichnen
+for_sa11y_links_to_flag_notice = CSS-Selektoren für Links, die als unerwünscht gekennzeichnet werden sollen, z.B. <code>a[href*='dev.'], a[href*='staging.']</code>
+
+for_sa11y_about_content = Eigener Info-Text
+for_sa11y_about_content_notice = HTML-Text für den "Über"-Bereich des Sa11y-Panels. Leer lassen für Standardtext.
+
+for_sa11y_custom_settings_notice = JavaScript-Optionen im Format <code>key: value,</code> – nur für erweiterte Sa11y-Optionen, die nicht oben konfigurierbar sind.
 
 # Custom Settings Beispiele
 custom_settings_examples_title = Beispiele für individuelle Einstellungen
