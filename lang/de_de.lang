@@ -5,10 +5,104 @@ for_sa11y_active_label = Aktiv
 for_sa11y_active_false = nein
 for_sa11y_active_true = ja
 for_sa11y_root = Prüfen ab Selektor
-for_sa11y_custom_settings = Individuelle Einstellungen
+for_sa11y_custom_settings = Individuelle Einstellungen (erweitert)
 for_sa11y_ignore = Zu ignorierende Selektoren
 perm_general_for_sa11y[sa11yCheck] =  FOR Sa11y: Check erlaubt
 perm_general_for_sa11y[settings] =  FOR Sa11y: Konfiguration
+
+# Basis-Einstellungen
+for_sa11y_section_basic = Grundeinstellungen
+for_sa11y_section_plugins = Plugins
+for_sa11y_section_display = Anzeige & Verhalten
+for_sa11y_section_advanced = Erweiterte Einstellungen
+
+# Panel & Anzeige
+for_sa11y_panel_position = Panel-Position
+for_sa11y_panel_position_bottom_right = Unten rechts (veraltet)
+for_sa11y_panel_position_bottom_left = Unten links (veraltet)
+for_sa11y_panel_position_right = Rechts
+for_sa11y_panel_position_left = Links
+for_sa11y_panel_position_top_right = Oben rechts
+for_sa11y_panel_position_top_left = Oben links
+
+for_sa11y_delay_check = Prüfung verzögern (ms)
+for_sa11y_delay_check_notice = Verzögerung in Millisekunden vor dem Start der Prüfung. Nützlich bei dynamisch geladenen Inhalten. (0 = keine Verzögerung)
+
+for_sa11y_show_good_image_button = Button "Gute Bilder" anzeigen
+for_sa11y_show_good_link_button = Button "Gute Links" anzeigen
+
+for_sa11y_detect_spa_routing = SPA-Routing erkennen
+for_sa11y_detect_spa_routing_notice = Erkennt URL-Änderungen automatisch und prüft die Seite erneut. Für JavaScript-Frameworks (React, Vue, Angular).
+
+# Plugins
+for_sa11y_contrast_plugin = Kontrast-Plugin
+for_sa11y_contrast_plugin_notice = Aktiviert die erweiterte Kontrast-Prüfung für Text- und Hintergrundfarben.
+
+for_sa11y_contrast_algorithm = Kontrast-Algorithmus
+for_sa11y_contrast_algorithm_aa = WCAG 2 AA (Standard)
+for_sa11y_contrast_algorithm_aaa = WCAG 2 AAA (strenger)
+for_sa11y_contrast_algorithm_apca = APCA (experimentell, WCAG 3 Kandidat)
+for_sa11y_contrast_algorithm_notice = AA ist der WCAG 2.1 Standard. AAA ist strenger. APCA ist der neue Algorithmus für WCAG 3 (noch in Beta).
+
+for_sa11y_form_labels_plugin = Formular-Labels-Plugin
+for_sa11y_form_labels_plugin_notice = Aktiviert die Prüfung von Formular-Labels und ARIA-Attributen.
+
+for_sa11y_readability_plugin = Lesbarkeits-Plugin
+for_sa11y_readability_plugin_notice = Prüft die Lesbarkeit basierend auf dem Flesch-Reading-Ease-Index.
+
+for_sa11y_readability_root = Lesbarkeits-Selektor
+for_sa11y_readability_root_notice = CSS-Selektor für den Bereich, der auf Lesbarkeit geprüft werden soll.
+
+for_sa11y_readability_ignore = Ausgeschlossene Selektoren (Lesbarkeit)
+for_sa11y_readability_ignore_notice = CSS-Selektoren für Bereiche, die von der Lesbarkeits-Prüfung ausgeschlossen werden sollen. Mehrere Selektoren mit Komma trennen, z.B. <code>.sidebar, .footer</code>
+
+for_sa11y_export_results_plugin = Ergebnisse exportieren
+for_sa11y_export_results_plugin_notice = Ermöglicht den Export der Prüfergebnisse.
+
+for_sa11y_lang_of_parts_plugin = Spracherkennung (experimentell, Chrome)
+for_sa11y_lang_of_parts_plugin_notice = Experimentelle KI-basierte Prüfung, ob die Sprache des Inhalts zur deklarierten Seitensprache passt. Erfordert Google Chrome und die Browser-Language-Detector-API.
+
+for_sa11y_lang_of_parts_cache = Spracherkennung: Ergebnisse zwischenspeichern
+for_sa11y_lang_of_parts_cache_notice = Speichert Spracherkennungsergebnisse für bis zu 200 URLs und startet nur bei geänderten Inhalten eine neue Analyse. Empfohlen für bessere Performance.
+
+# Links & Inhalte
+for_sa11y_links_to_flag = Unerwünschte Links kennzeichnen
+for_sa11y_links_to_flag_notice = CSS-Selektoren für Links, die als unerwünscht gekennzeichnet werden sollen, z.B. <code>a[href*='dev.'], a[href*='staging.']</code>
+
+for_sa11y_about_content = Eigener Info-Text
+for_sa11y_about_content_notice = HTML-Text für den "Über"-Bereich des Sa11y-Panels. Leer lassen für Standardtext.
+
+# Erweiterte Einstellungen
+for_sa11y_section_extended = Erweiterte Einstellungen
+
+for_sa11y_do_not_run = Prüfung nicht starten (Selektor)
+for_sa11y_do_not_run_notice = CSS-Selektor: Wenn das Element auf der Seite gefunden wird, startet Sa11y nicht. Nützlich für bestimmte Seitentypen wie Suche oder Fehlerseiten, z.B. <code>.no-sa11y, #search-results</code>
+
+for_sa11y_developer_plugin = Developer-Plugin aktivieren
+for_sa11y_developer_plugin_notice = Zusätzliche Prüfungen für Entwickler: ARIA-IDs, Konflikte, technische Barrierefreiheitsfehler.
+
+for_sa11y_developer_checks_on_by_default = Developer-Prüfungen standardmäßig eingeschaltet
+for_sa11y_developer_checks_on_by_default_notice = Aktiviert die Developer-Prüfungen automatisch ohne manuelles Einschalten im Panel. Nur wirksam wenn das Developer-Plugin aktiviert ist.
+
+for_sa11y_auto_detect_shadow_components = Shadow DOM automatisch erkennen
+for_sa11y_auto_detect_shadow_components_notice = Durchsucht die Seite automatisch nach Web Components / Shadow-DOM-Elementen und prüft deren Inhalte auf Barrierefreiheit. Leicht langsamer als manuelle Angabe.
+
+for_sa11y_exclude_url_params = Sa11y nicht ausführen bei URL-Parametern
+for_sa11y_exclude_url_params_notice = Kommagetrennte Liste von URL-Parametern, bei denen Sa11y nicht gestartet wird. Parameternames prüfen ob vorhanden (z. B. <code>pdf, print</code>), oder <code>key=wert</code> für exakten Wert (z. B. <code>mode=print, export=1</code>).
+
+for_sa11y_new_version_available = for_sa11y {0} ist verfügbar (installiert: {1}).
+for_sa11y_new_version_release_notes = Release Notes ansehen
+for_sa11y_version_up_to_date = for_sa11y {0} ist aktuell. ✅
+
+# Link-Checker
+for_sa11y_link_checker = Link-Checker aktivieren
+for_sa11y_link_checker_notice = Prüft alle Links auf der Seite live per HEAD-Request im Hintergrund. Defekte Links erhalten ein rotes Badge mit dem HTTP-Statuscode. Läuft nicht-blockierend nach dem Seitenaufbau.
+for_sa11y_link_checker_check_external = Externe Links prüfen
+for_sa11y_link_checker_check_external_notice = Prüft auch Links zu anderen Domains. Bei externen Links kann nur erkannt werden, ob der Server <em>komplett</em> nicht erreichbar ist (Netzwerkfehler). CORS verhindert das Lesen von Statuscodes.
+for_sa11y_link_checker_ignore = Ignorierte Selektoren (Link-Checker)
+for_sa11y_link_checker_ignore_notice = CSS-Selektoren, deren Links vom Link-Checker ausgeschlossen werden sollen. Kommagetrennt, z.B. <code>nav a, .footer a, .breadcrumb a</code>
+
+for_sa11y_custom_settings_notice = JavaScript-Optionen im Format <code>key: value,</code> – nur für erweiterte Sa11y-Optionen, die nicht oben konfigurierbar sind.
 
 # Custom Settings Beispiele
 custom_settings_examples_title = Beispiele für individuelle Einstellungen
@@ -61,10 +155,6 @@ custom_settings_readability_note = Die Prüfung analysiert Satzlänge und Wortko
 custom_settings_example_spa = Single Page Applications (SPA)
 custom_settings_example_spa_desc = Erkennt URL-Änderungen automatisch und prüft die Seite erneut. Nützlich für JavaScript-Frameworks wie React, Vue oder Angular.
 
-custom_settings_example_links = Unerwünschte Links kennzeichnen
-custom_settings_example_links_desc = Warnt vor Links zu Entwicklungs- oder Staging-Umgebungen, die nicht auf der Live-Site sein sollten.
-custom_settings_links_note = Verwenden Sie CSS-Selektoren mit Attribut-Matches. Mehrere Selektoren mit Komma trennen.
-
 custom_settings_example_apca = APCA Kontrast-Algorithmus
 custom_settings_example_apca_desc = Nutzt den Advanced Perceptual Contrast Algorithm (APCA), die Kandidaten-Methode für WCAG 3.
 custom_settings_apca_note = <strong>Hinweis:</strong> APCA ist noch in Beta und sollte nicht für WCAG 2 Konformität verwendet werden.
@@ -72,20 +162,22 @@ custom_settings_apca_note = <strong>Hinweis:</strong> APCA ist noch in Beta und 
 custom_settings_example_checks_config = Einzelne Checks anpassen
 custom_settings_example_checks_config_desc = Deaktivieren Sie bestimmte Prüfungen oder passen Sie deren Verhalten, Schweregrad und Meldungen an.
 
-custom_settings_example_readability = Lesbarkeits-Prüfung
-custom_settings_example_readability_desc = Konfiguriert die Lesbarkeits-Prüfung basierend auf dem Flesch-Reading-Ease-Index.
-custom_settings_readability_note = Die Prüfung analysiert Satzlänge und Wortkomplexität. Passen Sie <code>readabilityRoot</code> an den Hauptinhaltsbereich an.
+custom_settings_example_ignore_by_test = Elemente gezielt ausschließen (ignoreByTest)
+custom_settings_example_ignore_by_test_desc = Schließen Sie gezielt einzelne Elemente von bestimmten Prüfungen aus, ohne alle Meldungen für dieses Element zu unterdrücken.
 
-custom_settings_example_spa = Single Page Applications (SPA)
-custom_settings_example_spa_desc = Erkennt URL-Änderungen automatisch und prüft die Seite erneut. Nützlich für JavaScript-Frameworks wie React, Vue oder Angular.
+custom_settings_example_ignore_selectors = Selektoren ignorieren
+custom_settings_example_ignore_selectors_desc = Schließen Sie gezielt bestimmte Elemente von einzelnen Prüfungen aus – für Überschriften, Bilder, Links, Kontrast und Absätze.
 
-custom_settings_example_links = Unerwünschte Links kennzeichnen
-custom_settings_example_links_desc = Warnt vor Links zu Entwicklungs- oder Staging-Umgebungen, die nicht auf der Live-Site sein sollten.
-custom_settings_links_note = Verwenden Sie CSS-Selektoren mit Attribut-Matches. Mehrere Selektoren mit Komma trennen.
+custom_settings_example_alt_placeholder = Alt-Text Platzhalter erkennen
+custom_settings_example_alt_placeholder_desc = Definieren Sie Begriffe, die auf einen automatisch generierten oder nichtssagenden Alt-Text hinweisen. Sa11y markiert diese als Fehler.
+custom_settings_example_alt_placeholder_note = Groß-/Kleinschreibung wird ignoriert. Auch Teilwörter werden erkannt (z.B. "DSC" trifft auf "DSC04512.jpg").
 
-custom_settings_example_apca = APCA Kontrast-Algorithmus
-custom_settings_example_apca_desc = Nutzt den Advanced Perceptual Contrast Algorithm (APCA), die Kandidaten-Methode für WCAG 3.
-custom_settings_apca_note = <strong>Hinweis:</strong> APCA ist noch in Beta und sollte nicht für WCAG 2 Konformität verwendet werden.
+custom_settings_example_heading_level = Überschriften-Startebene konfigurieren
+custom_settings_example_heading_level_desc = In REDAXO beginnt der Inhalt oft mit einer H2 (weil H1 im Template steht). Mit dieser Option wird Sa11y entsprechend konfiguriert.
+custom_settings_example_heading_level_note = Ohne diese Einstellung meldet Sa11y einen Fehler, wenn die erste Überschrift im Inhalt keine H1 ist.
 
-custom_settings_example_checks_config = Einzelne Checks anpassen
-custom_settings_example_checks_config_desc = Deaktivieren Sie bestimmte Prüfungen oder passen Sie deren Verhalten, Schweregrad und Meldungen an.
+custom_settings_example_shadow_dom = Web Components / Shadow DOM
+custom_settings_example_shadow_dom_desc = Sa11y kann Web Components und Shadow-DOM-Elemente prüfen. Entweder automatisch oder durch Angabe der Komponenten-Selektor.
+
+custom_settings_example_fixed_nav = Fixierter Header / Sticky Navigation
+custom_settings_example_fixed_nav_desc = Wenn die Seite eine fixierte Navigation hat, können Tooltips dahinter verschwinden. Mit <code>fixedRoots</code> stellt Sa11y seine Tooltip-Position entsprechend ein.

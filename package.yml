@@ -1,5 +1,5 @@
 package: for_sa11y
-version: '4.4.42'
+version: '5.0.0'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/addon_key
 perm: for_sa11y[]
@@ -16,6 +16,39 @@ page:
         help:  
              { title: 'translate:for_sa11y_help',  icon: rex-icon fa-question-circle, subPath: README.md} 
 default_config:
-    root: 'body'
+    # Allgemein
     active: 'true'
+    root: 'body'
     ignore: '.rex-minibar,.consent_manager-wrapper,.sa11y-ignore'
+
+    # Anzeige & Verhalten
+    panel_position: 'right'
+    delay_check: 0
+    show_good_image_button: 1
+    show_good_link_button: 1
+    detect_spa_routing: 0
+
+    # Plugins
+    contrast_plugin: 1
+    contrast_algorithm: 'AA'
+    form_labels_plugin: 1
+    readability_plugin: 1
+    readability_root: 'body'
+    readability_ignore: ''
+    export_results_plugin: 1
+    lang_of_parts_plugin: 0
+    lang_of_parts_cache: 1
+
+    # Erweiterte Einstellungen
+    do_not_run: ''
+    exclude_url_params: ''
+    link_checker: 0
+    link_checker_check_external: 0
+    link_checker_ignore: 'nav a, .footer a'
+    developer_plugin: 0
+    developer_checks_on_by_default: 0
+    auto_detect_shadow_components: 0
+
+    # Links & Inhalte
+    about_content: ''
+    custom_settings: ''
