@@ -3,12 +3,12 @@ $package = rex_addon::get('for_sa11y');
 $isAdmin = rex::getUser()?->isAdmin();
 
 // ==============================
-// Sa11y Versionscheck (1x täglich)
+// AddOn Versionscheck (1x täglich)
 // ==============================
 $versionCheckTime = (int) $package->getConfig('_version_check_time', 0);
 if (time() - $versionCheckTime > 86400) {
     try {
-        $socket = rex_socket::factoryUrl('https://api.github.com/repos/ryersondmp/sa11y/releases/latest');
+        $socket = rex_socket::factoryUrl('https://api.github.com/repos/FriendsOfREDAXO/for_sa11y/releases/latest');
         $socket->addHeader('User-Agent', 'REDAXO for_sa11y/' . $package->getVersion());
         $socket->setTimeout(5);
         $response = $socket->doGet();
@@ -17,7 +17,7 @@ if (time() - $versionCheckTime > 86400) {
             if (is_array($data) && isset($data['tag_name'])) {
                 $tag = ltrim((string) $data['tag_name'], 'v');
                 if (preg_match('/^\d[\d.]*$/', $tag)) {
-                    $package->setConfig('_latest_sa11y_version', $tag);
+                    $package->setConfig('_latest_addon_version', $tag);
                 }
             }
         }
@@ -27,15 +27,18 @@ if (time() - $versionCheckTime > 86400) {
     $package->setConfig('_version_check_time', time());
 }
 
-$bundledVersion = trim((string) rex_file::get(rex_path::addon('for_sa11y', '.sa11y_version')));
-$latestVersion  = (string) $package->getConfig('_latest_sa11y_version', $bundledVersion);
-if ($latestVersion !== '' && $bundledVersion !== '' && version_compare($latestVersion, $bundledVersion, '>')) {
+$currentVersion = $package->getVersion();
+$latestVersion  = (string) $package->getConfig('_latest_addon_version', '');
+if ($latestVersion !== '' && version_compare($latestVersion, $currentVersion, '>')) {
     echo rex_view::warning(
-        $package->i18n('for_sa11y_new_version_available', $latestVersion, $bundledVersion)
-        . ' <a href="https://github.com/ryersondmp/sa11y/releases/tag/' . rex_escape($latestVersion) . '" target="_blank" rel="noopener noreferrer">'
+        $package->i18n('for_sa11y_new_version_available', $latestVersion, $currentVersion)
+        . ' <a href="https://github.com/FriendsOfREDAXO/for_sa11y/releases/tag/' . rex_escape($latestVersion) . '" target="_blank" rel="noopener noreferrer">'
         . $package->i18n('for_sa11y_new_version_release_notes')
         . '</a>'
     );
+} else {
+    // Zeigt auch "aktuell" wenn GitHub-Check noch nicht lief (kein Internet/noch kein Release)
+    echo rex_view::success($package->i18n('for_sa11y_version_up_to_date', $currentVersion));
 }
 
 // ==============================

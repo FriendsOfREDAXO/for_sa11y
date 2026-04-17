@@ -85,8 +85,9 @@ for_sa11y_auto_detect_shadow_components_notice = Automatically scans the page fo
 for_sa11y_exclude_url_params = Do not run Sa11y for URL parameters
 for_sa11y_exclude_url_params_notice = Comma-separated list of URL parameters that will prevent Sa11y from running. Use parameter names to check for their presence (e.g. <code>pdf, print</code>), or <code>key=value</code> for an exact match (e.g. <code>mode=print, export=1</code>).
 
-for_sa11y_new_version_available = Sa11y %s is available (current: %s).
+for_sa11y_new_version_available = for_sa11y {0} is available (installed: {1}).
 for_sa11y_new_version_release_notes = View release notes
+for_sa11y_version_up_to_date = for_sa11y {0} is up to date. ✅
 
 # Link Checker
 for_sa11y_link_checker = Enable link checker
