@@ -6,7 +6,7 @@ Sa11y visually highlights accessibility content issues at the source with a simp
 
 The AddOn serves as an editorial assistant to reduce accessibility issues on your website.
 
-![Sa11y, the accessibility quality assurance tool.](https://ryersondmp.github.io/sa11y/assets/github-banner.png)
+![Sa11y, the accessibility quality assurance tool.](https://camo.githubusercontent.com/256164e3ce95ee8ed53fcb2cd25b213c7aef03b64dbf1c8677eaa5ed4d8d39a0/68747470733a2f2f72796572736f6e646d702e6769746875622e696f2f73613131792f6769746875622d62616e6e65722e706e67)
 
 > **Version 5.0** – Sa11y library updated to 5.0. See [Upgrade Notes](#upgrade-notes-50) below.
 
