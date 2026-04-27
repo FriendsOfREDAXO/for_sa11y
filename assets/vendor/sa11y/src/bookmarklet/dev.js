@@ -76,27 +76,31 @@ const onLoadScript = (lang) => {
       customChecks: false,
       exportResultsPlugin: true,
       detectSPArouting: true,
+      langOfPartsPlugin: true,
+      langOfPartsCache: true,
     });
   };
 
   // Vendor specific work-arounds...
-  const url = window.location.href;
-  if (url.includes('https://360.articulate.com/review/content')) {
-    const iframe = document.querySelector('iframe.player');
-    const src = iframe.getAttribute('src');
-    if (iframe && src) {
-      document.getElementById('sa11y-loading').remove();
-      if (window.confirm('Press OK to be redirected to a page where you can check the accessibility of the content. The page will open in a new tab.')) {
-        window.open(src, '_blank');
-      }
-    } else {
-      instantiate();
+  const loadingEl = document.getElementById('sa11y-loading');
+  const iframeSrc = document.querySelector('iframe.player')?.getAttribute('src') || '';
+  let isSafe = false;
+  try {
+    const { protocol, hostname } = new URL(iframeSrc);
+    isSafe = protocol === 'https:' && ['360.articulate.com', 'articulate.com'].includes(hostname);
+  } catch {
+    isSafe = false; // Fails safely if src is malformed or empty
+  }
+  const { origin, pathname } = window.location;
+  const isTargetPage = origin === 'https://360.articulate.com' && pathname.startsWith('/review/content');
+  if (isTargetPage && isSafe) {
+    loadingEl?.remove();
+    if (confirm('Redirect to check accessibility in a new tab?')) {
+      window.open(iframeSrc, '_blank', 'noopener,noreferrer');
     }
   } else {
     instantiate();
-
-    // Remove loading spinner once Sa11y is instantiated.
-    document.getElementById('sa11y-loading').remove();
+    loadingEl?.remove();
   }
 };
 
@@ -120,7 +124,7 @@ const initialize = () => {
   // Sa11y is available in the following languages.
   const supportedLang = [
     'bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'hu', 'id', 'it', 'ja', 'ko',
-    'lt', 'lv', 'nb', 'nl', 'pl', 'pt', 'ro', 'sl', 'sk', 'sv', 'tr', 'uk', 'ua', 'zh',
+    'lt', 'lv', 'nb', 'nl', 'pl', 'pt', 'ro', 'sl', 'sk', 'sv', 'ta', 'tr', 'uk', 'ua', 'zh',
   ];
 
   // Check if Sa11y supports language.
