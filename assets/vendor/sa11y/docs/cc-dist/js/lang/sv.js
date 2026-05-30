@@ -196,6 +196,7 @@ const sv = {
     HEADING_FIRST: 'Den första rubriken på en sida bör vanligtvis vara en Rubrik 1 eller Rubrik 2. Rubrik 1 bör vara början på huvudinnehållsavsnittet och är huvudrubriken som beskriver sidans övergripande syfte. Läs mer om <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Rubrikstruktur.</a>',
     HEADING_MISSING_ONE: 'Saknar Rubrik 1. Rubrik 1 bör vara början på huvudinnehållsområdet, och är huvudrubriken som beskriver sidans övergripande syfte. Läs mer om <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Rubrikstruktur.</a>',
     HEADING_EMPTY_WITH_IMAGE: "Rubriken har ingen text, men innehåller en bild. Om detta inte är en rubrik ändrar du dess format från <strong {C}>Rubrik %(level)</strong> till <strong>Normal</strong> eller <strong>Stycke</strong>. Annars, lägg till alt-text till bilden om den inte är dekorativ.",
+    HEADING_UNPRONOUNCEABLE: "Rubriktexten innehåller endast symboler eller outtala bara tecken. Om du tror att detta är ett fel som beror på en kopiera/klistra in-bugg, överväg att ta bort den. <hr> <strong {B}>Rubriktext</strong> <strong {C}>%(TEXT)</strong>",
     PANEL_HEADING_MISSING_ONE: "Saknar rubrik 1!",
     PANEL_NO_HEADINGS: "Inga rubriker hittades.",
     // Links
@@ -236,7 +237,7 @@ const sv = {
     IMAGE_DECORATIVE: "Bilden är markerad som <strong>dekorativ</strong> och kommer att ignoreras av hjälpmedel. Om bilden förmedlar en historia, stämning eller annan viktig information – se till att lägga till alt-text.",
     IMAGE_DECORATIVE_CAROUSEL: "Bilden är markerad som dekorativ, men alla bilder i en karusell eller ett galleri bör inkludera beskrivende alt-texter för att säkerställa en likvärdig upplevelse för alla.",
     IMAGE_ALT_TOO_LONG: "Alt-texten är <strong>för lång</strong>. Alt-text ska vara kortfattad men meningsfull som en <em>tweet</em> (cirka 100 tecken). Om detta är en komplex bild eller en graf, överväg att lägga in den längre beskrivningen av bilden i under bilden, eller i en dragspelskomponent. <hr> {ALT} <strong {B}>%(altLength) Tecken</strong> <strong {C}>%(ALT_TEXT)</strong>",
-    IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+    IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
     LINK_ALT_MAYBE_BAD: "Bildlänken kan ha alternativtext som inte ger användbar information eller är otydlig. Se till att alt-texten beskriver länkens mål. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     ALT_MAYBE_BAD: "Alt-texten ger kanske inte användbar information eller är otydlig. Förbättra följande alt-text: <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     // Labels

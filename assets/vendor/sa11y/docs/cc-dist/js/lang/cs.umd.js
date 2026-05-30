@@ -184,6 +184,7 @@
       HEADING_FIRST: 'Prvním nadpisem na stránce by obvykle měl být nadpis 1 nebo nadpis 2. Nadpis 1 by měl být začátkem hlavní části obsahu a je hlavním nadpisem, který popisuje celkový účel stránky. Více informací o <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Struktuře nadpisů.</a>',
       HEADING_MISSING_ONE: 'Chybějící nadpis 1. Nadpis 1 by měl být začátkem hlavní oblasti obsahu a je to hlavní nadpis, který popisuje celkový účel stránky. Více informací o <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Struktuře nadpisů.</a>',
       HEADING_EMPTY_WITH_IMAGE: "Nadpis neobsahuje žádný text, ale obrázek. Pokud se nejedná o nadpis, změňte jeho formát z <strong {C}>Nadpis %(level)</strong> na <strong>Normální</strong> nebo <strong>Odstavec</strong>. V opačném případě přidejte k obrázku alt text, pokud není ozdobný.",
+      HEADING_UNPRONOUNCEABLE: "Text nadpisu obsahuje pouze symboly nebo nevyslovitelné znaky. Pokud si myslíte, že se jedná o chybu způsobenou chybou při kopírování/vkládání, zvažte jeho smazání. <hr> <strong {B}>Text nadpisu</strong> <strong {C}>%(TEXT)</strong>",
       PANEL_HEADING_MISSING_ONE: "Chybí nadpis 1!",
       PANEL_NO_HEADINGS: "Nebyly nalezeny žádné záhlaví.",
       // Links
@@ -224,7 +225,7 @@
       IMAGE_DECORATIVE: "Obrázek je označen jako <strong>dekorativní</strong> a asistenční technologie jej budou ignorovat. Pokud obrázek vyjadřuje příběh, náladu nebo důležitou informaci - nezapomeňte přidat alt text.",
       IMAGE_ALT_TOO_LONG: "Alt text popisu je <strong>příliš dlouhý</strong>. Alt text by měl být stručný, ale výstižný jako <em>tweet</em> (přibližně 100 znaků). Pokud se jedná o složitý obrázek nebo graf, zvažte umístění dlouhého popisu obrázku do textu pod ním nebo do akordeonové komponenty. <hr> {ALT} <strong {B}>%(altLength) Znaků</strong> <strong {C}>%(ALT_TEXT)</strong>",
       IMAGE_DECORATIVE_CAROUSEL: "Obrázek je označen jako dekorativní, ale všechny obrázky v kolotoči nebo galerii by měly obsahovat popisný alternativní text, aby byla zajištěna rovnocenná zkušenost pro každého.",
-      IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+      IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
       LINK_ALT_MAYBE_BAD: "Odkaz na obrázek může mít alternativní text, který neposkytuje užitečné informace nebo není popisný. Ujistěte se, že alt text popisuje cíl odkazu. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       ALT_MAYBE_BAD: "Alt text nemusí poskytovat užitečné informace nebo není popisný. Vylepšete následující alt text: <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       // Form labels

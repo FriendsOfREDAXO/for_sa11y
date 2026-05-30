@@ -184,6 +184,7 @@
       HEADING_FIRST: 'Primul titlu de pe o pagină trebuie să fie, de obicei, un titlu 1 sau 2. Titlul 1 ar trebui să fie începutul secțiunii principale de conținut și este titlul principal care descrie scopul general al paginii. Aflați mai multe despre <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Structura titlurilor.</a>',
       HEADING_MISSING_ONE: 'Lipsește titlul 1. Titlul 1 ar trebui să fie începutul zonei principale de conținut și este titlul principal care descrie scopul general al paginii. Aflați mai multe despre <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Structura titlurilor.</a>',
       HEADING_EMPTY_WITH_IMAGE: "Rubrica nu are text, dar conține o imagine. Dacă acesta nu este un titlu, schimbați-i formatul din <strong {C}>Antet %(level)</strong> în <strong>Normal</strong> sau <strong>Paragraf</strong>. În caz contrar, vă rugăm să adăugați text alt la imagine, dacă aceasta nu este decorativă.",
+      HEADING_UNPRONOUNCEABLE: "Textul titlului conține doar simboluri sau caractere nepronunțabile. Dacă credeți că aceasta este o eroare din cauza unei probleme de copiere/lipire, luați în considerare ștergerea acestuia. <hr> <strong {B}>Textul titlului</strong> <strong {C}>%(TEXT)</strong>",
       PANEL_HEADING_MISSING_ONE: "Lipsește rubrica 1!",
       PANEL_NO_HEADINGS: "Nu s-au găsit antete.",
       // Links
@@ -224,7 +225,7 @@
       IMAGE_DECORATIVE: "Imaginea este marcată ca fiind <strong>decorativă</strong> și va fi ignorată de tehnologia de asistență. Dacă imaginea transmite o poveste, o stare de spirit sau informații importante - asigurați-vă că adăugați text alternativ.",
       IMAGE_DECORATIVE_CAROUSEL: "Imaginea este marcată ca decorativă, dar toate imaginile dintr-un carusel sau galerie ar trebui să includă un text descriptiv alternativ pentru a asigura o experiență echivalentă pentru toată lumea.",
       IMAGE_ALT_TOO_LONG: "Descrierea textului Alt este <strong>prea lungă</strong>. Textul Alt ar trebui să fie concis, dar semnificativ, ca un <em>tweet</em> (aproximativ 100 de caractere). Dacă este vorba de o imagine complexă sau de un grafic, luați în considerare posibilitatea de a pune descrierea lungă a imaginii în textul de mai jos sau într-o componentă acordeon. <hr> {ALT} <strong {B}>%(altLength) Caractere</strong> <strong {C}>%(ALT_TEXT)</strong>",
-      IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+      IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
       LINK_ALT_MAYBE_BAD: "Linkul imaginii poate avea un text alternativ care nu oferă informații utile sau nu este descriptiv. Asigură-te că textul alt descrie destinația linkului. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       ALT_MAYBE_BAD: "Textul alternativ poate să nu ofere informații utile sau să nu fie descriptiv. Îmbunătățește următorul text alt: <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       // Form labels

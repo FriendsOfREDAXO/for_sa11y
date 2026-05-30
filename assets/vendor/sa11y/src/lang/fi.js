@@ -195,6 +195,7 @@ export default {
       'Puuttuva otsikko 1. Otsikon 1 pitäisi olla pääsisältöalueen alku, ja se on pääotsikko, joka kuvaa sivun yleistä tarkoitusta. Lue lisää <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Ohjeiden rakenne.</a>',
     HEADING_EMPTY_WITH_IMAGE:
       'Otsikossa ei ole tekstiä, mutta se sisältää kuvan. Jos tämä ei ole otsikko, muuta sen muotoa <strong {C}>Otsikko %(level)</strong> muotoon <strong>Normaali</strong> tai <strong>Kappale</strong>. Muussa tapauksessa, lisää alt-teksti kuvaan, jos se ei ole koristeellinen.',
+    HEADING_UNPRONOUNCEABLE: 'Otsikkoteksti sisältää vain symboleja tai lausumattomia merkkejä. Jos uskot tämän johtuvan kopiointi-/liittämisvirheestä, harkitse sen poistamista. <hr> <strong {B}>Otsikkoteksti</strong> <strong {C}>%(TEXT)</strong>',
     PANEL_HEADING_MISSING_ONE: 'Otsikko 1 puuttuu!',
     PANEL_NO_HEADINGS: 'Otsikoita ei löytynyt.',
 
@@ -271,7 +272,7 @@ export default {
       'Kuva on merkitty koristeelliseksi, mutta kaikkien karusellissa tai galleriassa olevien kuvien tulisi sisältää kuvaileva vaihtoehtoinen teksti, jotta kaikille taataan tasapuolinen kokemus.',
     IMAGE_ALT_TOO_LONG:
       'Alt-tekstin kuvaus on <strong>liian pitkä</strong>. Alt-tekstin tulisi olla tiivis, mutta merkityksellinen kuten <em>tweet</em> (noin 100 merkkiä). Jos kyseessä on monimutkainen kuva tai graafi, harkitse kuvan pitkän kuvauksen sijoittamista alla olevaan tekstiin tai harmonikkaosaan. <hr> {ALT} <strong {B}>%(altLength) Merkkiä</strong> <strong {C}>%(ALT_TEXT)</strong>',
-    IMAGE_PASS: '{ALT} %(ALT_TEXT)',
+    IMAGE_PASS: '{ALT} <strong {C}>%(ALT_TEXT)</strong>',
     LINK_ALT_MAYBE_BAD:
       'Kuvassa olevan linkin alt-teksti ei ehkä anna hyödyllistä tietoa tai on epämääräinen. Varmista, että alt-teksti kuvaa linkin kohdetta. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>',
     ALT_MAYBE_BAD:

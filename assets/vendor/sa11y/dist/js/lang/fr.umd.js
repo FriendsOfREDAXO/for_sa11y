@@ -185,6 +185,7 @@
       HEADING_FIRST: `Le premier titre sur la page devrait généralement être un Titre 1 ou un Titre 2. Le Titre 1 doit débuter dans la section principale du contenu, car il s'agit du titre principal qui décrit l'objectif général de la page. En savoir plus sur <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">La Structure Des Titres.</a>`,
       HEADING_MISSING_ONE: 'Titre 1 manquant. Le Titre 1 doit débuter dans la zone principale de contenu, il est le titre principal qui décrit l’objectif global de la page. En savoir plus sur <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">La Structure Des Titres.</a>',
       HEADING_EMPTY_WITH_IMAGE: "Le titre ne contient pas de texte, mais seulement une image. Si ce n’est pas un titre, veuillez changer son format de <strong {C}>Titre %(level)</strong> à <strong>Normal</strong> ou <strong>Paragraphe</strong>. Sinon, veuillez ajouter du texte de remplacement à l’image si elle n’est pas décorative.",
+      HEADING_UNPRONOUNCEABLE: "Le texte du titre contient uniquement des symboles ou des caractères imprononçables. Si vous pensez qu'il s'agit d'une erreur due à un problème de copier-coller, pensez à le supprimer. <hr> <strong {B}>Texte du titre</strong> <strong {C}>%(TEXT)</strong>",
       PANEL_HEADING_MISSING_ONE: "Titre 1 manquant !",
       PANEL_NO_HEADINGS: "Aucun titre trouvé.",
       // Links
@@ -225,7 +226,7 @@
       IMAGE_DECORATIVE: "L’image est marquée comme <strong>décorative</strong> et sera ignorée par la technologie d’assistance. Si l’image transmet un message, une émotion ou une information importante, assurez-vous d’ajouter le texte de remplacement.",
       IMAGE_DECORATIVE_CAROUSEL: "L'image est marquée comme décorative, mais toutes les images dans un carrousel ou une galerie devraient inclure un texte alternatif descriptif pour garantir une expérience équivalente pour tout le monde.",
       IMAGE_ALT_TOO_LONG: "La description du texte de remplacement est <strong>trop longue</strong>. Le texte de remplacement doit être précis, mais significatif tout comme un <em>gazouillis (micromessage) </em> (environ 100 caractères). S’il s’agit d’une image complexe ou d’une illustration, ajoutez une longue description de l’image dans le texte ci-dessous ou dans la composante accordéon. <hr> {ALT} <strong {B}>%(altLength) Caractères</strong> <strong {C}>%(ALT_TEXT)</strong>",
-      IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+      IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
       LINK_ALT_MAYBE_BAD: "Le lien d'image a un texte alternatif qui peut ne pas fournir d'informations utiles ou est non descriptif. Assurez-vous que le texte alt décrit la destination du lien. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       ALT_MAYBE_BAD: "Le texte alternatif peut ne pas fournir d'informations utiles ou est non descriptif. Améliorez le texte alt suivant : <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       // Labels

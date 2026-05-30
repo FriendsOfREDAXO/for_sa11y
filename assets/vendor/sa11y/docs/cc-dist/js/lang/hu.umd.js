@@ -183,6 +183,7 @@
       HEADING_FIRST: 'Az oldal első címe általában Cím 1 vagy Cím 2 legyen.A Cím 1-nek a fő tartalom szakaszának kezdetét kell jelentenie, és ez a fő cím, amely leírja az oldal általános célját.Tudj meg többet a<a href = "https://www.w3.org/WAI/tutorials/page-structure/headings/">Fejléc szerkezetéről.</a>',
       HEADING_MISSING_ONE: 'Hiányzó Cím 1. A Cím 1-nek a fő tartalom területének kezdetét kell jelentenie, és ez a fő cím, amely leírja az oldal általános célját. További információkért látogasson el ide: <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Fejléck struktúra.</a>',
       HEADING_EMPTY_WITH_IMAGE: "A címsor nem tartalmaz szöveget, de képet tartalmaz. Ha ez nem címsor, akkor változtassa meg a formátumát <strong {C}>Címsor %(level)</strong> formátumra <strong>Normál</strong> vagy <strong>Bekezdés</strong>. Ellenkező esetben kérem, adja hozzá az alternatív szöveget a képhez, ha az nem díszítőelem.",
+      HEADING_UNPRONOUNCEABLE: "A címsor szövege csak szimbólumokat vagy kiejthetetlen karaktereket tartalmaz. Ha úgy gondolja, hogy ez egy másolási/beillesztési hiba miatt van, fontolja meg a törlését. <hr> <strong {B}>Címsor szövege</strong> <strong {C}>%(TEXT)</strong>",
       PANEL_HEADING_MISSING_ONE: "Hiányzik az 1. címsor!",
       PANEL_NO_HEADINGS: "Nem találtunk címszavakat.",
       // Links
@@ -223,7 +224,7 @@
       IMAGE_DECORATIVE: "A kép <strong>dekoratívnak</strong> van jelölve, és a segítő technológia figyelmen kívül hagyja. Ha a kép történetet, hangulatot vagy fontos információt közvetít - mindenképpen adjon hozzá alt szöveget.",
       IMAGE_DECORATIVE_CAROUSEL: "A kép dekoratívnak van jelölve, de minden képnek a karusszelben vagy galériában tartalmaznia kell leíró alt szöveget, hogy biztosítsák az egyenértékű élményt mindenki számára.",
       IMAGE_ALT_TOO_LONG: "Az Alt szöveges leírás <strong>túl hosszú</strong>. Az Alt szövegnek tömörnek, mégis értelmesnek kell lennie, mint egy <em>tweet</em> (kb. 100 karakter). Ha összetett képről vagy grafikonról van szó, fontolja meg, hogy a kép hosszú leírását az alatta lévő szövegben vagy egy harmonika komponensben helyezze el. <hr> {ALT} <strong {B}>%(altLength) Karakterek</strong> <strong {C}>%(ALT_TEXT)</strong>",
-      IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+      IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
       LINK_ALT_MAYBE_BAD: "A képhivatkozás alt szövege nem biztos, hogy hasznos információt ad, vagy nem leíró. Győződj meg arról, hogy az alt szöveg leírja a hivatkozás célját. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       ALT_MAYBE_BAD: "Az alt szöveg nem biztos, hogy hasznos információt ad, vagy nem leíró. Javítsd a következő alt szöveget: <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       // Form labels

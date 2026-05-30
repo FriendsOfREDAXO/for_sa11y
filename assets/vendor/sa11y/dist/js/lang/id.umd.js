@@ -182,6 +182,7 @@
       HEADING_FIRST: 'Judul pertama pada halaman biasanya adalah Heading 1 atau Heading 2. Heading 1 harus menjadi awal dari bagian konten utama, dan merupakan judul utama yang menjelaskan tujuan keseluruhan halaman. Pelajari lebih lanjut tentang <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Struktur Heading.</a>',
       HEADING_MISSING_ONE: 'Heading 1. Heading 1 seharusnya menjadi awal dari area konten utama, dan merupakan heading utama yang menjelaskan tujuan keseluruhan halaman. Pelajari lebih lanjut tentang <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Struktur Judul.</a>',
       HEADING_EMPTY_WITH_IMAGE: "Judul tidak memiliki teks, namun berisi gambar. Jika ini bukan judul, ubah formatnya dari <strong {C}>Judul %(level)</strong> ke <strong>Normal</strong> atau <strong>Paragraf</strong>. Jika tidak, tambahkan teks alt ke gambar jika tidak bersifat dekoratif.",
+      HEADING_UNPRONOUNCEABLE: "Teks tajuk hanya berisi simbol atau karakter yang tidak dapat diucapkan. Jika Anda rasa ini adalah kesalahan karena masalah salin/tempel, pertimbangkan untuk menghapusnya. <hr> <strong {B}>Teks tajuk</strong> <strong {C}>%(TEXT)</strong>",
       PANEL_HEADING_MISSING_ONE: "Hilang Heading 1!",
       PANEL_NO_HEADINGS: "Tidak ada judul ditemukan.",
       // Links
@@ -222,7 +223,7 @@
       IMAGE_DECORATIVE: "Gambar ditandai sebagai <strong>dekoratif</strong> dan akan diabaikan oleh teknologi bantuan. Jika gambar menyampaikan cerita, suasana hati, atau informasi penting - pastikan untuk menambahkan teks alternatif.",
       IMAGE_DECORATIVE_CAROUSEL: "Gambar ditandai sebagai dekoratif, tetapi semua gambar di carousel atau galeri harus menyertakan teks alt deskriptif untuk memastikan pengalaman yang setara bagi semua orang.",
       IMAGE_ALT_TOO_LONG: "Deskripsi teks alt terlalu panjang. Teks alt harus ringkas, namun bermakna seperti <em>tweet</em> (sekitar 100 karakter). Jika ini adalah gambar yang rumit atau grafik, pertimbangkan untuk meletakkan deskripsi gambar yang panjang dalam teks di bawah ini atau komponen akordeon. <hr> {ALT} <strong {B}>%(altLength) Karakter</strong> <strong {C}>%(ALT_TEXT)</strong>",
-      IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+      IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
       LINK_ALT_MAYBE_BAD: "Tautan gambar memiliki teks alt yang mungkin tidak memberikan informasi berguna atau tidak deskriptif. Pastikan teks alt menjelaskan tujuan tautan. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       ALT_MAYBE_BAD: "Teks alt mungkin tidak memberikan informasi berguna atau tidak deskriptif. Perbaiki teks alt berikut: <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       // Form labels

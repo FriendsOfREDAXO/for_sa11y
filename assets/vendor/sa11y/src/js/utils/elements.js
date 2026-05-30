@@ -138,8 +138,8 @@ const Elements = (function myElements() {
     buildContrastAttrSelector();
 
     // Pre-split QA bad link sources.
-    const badLinkSourcesRaw = State.option.checks.QA_BAD_LINK.sources;
-    const badLinkSelectors = badLinkSourcesRaw.length
+    const badLinkSourcesRaw = State.option.checks.QA_BAD_LINK?.sources;
+    const badLinkSelectors = badLinkSourcesRaw?.length
       ? badLinkSourcesRaw.split(',').map((s) => s.trim())
       : [];
 
@@ -188,6 +188,8 @@ const Elements = (function myElements() {
     // Iterate on Found.Everything based on tag name.
     for (let i = 0; i < Found.Everything.length; i++) {
       const $el = Found.Everything[i];
+      if (!($el instanceof Element)) continue;
+
       const tag = $el.tagName;
       const role = $el.getAttribute('role')?.trim().toLowerCase();
       let handledByRole = false;

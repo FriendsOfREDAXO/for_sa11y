@@ -1,45 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { checkTooltip, noAnnotation } from './unit-test-utils';
 
 test.describe.configure({ mode: 'serial' });
-
-/**
- * Check contents of tooltip.
- * @param {page} page Page provides methods to interact with a single tab.
- * @param {string} elementId The ID on the test page.
- * @param {string} expectedText The expected tooltip message.
- * @returns {Promise<boolean>} True if the tooltip text matches, false otherwise.
- */
-async function checkTooltip(page, elementId, expectedText) {
-  const tooltipMatches = await page.evaluate(({ id, text }) => {
-    const element = document.getElementById(id);
-    if (!element) return false;
-    const annotations = element.querySelectorAll('sa11y-annotation');
-    let foundMatch = false;
-    annotations.forEach((annotation) => {
-      const message = annotation?.getAttribute('data-content');
-      if (message && message.includes(text)) {
-        foundMatch = true;
-      }
-    });
-    return foundMatch;
-  }, { id: elementId, text: expectedText });
-  return tooltipMatches;
-}
-
-/**
- * Check to ensure there's no annotation!
- * @param {class} page Page provides methods to interact with a single tab.
- * @param {selector} elementId The ID on the test page.
- */
-async function noAnnotation(page, elementId) {
-  const result = await page.evaluate((id) => {
-    const element = document.getElementById(id);
-    if (!element) return false;
-    const annotation = element.querySelector('sa11y-annotation');
-    return !annotation; // Return true if annotation is absent.
-  }, elementId);
-  return result;
-}
 
 /* Unit test suite. */
 let page;
@@ -153,6 +115,21 @@ test.describe('Sa11y Unit Tests', () => {
       page, 'error-empty-heading', 'Empty heading found!',
     );
     expect(issue).toBe(true);
+  });
+
+  test('Heading with unpronounceable characters', async () => {
+    const ids = [
+      'error-heading-unpronounceable-1',
+      'error-heading-unpronounceable-2',
+      'error-heading-unpronounceable-3',
+      'error-heading-unpronounceable-4',
+      'error-heading-unpronounceable-5',
+      'error-heading-unpronounceable-6',
+    ];
+    ids.forEach(async (id) => {
+      const issue = await checkTooltip(page, id, 'Heading text only contains symbols or unpronounceable characters.');
+      expect(issue).toBe(true);
+    });
   });
 
   test('Skipped heading', async () => {
@@ -321,6 +298,11 @@ test.describe('Sa11y Unit Tests', () => {
       page, 'error-unpronounceable-character', 'contains unpronounceable',
     );
     expect(issue).toBe(true);
+
+    const issue2 = await checkTooltip(
+      page, 'error-unpronounceable-character-2', 'contains unpronounceable',
+    );
+    expect(issue2).toBe(true);
   });
 
   test('Linked image using unpronounceable character for alt', async () => {
@@ -641,6 +623,11 @@ test.describe('Sa11y Unit Tests', () => {
     expect(issue).toBe(true);
   });
 
+  test('Non-english (ZH) characters should pass alt', async () => {
+    const issue = await checkTooltip(page, 'pass-image-bad-alt', 'Good');
+    expect(issue).toBe(true);
+  });
+
   test('Linked image has bad alt text', async () => {
     const issue = await checkTooltip(page, 'error-bad-alt-linked', 'Image link has alt text that may not provide useful information or contains non-descript text. Ensure the alt text describes the destination of the link.');
     expect(issue).toBe(true);
@@ -744,6 +731,16 @@ test.describe('Sa11y Unit Tests', () => {
     expect(issue3).toBe(true);
     const issue4 = await checkTooltip(page, 'error-empty-4', 'Remove empty links');
     expect(issue4).toBe(true);
+  });
+
+  test('Empty hyperlink with valid aria-label', async () => {
+    const el = await checkTooltip(page, 'pass-empty-link', 'Good Accessible Name homepage');
+    expect(el).toBe(true);
+  });
+
+  test('Linked image with aria-label and null alt', async () => {
+    const el = await checkTooltip(page, 'pass-link-image-aria-label', 'Good Accessible Name homepage');
+    expect(el).toBe(true);
   });
 
   test('Unpronounceable links', async () => {

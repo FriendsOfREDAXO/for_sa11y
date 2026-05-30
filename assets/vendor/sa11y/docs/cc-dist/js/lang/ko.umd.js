@@ -184,6 +184,7 @@
       HEADING_FIRST: '페이지의 첫 번째 제목은 일반적으로 제목 1 또는 제목 2여야 합니다. 제목 1은 주요 콘텐츠 섹션의 시작 부분이어야 하며 페이지의 전반적인 목적을 설명하는 주요 제목입니다. <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">헤딩 구조에 대해 자세히 알아보기.</a>',
       HEADING_MISSING_ONE: '제목 1이 누락되었습니다. 제목 1은 주요 콘텐츠 영역의 시작 부분이어야 하며 페이지의 전반적인 목적을 설명하는 기본 제목입니다. <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">헤딩 구조에 대해 자세히 알아보기.</a>',
       HEADING_EMPTY_WITH_IMAGE: "제목에 텍스트가 없지만 이미지가 포함되어 있습니다. 제목이 아닌 경우 형식을 <strong {C}>제목 %(level)</strong>에서 <strong>일반</strong> 또는 <strong>단락</strong>으로 변경합니다. 그렇지 않으면 장식용 이미지가 아닌 경우 이미지에 대체 텍스트를 추가하세요.",
+      HEADING_UNPRONOUNCEABLE: "제목 텍스트에 기호 또는 발음할 수 없는 문자만 포함되어 있습니다. 복사/붙여넣기 오류로 인한 문제라고 생각되면 삭제를 고려하세요. <hr> <strong {B}>제목 텍스트</strong> <strong {C}>%(TEXT)</strong>",
       PANEL_HEADING_MISSING_ONE: "제목 1이 없습니다!",
       PANEL_NO_HEADINGS: "제목을 찾을 수 없습니다.",
       // Links
@@ -224,7 +225,7 @@
       IMAGE_DECORATIVE: "이미지는 '장식용'으로 표시되어 보조 기술에서 무시됩니다. 이미지가 스토리, 분위기 또는 중요한 정보를 전달하는 경우 대체 텍스트를 추가해야 합니다.",
       IMAGE_DECORATIVE_CAROUSEL: "이미지가 장식용으로 표시되었지만, 캐러셀이나 갤러리의 모든 이미지에는 모든 사람에게 동등한 경험을 제공하기 위해 설명적 대체 텍스트를 포함해야 합니다.",
       IMAGE_ALT_TOO_LONG: "대체 텍스트 설명이 <strong>너무 깁니다</strong>. 대체 텍스트는 간결하면서도 트윗처럼 의미 있는 내용이어야 합니다(100자 내외). 복잡한 이미지나 그래프인 경우 이미지에 대한 긴 설명을 아래 텍스트나 아코디언 구성 요소에 넣는 것이 좋습니다. <hr> {ALT} <strong {B}>%(altLength) 문자</strong> <strong {C}>%(ALT_TEXT)</strong>",
-      IMAGE_PASS: "<strong {B}>대체 텍스트</strong> %(ALT_TEXT)",
+      IMAGE_PASS: "<strong {B}>대체 텍스트</strong> <strong {C}>%(ALT_TEXT)</strong>",
       LINK_ALT_MAYBE_BAD: "이미지 링크의 대체 텍스트가 유용한 정보를 제공하지 않거나 설명적이지 않을 수 있습니다. 대체 텍스트가 링크의 목적지를 설명하는지 확인하세요. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       ALT_MAYBE_BAD: "대체 텍스트가 유용한 정보를 제공하지 않거나 설명적이지 않을 수 있습니다. 다음 대체 텍스트를 개선하세요. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       // Form labels
