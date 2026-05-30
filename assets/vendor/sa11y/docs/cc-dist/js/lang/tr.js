@@ -180,6 +180,7 @@ const tr = {
     HEADING_FIRST: 'Bir sayfadaki ilk başlık genellikle Başlık 1 veya Başlık 2 olmalıdır. Başlık 1, ana içerik bölümünün başlangıcı olmalıdır ve sayfanın genel amacını açıklayan ana başlıktır. <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Başlık Yapısı hakkında daha fazla bilgi edinin.</a>',
     HEADING_MISSING_ONE: 'Eksik Başlık 1. Başlık 1, ana içerik alanının başlangıcı olmalıdır ve sayfanın genel amacını açıklayan ana başlıktır. <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Başlık Yapısı hakkında daha fazla bilgi edinin.</a>',
     HEADING_EMPTY_WITH_IMAGE: "Başlığın metni yoktur, ancak bir resim içerir. Bu bir başlık değilse, biçimini <strong {C}>Başlık %(level)</strong> yerine <strong>Normal</strong> veya <strong>Paragraf</strong> olarak değiştirin. Aksi takdirde, dekoratif değilse lütfen resme alt metin ekleyin.",
+    HEADING_UNPRONOUNCEABLE: "Başlık metni yalnızca simgeler veya telaffuz edilemeyen karakterler içeriyor. Bunun bir kopyala/yapıştır hatasından kaynaklandığını düşünüyorsanız, silmeyi düşünebilirsiniz. <hr> <strong {B}>Başlık metni</strong> <strong {C}>%(TEXT)</strong>",
     PANEL_HEADING_MISSING_ONE: "Başlık 1 eksik!",
     PANEL_NO_HEADINGS: "Başlık bulunamadı.",
     // Links
@@ -220,7 +221,7 @@ const tr = {
     IMAGE_DECORATIVE: "Görüntü <strong>dekoratif</strong> olarak işaretlenir ve yardımcı teknoloji tarafından göz ardı edilir. Görsel bir hikaye, ruh hali veya önemli bir bilgi aktarıyorsa alt metin eklediğinizden emin olun.",
     IMAGE_DECORATIVE_CAROUSEL: "Görüntü dekoratif olarak işaretlenmiş, ancak bir döngü veya galerideki tüm görüntüler herkes için eşdeğer bir deneyim sağlamak için açıklayıcı alt metin içermelidir.",
     IMAGE_ALT_TOO_LONG: "Alt metin açıklaması <strong>çok uzun</strong>. Alt metin kısa, ancak bir <em>tweet</em> gibi anlamlı olmalıdır (yaklaşık 100 karakter). Bu karmaşık bir görsel veya grafikse, görselin uzun açıklamasını aşağıdaki metne veya bir akordeon bileşenine koymayı düşünün. <hr> {ALT} <strong {B}>%(altLength) Karakter</strong> <strong {C}>%(ALT_TEXT)</strong>",
-    IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+    IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
     LINK_ALT_MAYBE_BAD: "Görsel bağlantısının alternatif metni yararlı bilgi sağlamayabilir veya açıklayıcı olmayabilir. Alternatif metnin bağlantının hedefini açıkladığından emin olun. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     ALT_MAYBE_BAD: "Alternatif metin yararlı bilgi sağlamayabilir veya açıklayıcı olmayabilir. Aşağıdaki alternatif metni iyileştirin: <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     // Labels

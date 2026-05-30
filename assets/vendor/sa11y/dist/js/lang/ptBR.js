@@ -176,6 +176,7 @@ const ptBR = {
     HEADING_FIRST: 'O primeiro título em uma página geralmente deve ser o Título 1 ou o Título 2. O Título 1 deve ser o início da seção de conteúdo principal e é o título principal que descreve o objetivo geral da página. Saiba mais sobre <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Estrutura de títulos.</a>',
     HEADING_MISSING_ONE: 'Falta de título 1. O título 1 deve ser o início da área de conteúdo principal e é o título principal que descreve o objetivo geral da página. Saiba mais sobre <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Estrutura de cabeçalho.</a>',
     HEADING_EMPTY_WITH_IMAGE: "O cabeçalho não tem texto, mas contém uma imagem. Se esse não for um cabeçalho, altere seu formato de <strong {C}>Título %(level)</strong> para <strong>Normal</strong> ou <strong>Parágrafo</strong>. Caso contrário, adicione texto alternativo à imagem se ela não for decorativa.",
+    HEADING_UNPRONOUNCEABLE: "O texto do cabeçalho contém apenas símbolos ou caracteres impronunciáveis. Se você acha que isso é um erro devido a uma falha de copiar/colar, considere excluí-lo. <hr> <strong {B}>Texto do cabeçalho</strong> <strong {C}>%(TEXT)</strong>",
     PANEL_HEADING_MISSING_ONE: "Falta o cabeçalho 1!",
     PANEL_NO_HEADINGS: "Nenhuma cabeçalho encontrado.",
     // Links
@@ -216,7 +217,7 @@ const ptBR = {
     IMAGE_DECORATIVE: "A imagem é marcada como <strong>decorativa</strong> e será ignorada pela tecnologia assistiva. Se a imagem transmitir uma história, um clima ou informações importantes, não se esqueça de adicionar um texto alternativo.",
     IMAGE_DECORATIVE_CAROUSEL: "A imagem está marcada como decorativa, mas todas as imagens em um carrossel ou galeria devem incluir texto alternativo descritivo para garantir uma experiência equivalente para todos.",
     IMAGE_ALT_TOO_LONG: "A descrição do texto alternativo é <strong>muito longa</strong>. O texto alternativo deve ser conciso, mas significativo, como um <em>tweet</em> (cerca de 100 caracteres). Se essa for uma imagem complexa ou um gráfico, considere colocar a descrição longa da imagem no texto abaixo ou em um componente de acordeão. <hr> {ALT} <strong {B}>%(altLength) Caracteres</strong> <strong {C}>%(ALT_TEXT)</strong>",
-    IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+    IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
     LINK_ALT_MAYBE_BAD: "O link da imagem pode ter um texto alternativo que não fornece informações úteis ou não é descritivo. Certifique-se de que o texto alt descreve o destino do link. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     ALT_MAYBE_BAD: "O texto alt pode não fornecer informações úteis ou não ser descritivo. Melhore o texto alt a seguir: <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     // Form labels

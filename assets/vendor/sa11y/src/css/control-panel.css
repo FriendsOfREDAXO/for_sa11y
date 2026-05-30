@@ -261,6 +261,7 @@ audio {
   }
 }
 
+#panel-alert-preview .cp-none,
 #panel-alert-preview .close-tooltip {
   display: none;
 }
@@ -291,6 +292,13 @@ audio {
     display: list-item;
     padding-bottom: 5px;
     margin: 5px 10px 0 20px;
+  }
+
+  /* Do not bold. */
+  .good {
+    .colour {
+      font-weight: normal;
+    }
   }
 }
 

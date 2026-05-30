@@ -246,6 +246,7 @@ export default {
       'Fehlende Überschrift 1: Überschrift 1 sollte am Anfang des Hauptinhaltsbereichs stehen und ist die Hauptüberschrift, die den allgemeinen Zweck der Seite beschreibt. Erfahre mehr über <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Überschriften-Struktur.</a>',
     HEADING_EMPTY_WITH_IMAGE:
       'Die Überschrift hat keinen Text, enthält aber ein Bild. Wenn es sich nicht um eine Überschrift handelt, ändere das Format von <strong {C}>Überschrift %(level)</strong> zu <strong>Normal</strong> oder <strong>Absatz (p)</strong>. Andernfalls füge bitte einen Alt-Text zum Bild hinzu, wenn es nicht dekorativ ist.',
+    HEADING_UNPRONOUNCEABLE: 'Der Überschriftentext enthält nur Symbole oder nicht aussprechbare Zeichen. Wenn Sie vermuten, dass es sich hierbei um einen Fehler durch Kopieren und Einfügen handelt, sollten Sie ihn löschen. <hr> <strong {B}>Überschriftentext</strong> <strong {C}>%(TEXT)</strong>',
     PANEL_HEADING_MISSING_ONE: 'Fehlende Überschrift 1!',
     PANEL_NO_HEADINGS: 'Keine Überschriften gefunden.',
 
@@ -322,7 +323,7 @@ export default {
       'Die Beschreibung des Alt-Textes ist <strong>zu lang</strong>. Der Alt-Text sollte prägnant, aber aussagekräftig wie ein <em>Tweet</em> sein (etwa 100 Zeichen). Wenn es sich um ein komplexes Bild oder eine Grafik handelt, sollten Sie erwägen, die lange Beschreibung des Bildes in den Text darunter oder in eine Akkordeonkomponente zu integrieren. <hr> {ALT} <strong {B}>%(altLength) Zeichen</strong> <strong {C}>%(ALT_TEXT)</strong>',
     IMAGE_DECORATIVE_CAROUSEL:
       'Das Bild ist als dekorativ gekennzeichnet, aber alle Bilder in einem Karussell oder einer Galerie sollten beschreibenden Alt-Text enthalten, um ein gleichwertiges Erlebnis für alle zu gewährleisten.',
-    IMAGE_PASS: '{ALT} %(ALT_TEXT)',
+    IMAGE_PASS: '{ALT} <strong {C}>%(ALT_TEXT)</strong>',
     LINK_ALT_MAYBE_BAD:
       'Bildlink hat möglicherweise Alt-Text, der keine nützlichen Informationen liefert oder nicht beschreibend ist. Stellen Sie sicher, dass der Alt-Text das Ziel des Links beschreibt. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>',
     ALT_MAYBE_BAD:

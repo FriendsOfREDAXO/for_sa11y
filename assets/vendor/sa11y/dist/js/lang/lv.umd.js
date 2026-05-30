@@ -186,6 +186,7 @@
       HEADING_FIRST: 'Pirmais virsraksts lapā parasti ir 1. vai 2. virsraksts. Ar 1. virsrakstu jāsāk galvenā satura sadaļa, un tas ir galvenais virsraksts, kas raksturo lapas vispārējo mērķi. Uzziniet vairāk par <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Galveno virsrakstu struktūru.</a>',
       HEADING_MISSING_ONE: 'Trūkst 1. virsraksta. 1. virsrakstam jābūt galvenā satura laukuma sākumam, un tas ir galvenais virsraksts, kas apraksta lapas vispārējo mērķi. Uzziniet vairāk par <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Galveno struktūru.</a>',
       HEADING_EMPTY_WITH_IMAGE: "Virsrakstā nav teksta, bet ir attēls. Ja tas nav virsraksts, mainiet tā formātu no <strong {C}>Virsraksts %(level)</strong> uz <strong>Normāls</strong> vai <strong>Apakšsadaļa</strong>. Pretējā gadījumā pievienojiet attēlam alt tekstu, ja tas nav dekoratīvs.",
+      HEADING_UNPRONOUNCEABLE: "Virsraksta teksts satur tikai simbolus vai neizrunājamas rakstzīmes. Ja uzskatāt, at tā ir kļūda kopēšanas/ielīmēšanas kļūmes dēļ, apsveriet iespēju to dzēst. <hr> <strong {B}>Virsraksta teksts</strong> <strong {C}>%(TEXT)</strong>",
       PANEL_HEADING_MISSING_ONE: "Trūkst 1. pozīcijas!",
       PANEL_NO_HEADINGS: "Virsraksti nav atrasti.",
       // Links
@@ -226,7 +227,7 @@
       IMAGE_DECORATIVE: "Attēls ir atzīmēts kā <strong>dekoratīvs</strong>, un palīgtehnoloģijas to ignorēs. Ja attēls atspoguļo stāstu, noskaņu vai svarīgu informāciju, noteikti pievienojiet alt tekstu.",
       IMAGE_DECORATIVE_CAROUSEL: "Attēls ir atzīmēts kā dekoratīvs, taču visiem attēliem karuselē vai galerijā jāiekļauj aprakstošs alternatīvs teksts, lai nodrošinātu vienādu pieredzi visiem.",
       IMAGE_ALT_TOO_LONG: "Alt teksta apraksts ir <strong>pārāk garš</strong>. Alt tekstam ir jābūt īsam, bet jēgpilnam kā <em>tweet</em> (apmēram 100 rakstzīmes). Ja tas ir sarežģīts attēls vai grafiks, apsveriet iespēju ievietot garu attēla aprakstu tekstā zemāk vai akordeona komponentē. <hr> {ALT} <strong {B}>%(altLength) Rakstzīmes</strong> <strong {C}>%(ALT_TEXT)</strong>",
-      IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+      IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
       LINK_ALT_MAYBE_BAD: "Attēla saitei var būt alt teksts, kas nesniedz noderīgu informāciju vai nav aprakstošs. Pārliecinieties, ka alt teksts apraksta saites galamērķi. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       ALT_MAYBE_BAD: "Alt teksts var nesniegt noderīgu informāciju vai nebūt aprakstošs. Uzlabojiet šo alt tekstu: <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
       // Form labels

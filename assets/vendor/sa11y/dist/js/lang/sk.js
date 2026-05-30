@@ -179,6 +179,7 @@ const sk = {
     HEADING_FIRST: 'Prvý nadpis na stránke by mal byť zvyčajne nadpis 1 alebo 2. Nadpis 1 by mal byť začiatkom hlavnej časti obsahu a je to hlavný nadpis, ktorý opisuje celkový účel stránky. Viac informácií o <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">štruktúre nadpisov.</a>',
     HEADING_MISSING_ONE: 'Chýba nadpis 1. Nadpis 1 by mal byť začiatkom hlavnej oblasti obsahu a je to hlavný nadpis, ktorý opisuje celkový účel stránky. Viac informácií o <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">štruktúre nadpisov.</a>',
     HEADING_EMPTY_WITH_IMAGE: "Nadpis neobsahuje žiadny text, ale obsahuje obrázok. Ak to nie je nadpis, zmeňte jeho formát z <strong {C}>Nadpis %(level)</strong> na <strong>Normálny</strong> alebo <strong>Odsek</strong>. V opačnom prípade pridajte k obrázku alt text, ak nie je dekoratívny.",
+    HEADING_UNPRONOUNCEABLE: "Text nadpisu obsahuje iba symboly alebo nevysloviteľné znaky. Ak si myslíte, že ide o chybu spôsobenú chybou pri kopírovaní/vkladaní, zvážte jeho vymazanie. <hr> <strong {B}>Text nadpisu</strong> <strong {C}>%(TEXT)</strong>",
     PANEL_HEADING_MISSING_ONE: "Chýba položka 1!",
     PANEL_NO_HEADINGS: "Nenašli sa žiadne záhlavia.",
     // Links
@@ -219,7 +220,7 @@ const sk = {
     IMAGE_DECORATIVE: "Obrázok je označený ako <strong>dekoratívny</strong> a asistenčné technológie ho budú ignorovať. Ak obrázok sprostredkúva príbeh, náladu alebo dôležité informácie - nezabudnite pridať alt text.",
     IMAGE_DECORATIVE_CAROUSEL: "Obrázok je označený ako dekoratívny, ale všetky obrázky v kolotoči alebo galérii by mali obsahovať popisný alternatívny text, aby sa zabezpečil rovnocenný zážitok pre každého.",
     IMAGE_ALT_TOO_LONG: "Alt text popisu je <strong>príliš dlhý</strong>. Alt text by mal byť stručný, ale výstižný ako <em>tweet</em> (približne 100 znakov). Ak ide o zložitý obrázok alebo graf, zvážte umiestnenie dlhého popisu obrázka do textu pod ním alebo do akordeónového komponentu. <hr> {ALT} <strong {B}>%(altLength) Znakov</strong> <strong {C}>%(ALT_TEXT)</strong>",
-    IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+    IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
     LINK_ALT_MAYBE_BAD: "Odkaz na obrázok môže mať alternatívny text, ktorý neposkytuje užitočné informácie alebo nie je popisný. Uistite sa, že alt text popisuje cieľ odkazu. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     ALT_MAYBE_BAD: "Alt text nemusí poskytovať užitočné informácie alebo nie je popisný. Vylepšite nasledujúci alt text: <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     // Form labels

@@ -187,6 +187,7 @@ const nl = {
     HEADING_FIRST: 'De eerste kop op een pagina moet meestal een Kop 1 of Kop 2 zijn. Kop 1 moet het begin zijn van het hoofdgedeelte van de inhoud en is de belangrijkste kop die het algemene doel van de pagina beschrijft. Meer informatie over <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Koppenstructuur.</a>',
     HEADING_MISSING_ONE: 'Ontbrekende kop 1. Kop 1 moet het begin zijn van het hoofdgedeelte van de inhoud en is de belangrijkste kop die het algemene doel van de pagina beschrijft. Meer informatie over <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Koppenstructuur.</a>',
     HEADING_EMPTY_WITH_IMAGE: "Een kop heeft geen tekst, maar bevat een afbeelding. Als dit geen koptekst is, verander de opmaak dan van <strong {C}>Koptekst %(level)</strong> in <strong>Normaal</strong> of <strong>Paragraaf</strong>. Voeg anders alt-tekst toe aan de afbeelding als deze niet decoratief is.",
+    HEADING_UNPRONOUNCEABLE: "De koptekst bevat alleen symbolen of onuitspreekbare tekens. Als u denkt dat dit een fout is door een kopieer-/plakfout, overweeg dan om deze te verwijderen. <hr> <strong {B}>Koptekst</strong> <strong {C}>%(TEXT)</strong>",
     PANEL_HEADING_MISSING_ONE: "Kop 1 ontbreekt!",
     PANEL_NO_HEADINGS: "Geen koppen gevonden.",
     // Links
@@ -227,7 +228,7 @@ const nl = {
     IMAGE_DECORATIVE: "De afbeelding is gemarkeerd als <strong>decoratief</strong> en wordt genegeerd door ondersteunende technologie. Als de afbeelding een verhaal, stemming of belangrijke informatie overbrengt, voeg dan alt-tekst toe.",
     IMAGE_DECORATIVE_CAROUSEL: "Afbeelding is gemarkeerd als decoratief, maar alle afbeeldingen in een carrousel of galerij moeten een beschrijvende alt-tekst bevatten om een gelijkwaardige ervaring voor iedereen te garanderen.",
     IMAGE_ALT_TOO_LONG: "Alt-tekstbeschrijving is <strong>te lang</strong>. Alt-tekst moet beknopt zijn, maar toch betekenisvol, zoals een <em>tweet</em> (ongeveer 100 tekens). Als dit een complexe afbeelding of een grafiek is, overweeg dan om de lange beschrijving van de afbeelding in de tekst eronder te zetten of in een accordeoncomponent. <hr> {ALT} <strong {B}>%(altLength) Tekens</strong> <strong {C}>%(ALT_TEXT)</strong>",
-    IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+    IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
     LINK_ALT_MAYBE_BAD: "De afbeeldingslink heeft mogelijk een alt-tekst die geen nuttige informatie biedt of niet beschrijvend is. Zorg ervoor dat de alt-tekst de bestemming van de link beschrijft. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     ALT_MAYBE_BAD: "De alt-tekst biedt mogelijk geen nuttige informatie of is niet beschrijvend. Verbeter de volgende alt-tekst: <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     // Form labels

@@ -178,6 +178,7 @@ const et = {
     HEADING_FIRST: 'Lehekülje esimene pealkiri peaks tavaliselt olema pealkiri 1 või 2. Pealkiri 1 peaks olema peamise sisuosa algus ja on peamine pealkiri, mis kirjeldab lehe üldist eesmärki. Lisateave <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">pealkirjade struktuuri kohta.</a>',
     HEADING_MISSING_ONE: 'Puudub pealkiri 1. Pealkiri 1 peaks olema peamise sisuala algus ja on peamine pealkiri, mis kirjeldab lehe üldist eesmärki. Lisateave <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">pealkirja struktuur.</a>',
     HEADING_EMPTY_WITH_IMAGE: "Pealkiri ei sisalda teksti, kuid sisaldab pilti. Kui see ei ole pealkiri, muutke selle formaat <strong {C}>pealkiri %(level)</strong>-st <strong>normaalseks</strong> või <strong>paragrahviks</strong>. Vastasel juhul lisage pildile alt-tekst, kui see ei ole dekoratiivne.",
+    HEADING_UNPRONOUNCEABLE: "Pealkirja tekst sisaldab ainult sümboleid või hääldamatuid märke. Kui arvate, et see on kopeerimise/asendamise veast tingitud viga, kaaluge selle kustutamist. <hr> <strong {B}>Pealkirja tekst</strong> <strong {C}>%(TEXT)</strong>",
     PANEL_HEADING_MISSING_ONE: "Puudub rubriik 1!",
     PANEL_NO_HEADINGS: "Pealkirju ei leitud.",
     // Links
@@ -218,7 +219,7 @@ const et = {
     IMAGE_DECORATIVE: "Pilt on märgitud kui <strong>dekoratiivne</strong> ja abitehnoloogiad ignoreerivad seda. Kui pilt edastab lugu, meeleolu või olulist teavet - lisage kindlasti alt-tekst.",
     IMAGE_DECORATIVE_CAROUSEL: "Pilt on märgitud dekoratiivseks, kuid kõik karusselli või galerii pildid peaksid sisaldama kirjeldavat alternatiivteksti, et tagada kõigile võrdväärne kogemus.",
     IMAGE_ALT_TOO_LONG: "Alt-teksti kirjeldus on <strong>liiga pikk</strong>. Alt-tekst peaks olema lühike, kuid sisukas nagu <em>tweet</em> (umbes 100 tähemärki). Kui tegemist on keerulise pildi või graafikuga, kaaluge pildi pika kirjelduse paigutamist allolevasse teksti või akordionikomponenti. <hr> {ALT} <strong {B}>%(altLength) Tähemärki</strong> <strong {C}>%(ALT_TEXT)</strong>",
-    IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+    IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
     LINK_ALT_MAYBE_BAD: "Pildilink võib sisaldada alt-teksti, mis ei anna kasulikku teavet või ei ole kirjeldav. Veendu, et alt-tekst kirjeldaks lingi sihtkohta. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     ALT_MAYBE_BAD: "Alt-tekst ei pruugi anda kasulikku teavet või ei ole kirjeldav. Paranda järgmine alt-tekst: <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     // Form labels

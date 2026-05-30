@@ -180,6 +180,7 @@ const sl = {
     HEADING_FIRST: 'Prvi naslov na strani mora biti običajno naslov 1 ali 2. Naslov 1 mora biti začetek poglavja z glavno vsebino in je glavni naslov, ki opisuje splošni namen strani. Preberite več o <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Strukturi naslovov.</a>',
     HEADING_MISSING_ONE: 'Manjka naslov 1. Naslov 1 mora biti začetek glavnega vsebinskega področja in je glavni naslov, ki opisuje splošni namen strani. Preberite več o <a href="https://www.w3.org/WAI/tutorials/page-structure/headings/">Strukturi naslovov.</a>',
     HEADING_EMPTY_WITH_IMAGE: "Naslov nima besedila, vsebuje pa sliko. Če to ni naslov, spremenite njegovo obliko iz <strong {C}>Nadpis %(level)</strong> v <strong>Normalno</strong> ali <strong>Odstavek</strong>. V nasprotnem primeru sliki dodajte besedilo alt, če ni okrasno.",
+    HEADING_UNPRONOUNCEABLE: "Besedilo naslova vsebuje samo simbole ali neizgovorljive znake. Če mislite, da gre za napako zaradi hrošča pri kopiranju/lepljenju, razmislite o izbrisu. <hr> <strong {B}>Besedilo naslova</strong> <strong {C}>%(TEXT)</strong>",
     PANEL_HEADING_MISSING_ONE: "Manjka naslov 1!",
     PANEL_NO_HEADINGS: "Ni najdenih naslovov.",
     // Links
@@ -220,7 +221,7 @@ const sl = {
     IMAGE_DECORATIVE: "Slika je označena kot <strong>dekorativna</strong> in jo podporna tehnologija ne bo upoštevala. Če slika sporoča zgodbo, razpoloženje ali pomembne informacije, obvezno dodajte dodatno besedilo.",
     IMAGE_DECORATIVE_CAROUSEL: "Slika je označena kot dekorativna, vendar morajo vse slike v vrtiljaku ali galeriji vključevati opisno nadomestno besedilo, da se zagotovi enakovredna izkušnja za vse.",
     IMAGE_ALT_TOO_LONG: "Opis besedila Alt je <strong>predolg</strong>. Besedilo Alt mora biti jedrnato, vendar smiselno kot <em>tweet</em> (približno 100 znakov). Če gre za zapleteno sliko ali graf, razmislite o tem, da bi dolg opis slike umestili v spodnje besedilo ali komponento harmonike. <hr> {ALT} <strong {B}>%(altLength) Znakov</strong> <strong {C}>%(ALT_TEXT)</strong>",
-    IMAGE_PASS: "{ALT} %(ALT_TEXT)",
+    IMAGE_PASS: "{ALT} <strong {C}>%(ALT_TEXT)</strong>",
     LINK_ALT_MAYBE_BAD: "Povezava slike ima lahko nadomestno besedilo, ki ne zagotavlja koristnih informacij ali ni opisno. Preverite, ali nadomestno besedilo opisuje cilj povezave. <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     ALT_MAYBE_BAD: "Nadomestno besedilo morda ne zagotavlja koristnih informacij ali ni opisno. Izboljšajte naslednje nadomestno besedilo: <hr> {ALT} <strong {C}>%(ALT_TEXT)</strong>",
     // Form labels
