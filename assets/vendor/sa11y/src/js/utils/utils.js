@@ -101,7 +101,7 @@ export function isPresentational($el) {
  * @returns {boolean} True if tabindex is negative.
  */
 export function isNegativeTabindex($el) {
-  return $el && $el.tabIndex < 0;
+  return $el?.hasAttribute('tabindex') && $el.tabIndex < 0;
 }
 
 /**
@@ -147,8 +147,8 @@ export function isElementVisuallyHiddenOrHidden(element) {
  * @returns {string} The sanitized and trimmed string.
  */
 export function stripAllSpecialCharacters(string) {
-  if (!string) return '';
-  return string
+  if (typeof string !== 'string' && typeof string !== 'number') return '';
+  return String(string)
     .replace(/[^\p{L}\p{N}\s]/gu, '')
     .replace(/\s+/g, ' ')
     .trim();
@@ -201,6 +201,24 @@ const decodeURIs = (uri) => {
     return uri;
   }
 };
+
+/**
+ * Escapes HTML special characters in a string.
+ * @param {string} string The string to escape.
+ * @returns {string} The escaped string with HTML special characters replaced by their corresponding entities.
+ */
+export function escapeHTML(input) {
+  if (typeof input !== 'string' && typeof input !== 'number') return '';
+  const htmlEntities = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+    '`': '&#x60;',
+  };
+  return String(input).replace(/[&<>"'`]/g, (match) => htmlEntities[match]);
+}
 
 /**
  * Sanitizes a URL to prevent XSS and ensure valid formatting.
@@ -516,8 +534,8 @@ let parentCache = new WeakMap();
  * @returns {Element|null} The matching parent or null.
  */
 export function getCachedClosest(element, selector) {
-  // Validate element.
-  if (!(element instanceof Element)) return null;
+  // Note: `instanceof Element` is unavailable across frames.
+  if (element?.nodeType !== 1) return null;
 
   // Validate selector.
   if (typeof selector !== 'string' || selector.trim() === '') return null;
@@ -554,10 +572,8 @@ export function resetParentCache() {
  * @returns {string} String with line breaks and extra white space removed.
  */
 export function removeWhitespace(string) {
-  return string
-    .replace(/[\r\n]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  if (typeof string !== 'string' && typeof string !== 'number') return '';
+  return String(string).replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -566,8 +582,9 @@ export function removeWhitespace(string) {
  * @returns {string} The string with control characters removed.
  */
 export function normalizeString(string) {
+  if (typeof string !== 'string' && typeof string !== 'number') return '';
   // biome-ignore lint/suspicious/noControlCharactersInRegex: Strip junk icons/PUA characters.
-  return removeWhitespace(string.replace(/[\u0000-\u001F\u007F-\u009F]/g, ''));
+  return removeWhitespace(String(string).replace(/[\u0000-\u001F\u007F-\u009F]/g, ''));
 }
 
 /**
@@ -577,8 +594,9 @@ export function normalizeString(string) {
  * @returns Truncated string.
  */
 export function truncateString(string, maxLength) {
-  const truncatedString = string.substring(0, maxLength).trimEnd();
-  return string.length > maxLength ? `${truncatedString}...` : string;
+  if (typeof string !== 'string' && typeof string !== 'number') return '';
+  const truncatedString = String(string).substring(0, maxLength).trimEnd();
+  return string.length > maxLength ? `${truncatedString}...` : String(string);
 }
 
 /**
