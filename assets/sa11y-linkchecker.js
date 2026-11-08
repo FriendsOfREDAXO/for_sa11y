@@ -14,8 +14,11 @@
  * - Deduplicates links by resolved URL
  * - Caches results in sessionStorage (5 min TTL)
  * - Same-origin: full HTTP status (GET fallback if HEAD blocked)
- * - Cross-origin (opt-in): detects unreachable servers (DNS/network errors)
- *   and opaque responses (server responded, status unreadable due to CORS)
+ * - Cross-origin (opt-in): checked on the server (rex-api-call=for_sa11y_link_check) with the real
+ *   HTTP status. The browser cannot read foreign status codes (CORS), and mixed content, tracking
+ *   protection or content blockers made reachable links look broken.
+ * - Only clear cases are reported: 404, 410, 5xx (except 503) and unknown domains. 401/403/429/503
+ *   and timeouts are usually bot protection, not broken links.
  */
 (function () {
     'use strict';
@@ -30,16 +33,30 @@
     /* ------------------------------------------------------------------ */
     var IGNORE      = configEl.getAttribute('data-ignore') || '';
     var CHECK_EXT   = configEl.getAttribute('data-external') === '1';
-    var CONCURRENCY = 3;
+    var ENDPOINT    = configEl.getAttribute('data-endpoint') || '';
+    var CONCURRENCY = 6;
     var TIMEOUT_MS  = 8000;
     var CACHE_TTL   = 5 * 60 * 1000; // 5 minutes
-    var CACHE_PFX   = 'sa11y_lc_';
+    var CACHE_PFX   = 'sa11y_lc2_';
 
     /* ------------------------------------------------------------------ */
     /* State                                                                */
     /* ------------------------------------------------------------------ */
     var isSecondPass  = false;   // true when triggered by our own resetAll+checkAll
     var checkRunning  = false;   // prevent concurrent background runs
+    var sameTarget    = {};      // href without #fragment => all anchors with this target
+
+    /* Mark or unmark every anchor that points to the same target */
+    function markBroken(anchor, status) {
+        var group = sameTarget[anchor.href.split('#')[0]] || [anchor];
+        group.forEach(function (a) {
+            if (status === null) {
+                a.removeAttribute('data-sa11y-broken');
+            } else {
+                a.setAttribute('data-sa11y-broken', String(status));
+            }
+        });
+    }
 
     /* ------------------------------------------------------------------ */
     /* SessionStorage cache                                                 */
@@ -90,7 +107,7 @@
     }
 
     function isBroken(status) {
-        return status >= 400 || status === -1 || status === -2;
+        return status === 404 || status === 410 || (status >= 500 && status !== 503) || status === -2;
     }
 
     /* ------------------------------------------------------------------ */
@@ -125,40 +142,47 @@
             if (shouldSkip(a.getAttribute('href'))) {
                 return false;
             }
-            if (!CHECK_EXT && isExternal(a)) {
+            if ((!CHECK_EXT || !ENDPOINT) && isExternal(a)) {
                 return false;
             }
             return true;
         });
 
-        /* Deduplicate by resolved href */
-        var seen = new Set();
-        return allAnchors.filter(function (a) {
-            var href = a.href;
-            if (seen.has(href)) {
-                return false;
+        /* Deduplicate by resolved href without #fragment: one request per page, result for all anchors */
+        var groups = {};
+        var unique = [];
+        allAnchors.forEach(function (a) {
+            var key = a.href.split('#')[0];
+            if (!groups[key]) {
+                groups[key] = [];
+                unique.push(a);
             }
-            seen.add(href);
-            return true;
+            groups[key].push(a);
         });
+        sameTarget = groups;
+        return unique;
     }
 
     /* ------------------------------------------------------------------ */
     /* Single link check                                                    */
     /* ------------------------------------------------------------------ */
     function checkLink(anchor) {
-        var href = anchor.href;
+        var href = anchor.href.split('#')[0];
         var ext  = isExternal(anchor);
 
         /* Cache hit */
         var cached = cacheGet(href);
         if (cached !== null) {
             if (isBroken(cached.status)) {
-                anchor.setAttribute('data-sa11y-broken', String(cached.status));
+                markBroken(anchor, cached.status);
             } else {
-                anchor.removeAttribute('data-sa11y-broken');
+                markBroken(anchor, null);
             }
             return Promise.resolve();
+        }
+
+        if (ext) {
+            return checkExternal(anchor, href);
         }
 
         var controller = new AbortController();
@@ -171,11 +195,6 @@
             redirect: 'follow',
         };
 
-        /* External: no-cors → opaque response (server up) or TypeError (server down) */
-        if (ext) {
-            opts.mode = 'no-cors';
-        }
-
         return fetch(href, opts)
             .then(function (res) {
                 clearTimeout(timerId);
@@ -183,7 +202,7 @@
                 /* Opaque = external server responded – cannot read status, assume OK */
                 if (res.type === 'opaque') {
                     cacheSet(href, 0);
-                    anchor.removeAttribute('data-sa11y-broken');
+                    markBroken(anchor, null);
                     return;
                 }
 
@@ -214,9 +233,9 @@
                         }
                         cacheSet(href, r.status);
                         if (isBroken(r.status)) {
-                            anchor.setAttribute('data-sa11y-broken', String(r.status));
+                            markBroken(anchor, r.status);
                         } else {
-                            anchor.removeAttribute('data-sa11y-broken');
+                            markBroken(anchor, null);
                         }
                     }).catch(function (err) {
                         if (getTimerId) {
@@ -228,17 +247,39 @@
 
                 cacheSet(href, res.status);
                 if (isBroken(res.status)) {
-                    anchor.setAttribute('data-sa11y-broken', String(res.status));
+                    markBroken(anchor, res.status);
                 } else {
-                    anchor.removeAttribute('data-sa11y-broken');
+                    markBroken(anchor, null);
                 }
             })
-            .catch(function (err) {
+            .catch(function () {
+                /* Netzwerkfehler auf der eigenen Seite (z. B. Zeitüberschreitung) nicht als defekt melden */
                 clearTimeout(timerId);
+                cacheSet(href, -1);
+                markBroken(anchor, null);
+            });
+    }
 
-                var errStatus = (err && err.name === 'AbortError') ? -1 : -2;
-                cacheSet(href, errStatus);
-                anchor.setAttribute('data-sa11y-broken', String(errStatus));
+    /* External link: ask the server for the real status */
+    function checkExternal(anchor, href) {
+        var sep = ENDPOINT.indexOf('?') === -1 ? '?' : '&';
+        return fetch(ENDPOINT + sep + 'url=' + encodeURIComponent(href), {
+            credentials: 'same-origin',
+            cache: 'no-store',
+            headers: { 'Accept': 'application/json' },
+        })
+            .then(function (res) { return res.ok ? res.json() : { status: 0 }; })
+            .then(function (data) {
+                var status = parseInt(data && data.status, 10) || 0;
+                cacheSet(href, status);
+                if (isBroken(status)) {
+                    markBroken(anchor, status);
+                } else {
+                    markBroken(anchor, null);
+                }
+            })
+            .catch(function () {
+                markBroken(anchor, null);
             });
     }
 
@@ -288,14 +329,14 @@
         var messages = {
             en: {
                 timeout: 'Link check: Timeout \u2013 the link did not respond within 8 seconds.',
-                unreachable: 'Link check: Server unreachable (DNS error or connection refused).',
+                unreachable: 'Link check: Domain not found (DNS) \u2013 the address does not exist.',
                 notFound: 'Link check: Link not found (HTTP ',
                 serverError: 'Link check: Server error (HTTP ',
                 unknown: 'Link check: This link appears to be unreachable.',
             },
             de: {
                 timeout: 'Link-Check: Timeout \u2013 der Link hat nicht innerhalb von 8 Sekunden geantwortet.',
-                unreachable: 'Link-Check: Server nicht erreichbar (DNS-Fehler oder Verbindung abgewiesen).',
+                unreachable: 'Link-Check: Domain nicht gefunden (DNS) \u2013 diese Adresse gibt es nicht.',
                 notFound: 'Link-Check: Link nicht gefunden (HTTP ',
                 serverError: 'Link-Check: Serverfehler (HTTP ',
                 unknown: 'Link-Check: Dieser Link scheint nicht erreichbar zu sein.',
@@ -374,8 +415,11 @@
         });
 
         var anchors = collectAnchors();
+        var external = anchors.filter(isExternal);
+        var internal = anchors.filter(function (a) { return !isExternal(a); });
 
-        runQueue(anchors, CONCURRENCY)
+        /* interne und externe Links parallel, damit Inhaltslinks nicht hinter der Navigation warten */
+        Promise.all([runQueue(external, CONCURRENCY), runQueue(internal, CONCURRENCY)])
             .then(function () {
                 checkRunning = false;
 

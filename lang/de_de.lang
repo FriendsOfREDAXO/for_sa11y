@@ -96,9 +96,9 @@ for_sa11y_version_up_to_date = for_sa11y {0} ist aktuell. ✅
 
 # Link-Checker
 for_sa11y_link_checker = Link-Checker aktivieren
-for_sa11y_link_checker_notice = Prüft alle Links auf der Seite live per HEAD-Request im Hintergrund. Defekte Links erhalten ein rotes Badge mit dem HTTP-Statuscode. Läuft nicht-blockierend nach dem Seitenaufbau.
+for_sa11y_link_checker_notice = Prüft die Links der Seite im Hintergrund. Gemeldet werden nur eindeutige Fälle: Seite nicht gefunden (404/410), Serverfehler (5xx außer 503) und Domains, die es nicht gibt. Antworten wie 403, 429 oder 503 und Zeitüberschreitungen sind meist Bot-Schutz und werden nicht gemeldet.
 for_sa11y_link_checker_check_external = Externe Links prüfen
-for_sa11y_link_checker_check_external_notice = Prüft auch Links zu anderen Domains. Bei externen Links kann nur erkannt werden, ob der Server <em>komplett</em> nicht erreichbar ist (Netzwerkfehler). CORS verhindert das Lesen von Statuscodes.
+for_sa11y_link_checker_check_external_notice = Externe Links prüft der Server (nur für angemeldete Backend-Nutzer, keine internen Netzadressen) und liefert den echten HTTP-Status. Ergebnisse werden eine Stunde zwischengespeichert.
 for_sa11y_link_checker_ignore = Ignorierte Selektoren (Link-Checker)
 for_sa11y_link_checker_ignore_notice = CSS-Selektoren, deren Links vom Link-Checker ausgeschlossen werden sollen. Kommagetrennt, z.B. <code>nav a, .footer a, .breadcrumb a</code>
 

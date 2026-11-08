@@ -1,5 +1,20 @@
 # Changelog
 
+## 5.2.1 – 2026-11-08
+
+### Link-Checker korrigiert
+- **Externe Links prüft jetzt der Server** (`rex-api-call=for_sa11y_link_check`) mit dem echten HTTP-Status. Bisher fragte der Browser im `no-cors`-Modus an. Jeder blockierte Abruf galt dann als „Server nicht erreichbar“, z. B. `http://`-Links auf `https`-Seiten, Abrufe, die Safaris Tracking-Schutz oder ein Inhaltsblocker stoppt, oder Server, die HEAD abweisen. Das führte zu Fehltreffern bei erreichbaren Links.
+- **Sicherer Endpunkt:**
+  - Er ist nur für angemeldete Backend-Nutzer mit Sa11y-Recht nutzbar.
+  - Er erlaubt nur `http`/`https`.
+  - Private und reservierte Netze werden abgelehnt, auch nach Weiterleitungen.
+  - Ergebnisse werden 1 Stunde zwischengespeichert.
+  - Die Anfragen laufen über cURL, sodass keine Log-Warnungen bei `http`-Links entstehen.
+- **Nur eindeutige Fälle melden:** 404, 410, 5xx außer 503 und unbekannte Domains. 401, 403, 429, 503 und Zeitüberschreitungen sind meist Bot-Schutz und werden nicht mehr gemeldet.
+- **Schneller:**
+  - Links auf dieselbe Seite mit unterschiedlichen Sprungmarken werden nur einmal geprüft.
+  - Interne und externe Links laufen parallel in eigenen Warteschlangen mit je 6 Anfragen.
+
 ## 5.2.0 – 2026-11-08
 
 ### Neu

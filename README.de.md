@@ -131,34 +131,37 @@ fixedRoots: '.sticky-header, #cookie-bar',
 
 ## Link-Checker (opt-in)
 
-Das AddOn enthält einen optionalen **Live-Link-Checker**, der vollständig im Browser läuft – kein Server-seitiges Crawling erforderlich.
+Das AddOn enthält einen optionalen **Live-Link-Checker**. Er prüft die Links der angezeigten Seite und meldet defekte Links direkt im Sa11y-Panel.
 
 ### Funktionsweise
 
-Nach der Aktivierung läuft der Link-Checker asynchron im Hintergrund und nutzt die native `customChecks: "listen"`-API von Sa11y.
-Defekte Links werden direkt **im Sa11y-Fehlerpanel** gemeldet und nutzen dasselbe Annotations-System wie alle anderen Prüfungen.
-Jeder defekte Link erhält einen roten Fehler-Annotations-Button; ein Klick öffnet einen Tooltip mit einer verständlichen Erklärung inkl. HTTP-Statuscode:
+Nach der Aktivierung läuft der Link-Checker im Hintergrund und nutzt die `customChecks: "listen"`-API von Sa11y. Sa11y zeigt seine Ergebnisse sofort, defekte Links kommen nach den Prüfungen dazu. Jeder defekte Link erhält einen roten Fehler-Button mit Erklärung:
 
-- **HTTP 404** – Link nicht gefunden
-- **HTTP 5xx** – Serverfehler
-- **Timeout** – Keine Antwort innerhalb von 8 Sekunden
-- **Netzwerkfehler** – Server nicht erreichbar (DNS-Fehler, Verbindung abgewiesen)
+- **HTTP 404 / 410** – Seite nicht gefunden
+- **HTTP 5xx** (außer 503) – Serverfehler
+- **Domain nicht gefunden** – die Adresse existiert nicht (DNS)
+
+Nicht gemeldet werden 401, 403, 429, 503 und Zeitüberschreitungen. Das sind meist Bot-Schutz oder kurze Störungen, keine defekten Links.
 
 ### Konfigurationsoptionen
 
 | Einstellung | Beschreibung |
 |---|---|
 | **Link-Checker aktivieren** | Feature ein-/ausschalten |
-| **Externe Links prüfen** | Auch Cross-Origin-URLs prüfen (erkennt nicht erreichbare Server; Statuscode nicht lesbar wegen CORS) |
-| **Ignorier-Selektoren** | Kommagetrennte CSS-Selektoren, die vom Check ausgeschlossen werden (z. B. `nav a, .footer a`) |
+| **Externe Links prüfen** | Links zu anderen Domains über den Server prüfen (echter HTTP-Status) |
+| **Ignorier-Selektoren** | Kommagetrennte CSS-Selektoren, die vom Check ausgeschlossen werden (z. B. `nav a, .footer a`) |
 
 ### Technische Details
 
-- **Nicht-blockierend** – nutzt die native `customChecks: "listen"`-API von Sa11y; Sa11y rendert sofort, defekte Links werden nach den Netzwerk-Checks nachgereicht
-- **HEAD-Request zuerst**, GET-Fallback für Server, die HEAD ablehnen (HTTP 405)
-- **Session-Cache** – Ergebnisse werden für 5 Minuten im `sessionStorage` gespeichert; bei SPA-Navigation werden bereits geprüfte Links nicht erneut angefragt
-- **Parallelität** – maximal 3 gleichzeitige Requests
-- **Externe Links** – werden im `no-cors`-Modus geprüft: eine opake Antwort bedeutet, der Server ist erreichbar; ein `TypeError` bedeutet, er ist nicht erreichbar (Statuscode nicht lesbar wegen CORS)
+- **Interne Links** prüft der Browser (HEAD, GET-Fallback bei 405).
+- **Externe Links** prüft der Server über `index.php?rex-api-call=for_sa11y_link_check`. Der Browser kann den Status fremder Seiten wegen CORS nicht lesen. Gemischte Inhalte (`http://` auf `https://`-Seiten), Tracking-Schutz und Inhaltsblocker ließen erreichbare Links bisher defekt aussehen.
+- **Sicherheit des Endpunkts:**
+  - Er ist nur für angemeldete Backend-Nutzer mit Sa11y-Recht nutzbar.
+  - Er erlaubt nur `http`/`https`.
+  - Ziele in privaten und reservierten Netzen werden abgelehnt, auch nach Weiterleitungen, die einzeln geprüft werden.
+- **Cache:** Der Server speichert Ergebnisse 1 Stunde (`var/cache/addons/for_sa11y/links/`), der Browser 5 Minuten im `sessionStorage`.
+- **Ein Request pro Ziel:** Links auf dieselbe Seite mit unterschiedlichen Sprungmarken (`#…`) werden einmal geprüft.
+- **Parallelität:** interne und externe Links laufen in getrennten Warteschlangen mit je 6 Requests.
 
 ---
 

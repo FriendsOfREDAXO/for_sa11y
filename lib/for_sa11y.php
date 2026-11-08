@@ -124,7 +124,10 @@ class Sa11y
 
         // Link-Checker Script
         if ((int) $addon->getConfig('link_checker', 0) === 1) {
-            $js .= '<div id="sa11y-lc-config" hidden data-ignore="' . $lcIgnore . '" data-external="' . $lcExternal . '"></div>';
+            // Externe Links prüft der Server (echter HTTP-Status statt CORS-Raten im Browser)
+            $lcEndpoint = rex_url::frontendController(['rex-api-call' => 'for_sa11y_link_check'], false);
+            $lcEndpoint = str_starts_with($lcEndpoint, './') ? substr($lcEndpoint, 1) : $lcEndpoint;
+            $js .= '<div id="sa11y-lc-config" hidden data-ignore="' . $lcIgnore . '" data-external="' . $lcExternal . '" data-endpoint="' . rex_escape($lcEndpoint) . '"></div>';
             // Nonce auch hier: wird der Link-Checker von einer CSP blockiert, wartet Sa11y im Modus „listen“
             // bis zu 20 Sekunden, bevor es Markierungen setzt.
             $js .= '<script' . $nonce . ' src="' . $addon->getAssetsUrl('sa11y-linkchecker.js') . '"></script>';
