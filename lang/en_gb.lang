@@ -220,3 +220,6 @@ for_sa11y_checks_group_developer = Developer
 for_sa11y_checks_group_contrast = Contrast
 
 root_empty = Please enter a selector, e.g. <code>body</code> or <code>main</code>.
+
+for_sa11y_link_checker_root = Link checker only in these areas
+for_sa11y_link_checker_root_notice = CSS selectors of the areas whose links are checked, comma-separated, e.g. <code>main, .kb-app__article-body</code>. Empty = Sa11y check area ("Check from selector"). This keeps header, navigation and footer out.

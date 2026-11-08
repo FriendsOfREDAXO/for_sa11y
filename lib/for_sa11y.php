@@ -76,6 +76,9 @@ class Sa11y
         $linkCheckerOptions = '';
         if ((int) $addon->getConfig('link_checker', 0) === 1) {
             $lcIgnore   = rex_escape((string) $addon->getConfig('link_checker_ignore', ''));
+            // Bereich für den Link-Checker; leer = Prüfbereich von Sa11y („Prüfen ab Selektor“)
+            $lcRoot     = trim((string) $addon->getConfig('link_checker_root', ''));
+            $lcRoot     = rex_escape('' !== $lcRoot ? $lcRoot : (string) $addon->getConfig('root', 'body'));
             $lcExternal = (int) $addon->getConfig('link_checker_check_external', 0) === 1 ? '1' : '0';
             // "listen" mode: Sa11y wartet auf sa11y-resume Event vom Link-Checker.
             // delayCustomCheck: 20s Timeout damit Sa11y nicht abbricht während Netzwerk-Checks laufen.
@@ -127,7 +130,7 @@ class Sa11y
             // Externe Links prüft der Server (echter HTTP-Status statt CORS-Raten im Browser)
             $lcEndpoint = rex_url::frontendController(['rex-api-call' => 'for_sa11y_link_check'], false);
             $lcEndpoint = str_starts_with($lcEndpoint, './') ? substr($lcEndpoint, 1) : $lcEndpoint;
-            $js .= '<div id="sa11y-lc-config" hidden data-ignore="' . $lcIgnore . '" data-external="' . $lcExternal . '" data-endpoint="' . rex_escape($lcEndpoint) . '"></div>';
+            $js .= '<div id="sa11y-lc-config" hidden data-root="' . $lcRoot . '" data-ignore="' . $lcIgnore . '" data-external="' . $lcExternal . '" data-endpoint="' . rex_escape($lcEndpoint) . '"></div>';
             // Nonce auch hier: wird der Link-Checker von einer CSP blockiert, wartet Sa11y im Modus „listen“
             // bis zu 20 Sekunden, bevor es Markierungen setzt.
             $js .= '<script' . $nonce . ' src="' . $addon->getAssetsUrl('sa11y-linkchecker.js') . '"></script>';

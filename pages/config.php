@@ -343,6 +343,10 @@ echo '<div id="for-sa11y-section-links">' . $fragment->parse('core/page/section.
     $select->addOption($package->i18n('for_sa11y_active_false'), 0);
     $field->setNotice($package->i18n('for_sa11y_link_checker_check_external_notice'));
 
+    $field = $form->addInputField('text', 'link_checker_root', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_link_checker_root'));
+    $field->setNotice($package->i18n('for_sa11y_link_checker_root_notice'));
+
     $field = $form->addInputField('text', 'link_checker_ignore', null, ['class' => 'form-control']);
     $field->setLabel($package->i18n('for_sa11y_link_checker_ignore'));
     $field->setNotice($package->i18n('for_sa11y_link_checker_ignore_notice'));

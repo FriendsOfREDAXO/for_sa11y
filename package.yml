@@ -62,6 +62,7 @@ default_config:
     exclude_url_params: ''
     link_checker: 0
     link_checker_check_external: 0
+    link_checker_root: ''
     link_checker_ignore: 'nav a, .footer a'
     developer_plugin: 0
     developer_checks_on_by_default: 0

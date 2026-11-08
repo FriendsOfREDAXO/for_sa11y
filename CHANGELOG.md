@@ -14,6 +14,7 @@
 - **Alle Links in einer Anfrage**: Der Browser schickt alle Links der Seite gesammelt an den Server. Der prüft sie parallel per `curl_multi`, 143 Links in etwa 11 Sekunden statt 30 bis 40. Bisher erschienen die Markierungen beim ersten Aufruf zu spät und waren oft erst nach dem Neuladen zu sehen.
 - **Interne Links** prüft jetzt ebenfalls der Server, so wie ein Besucher ohne Anmeldung sie sieht. Ein Link auf eine Offline-Seite gilt also als defekt.
 - Links auf dieselbe Seite mit unterschiedlichen Sprungmarken werden nur einmal geprüft.
+- **Neu: „Link-Checker nur in diesen Bereichen“**: Die Prüfung lässt sich per CSS-Selektor auf Bereiche eingrenzen, z. B. nur den Inhalt. Leer bedeutet der Prüfbereich von Sa11y.
 
 ## 5.2.0 – 2026-11-08
 

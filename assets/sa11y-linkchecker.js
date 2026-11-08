@@ -31,6 +31,7 @@
     /* ------------------------------------------------------------------ */
     /* Config                                                               */
     /* ------------------------------------------------------------------ */
+    var ROOT        = configEl.getAttribute('data-root') || 'body';
     var IGNORE      = configEl.getAttribute('data-ignore') || '';
     var CHECK_EXT   = configEl.getAttribute('data-external') === '1';
     var ENDPOINT    = configEl.getAttribute('data-endpoint') || '';
@@ -114,7 +115,24 @@
     /* Collect checkable anchors from the page                             */
     /* ------------------------------------------------------------------ */
     function collectAnchors() {
-        var allAnchors = Array.from(document.querySelectorAll('a[href]'));
+        /* Nur Links in den eingestellten Bereichen (kommagetrennte Selektoren); ungültig/leer = ganze Seite */
+        var roots = [];
+        try {
+            roots = Array.from(document.querySelectorAll(ROOT));
+        } catch (e) {
+            roots = [];
+        }
+        if (!roots.length) {
+            roots = [document.body];
+        }
+        var allAnchors = [];
+        roots.forEach(function (root) {
+            root.querySelectorAll('a[href]').forEach(function (a) {
+                if (allAnchors.indexOf(a) === -1) {
+                    allAnchors.push(a);
+                }
+            });
+        });
 
         /* Apply ignore selectors */
         var ignored = new Set();
