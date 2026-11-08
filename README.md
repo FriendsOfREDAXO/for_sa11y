@@ -152,7 +152,7 @@ Once enabled, the link checker runs in the background via Sa11y's `customChecks:
 
 ### Technical details
 
-- **Internal links** are checked by the browser (HEAD, GET fallback on 405).
+- **All links in one request:** the browser sends the links to the server, which checks them in parallel (`curl_multi`). Internal links are checked the way a visitor without login sees them.
 - **External links** are checked by the server via `index.php?rex-api-call=for_sa11y_link_check`. The browser cannot read foreign status codes (CORS). Mixed content (`http://` on `https://` pages), tracking protection and content blockers made reachable links look broken.
 - **Endpoint security:**
   - It works only for logged-in backend users with the Sa11y permission.
@@ -160,7 +160,6 @@ Once enabled, the link checker runs in the background via Sa11y's `customChecks:
   - Targets in private and reserved networks are rejected, also after redirects, which are checked one by one.
 - **Cache:** the server keeps results for 1 hour (`var/cache/addons/for_sa11y/links/`), the browser for 5 minutes in `sessionStorage`.
 - **One request per target:** links to the same page with different fragments (`#…`) are checked once.
-- **Concurrency:** internal and external links run in separate queues with 6 requests each.
 
 ---
 

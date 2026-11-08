@@ -153,7 +153,7 @@ Nicht gemeldet werden 401, 403, 429, 503 und Zeitüberschreitungen. Das sind mei
 
 ### Technische Details
 
-- **Interne Links** prüft der Browser (HEAD, GET-Fallback bei 405).
+- **Alle Links in einer Anfrage:** Der Browser schickt die Links gesammelt an den Server, der sie parallel prüft (`curl_multi`). Interne Links prüft er so, wie ein Besucher ohne Anmeldung sie sieht.
 - **Externe Links** prüft der Server über `index.php?rex-api-call=for_sa11y_link_check`. Der Browser kann den Status fremder Seiten wegen CORS nicht lesen. Gemischte Inhalte (`http://` auf `https://`-Seiten), Tracking-Schutz und Inhaltsblocker ließen erreichbare Links bisher defekt aussehen.
 - **Sicherheit des Endpunkts:**
   - Er ist nur für angemeldete Backend-Nutzer mit Sa11y-Recht nutzbar.
@@ -161,7 +161,6 @@ Nicht gemeldet werden 401, 403, 429, 503 und Zeitüberschreitungen. Das sind mei
   - Ziele in privaten und reservierten Netzen werden abgelehnt, auch nach Weiterleitungen, die einzeln geprüft werden.
 - **Cache:** Der Server speichert Ergebnisse 1 Stunde (`var/cache/addons/for_sa11y/links/`), der Browser 5 Minuten im `sessionStorage`.
 - **Ein Request pro Ziel:** Links auf dieselbe Seite mit unterschiedlichen Sprungmarken (`#…`) werden einmal geprüft.
-- **Parallelität:** interne und externe Links laufen in getrennten Warteschlangen mit je 6 Requests.
 
 ---
 

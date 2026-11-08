@@ -260,6 +260,45 @@
             });
     }
 
+    /* All links in one request: the server checks them in parallel */
+    function checkBatch(anchors) {
+        var todo = [];
+        anchors.forEach(function (a) {
+            var href = a.href.split('#')[0];
+            var cached = cacheGet(href);
+            if (cached !== null) {
+                markBroken(a, isBroken(cached.status) ? cached.status : null);
+            } else {
+                todo.push(a);
+            }
+        });
+        if (!todo.length) {
+            return Promise.resolve();
+        }
+        var urls = todo.map(function (a) { return a.href.split('#')[0]; });
+        return fetch(ENDPOINT, {
+            method: 'POST',
+            credentials: 'same-origin',
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ urls: urls }),
+        })
+            .then(function (res) { return res.ok ? res.json() : { results: {} }; })
+            .then(function (data) {
+                var results = (data && data.results) || {};
+                todo.forEach(function (a) {
+                    var href = a.href.split('#')[0];
+                    if (!Object.prototype.hasOwnProperty.call(results, href)) {
+                        return;
+                    }
+                    var status = parseInt(results[href], 10) || 0;
+                    cacheSet(href, status);
+                    markBroken(a, isBroken(status) ? status : null);
+                });
+            })
+            .catch(function () { /* Netzwerkfehler: nichts melden */ });
+    }
+
     /* External link: ask the server for the real status */
     function checkExternal(anchor, href) {
         var sep = ENDPOINT.indexOf('?') === -1 ? '?' : '&';
@@ -415,11 +454,10 @@
         });
 
         var anchors = collectAnchors();
-        var external = anchors.filter(isExternal);
-        var internal = anchors.filter(function (a) { return !isExternal(a); });
 
-        /* interne und externe Links parallel, damit Inhaltslinks nicht hinter der Navigation warten */
-        Promise.all([runQueue(external, CONCURRENCY), runQueue(internal, CONCURRENCY)])
+        /* Mit Server-Endpunkt: alle Links in einer Anfrage (parallel auf dem Server, wenige Sekunden).
+           Ohne Endpunkt: wie bisher einzeln im Browser (nur eigene Seiten). */
+        (ENDPOINT ? checkBatch(anchors) : runQueue(anchors, CONCURRENCY))
             .then(function () {
                 checkRunning = false;
 

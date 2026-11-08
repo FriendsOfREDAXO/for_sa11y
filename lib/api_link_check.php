@@ -1,17 +1,18 @@
 <?php
 
 /**
- * Link-Checker: externe Links serverseitig prüfen.
+ * Link-Checker: Links serverseitig prüfen (alle Links einer Seite in einer Anfrage, parallel per cURL).
  *
- * Der Browser kann den Status fremder Seiten nicht lesen (CORS). Gemischte Inhalte (http auf https-Seite),
- * Tracking-Schutz und Inhaltsblocker lassen Abrufe zudem scheitern, obwohl die Seite erreichbar ist.
- * Deshalb fragt das Skript hier an und bekommt den echten HTTP-Status.
+ * Der Browser kann den Status fremder Seiten nicht lesen (CORS); gemischte Inhalte, Tracking-Schutz und
+ * Inhaltsblocker ließen erreichbare Links defekt aussehen. Eigene Seiten einzeln im Browser abzurufen dauerte
+ * bei vielen Links zu lange. Deshalb prüft der Server alle Links gleichzeitig – so, wie ein Besucher ohne
+ * Anmeldung sie sieht (ein Link auf eine Offline-Seite gilt also als defekt).
+ *
+ * Aufruf: POST JSON {"urls": [...]} → {"results": {"<url>": <status>}}  (auch GET ?url=… für eine einzelne URL)
+ * Status: HTTP-Code, -1 Zeitüberschreitung/Verbindungsfehler, -2 Domain unbekannt, -3 abgelehnt (ungültig/intern).
  *
  * Nur für angemeldete Backend-Nutzer mit Sa11y-Recht. Ziele in privaten oder reservierten Netzen werden
- * abgelehnt (auch nach Weiterleitungen), damit der Endpunkt nicht ins interne Netz fragen kann.
- *
- * Antwort: {"status": <int>} – HTTP-Status, -1 Zeitüberschreitung/Verbindungsfehler, -2 Domain unbekannt,
- * -3 abgelehnt (ungültig/intern).
+ * abgelehnt, auch nach Weiterleitungen (jede Station wird geprüft), damit der Endpunkt nicht ins interne Netz fragt.
  */
 class rex_api_for_sa11y_link_check extends rex_api_function
 {
@@ -19,25 +20,52 @@ class rex_api_for_sa11y_link_check extends rex_api_function
 
     private const TIMEOUT = 8;
     private const MAX_REDIRECTS = 5;
+    private const MAX_URLS = 400;
+    private const PARALLEL = 12;
     private const CACHE_TTL = 3600;
+    private const USER_AGENT = 'Mozilla/5.0 (compatible; REDAXO for_sa11y link check)';
+
+    /** @var array<string, int|true> Host => Prüfergebnis */
+    private static array $hostCache = [];
 
     public function execute(): rex_api_result
     {
         $user = rex_backend_login::createUser();
         if (!$user || !rex_backend_login::hasSession() || (!$user->isAdmin() && !$user->hasPerm('for_sa11y[sa11yCheck]'))) {
-            $this->send(['status' => -3], 403);
+            $this->send(['error' => 'forbidden'], 403);
         }
 
-        $url = trim(rex_get('url', 'string', ''));
-        $cacheFile = rex_path::addonCache('for_sa11y', 'links/' . sha1($url) . '.json');
-        $cached = is_file($cacheFile) ? json_decode((string) rex_file::get($cacheFile), true) : null;
-        if (is_array($cached) && isset($cached['status'], $cached['ts']) && time() - (int) $cached['ts'] < self::CACHE_TTL) {
-            $this->send(['status' => (int) $cached['status'], 'cached' => true]);
+        $urls = [];
+        if ('POST' === rex_request_method() || 'post' === rex_request_method()) {
+            $input = json_decode((string) file_get_contents('php://input'), true);
+            $urls = is_array($input['urls'] ?? null) ? $input['urls'] : [];
+        } else {
+            $urls = [rex_get('url', 'string', '')];
+        }
+        $urls = array_slice(array_values(array_unique(array_filter(array_map(
+            static fn ($u): string => is_string($u) ? trim($u) : '',
+            $urls,
+        )))), 0, self::MAX_URLS);
+
+        $results = [];
+        $todo = [];
+        foreach ($urls as $url) {
+            $cached = self::cacheGet($url);
+            if (null !== $cached) {
+                $results[$url] = $cached;
+            } else {
+                $todo[] = $url;
+            }
+        }
+        foreach (self::checkMany($todo) as $url => $status) {
+            $results[$url] = $status;
+            self::cacheSet($url, $status);
         }
 
-        $status = self::check($url);
-        rex_file::put($cacheFile, (string) json_encode(['status' => $status, 'ts' => time()]));
-        $this->send(['status' => $status]);
+        if ('GET' === strtoupper(rex_request_method())) {
+            $this->send(['status' => $results[$urls[0] ?? ''] ?? -3]);
+        }
+        $this->send(['results' => (object) $results]);
     }
 
     protected function requiresCsrfProtection(): bool
@@ -59,32 +87,51 @@ class rex_api_for_sa11y_link_check extends rex_api_function
         exit;
     }
 
-    private static function check(string $url): int
+    /**
+     * Prüft viele URLs parallel, Weiterleitungen Station für Station.
+     *
+     * @param list<string> $urls
+     * @return array<string, int>
+     */
+    private static function checkMany(array $urls): array
     {
-        for ($hop = 0; $hop <= self::MAX_REDIRECTS; ++$hop) {
-            $target = self::validate($url);
-            if (is_int($target)) {
-                return $target;
-            }
+        $final = [];
+        $current = array_combine($urls, $urls) ?: []; // Ausgangs-URL => aktuelle Station
 
-            $status = self::request($url, 'HEAD');
-            // HEAD nicht erlaubt oder von Schutzsystemen anders beantwortet → mit GET nachfragen
-            if (in_array($status['code'], [-1, 400, 403, 404, 405, 406, 429, 500, 501, 503], true)) {
-                $get = self::request($url, 'GET');
-                if ($get['code'] > 0 || $status['code'] < 0) {
-                    $status = $get;
+        for ($hop = 0; $hop <= self::MAX_REDIRECTS && [] !== $current; ++$hop) {
+            foreach ($current as $origin => $url) {
+                $valid = self::validate($url);
+                if (true !== $valid) {
+                    $final[$origin] = $valid;
+                    unset($current[$origin]);
                 }
             }
 
-            if ($status['code'] >= 300 && $status['code'] < 400 && '' !== $status['location']) {
-                $url = self::resolve($url, $status['location']);
-                continue;
+            $responses = self::requestMany($current, 'HEAD');
+            // HEAD nicht erlaubt oder von Schutzsystemen anders beantwortet → mit GET nachfragen
+            $retry = array_filter($responses, static fn (array $r): bool => in_array($r['code'], [-1, 0, 400, 403, 404, 405, 406, 429, 500, 501, 503], true));
+            foreach (self::requestMany(array_intersect_key($current, $retry), 'GET') as $origin => $get) {
+                if ($get['code'] > 0 || $responses[$origin]['code'] <= 0) {
+                    $responses[$origin] = $get;
+                }
             }
 
-            return $status['code'];
+            $next = [];
+            foreach ($responses as $origin => $response) {
+                if ($response['code'] >= 300 && $response['code'] < 400 && '' !== $response['location']) {
+                    $next[$origin] = self::resolve($current[$origin], $response['location']);
+                } else {
+                    $final[$origin] = $response['code'] > 0 ? $response['code'] : -1;
+                }
+            }
+            $current = $next;
         }
 
-        return -1;
+        foreach ($current as $origin => $url) {
+            $final[$origin] = -1; // zu viele Weiterleitungen
+        }
+
+        return $final;
     }
 
     /**
@@ -94,9 +141,12 @@ class rex_api_for_sa11y_link_check extends rex_api_function
     {
         $parts = parse_url($url);
         $scheme = strtolower((string) ($parts['scheme'] ?? ''));
-        $host = (string) ($parts['host'] ?? '');
+        $host = strtolower((string) ($parts['host'] ?? ''));
         if (!in_array($scheme, ['http', 'https'], true) || '' === $host) {
             return -3;
+        }
+        if (isset(self::$hostCache[$host])) {
+            return self::$hostCache[$host];
         }
 
         $ips = filter_var($host, FILTER_VALIDATE_IP) ? [$host] : array_merge(
@@ -104,58 +154,97 @@ class rex_api_for_sa11y_link_check extends rex_api_function
             array_column((array) @dns_get_record($host, DNS_AAAA), 'ipv6'),
         );
         $ips = array_filter($ips);
+        $result = true;
         if ([] === $ips) {
-            return -2;
+            $result = -2;
         }
         foreach ($ips as $ip) {
             if (false === filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-                return -3;
+                $result = -3;
             }
         }
 
-        return true;
+        return self::$hostCache[$host] = $result;
+    }
+
+    /**
+     * @param array<string, string> $urls Schlüssel => URL
+     * @return array<string, array{code: int, location: string}>
+     */
+    private static function requestMany(array $urls, string $method): array
+    {
+        if ([] === $urls) {
+            return [];
+        }
+        if (!function_exists('curl_multi_init')) {
+            $out = [];
+            foreach ($urls as $key => $url) {
+                $out[$key] = self::requestSocket($url, $method);
+            }
+
+            return $out;
+        }
+
+        $out = [];
+        $locations = [];
+        foreach (array_chunk($urls, self::PARALLEL, true) as $chunk) {
+            $multi = curl_multi_init();
+            $handles = [];
+            foreach ($chunk as $key => $url) {
+                $locations[$key] = '';
+                $ch = curl_init($url);
+                curl_setopt_array($ch, [
+                    CURLOPT_NOBODY => 'HEAD' === $method,
+                    CURLOPT_CUSTOMREQUEST => $method,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_FOLLOWLOCATION => false, // Weiterleitungen selbst verfolgen und jede Station prüfen
+                    CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+                    CURLOPT_CONNECTTIMEOUT => self::TIMEOUT,
+                    CURLOPT_TIMEOUT => self::TIMEOUT,
+                    CURLOPT_USERAGENT => self::USER_AGENT,
+                    CURLOPT_HTTPHEADER => ['Accept: text/html,application/xhtml+xml,application/pdf,*/*;q=0.8'],
+                    CURLOPT_HEADERFUNCTION => static function ($ch, string $header) use (&$locations, $key): int {
+                        if (0 === stripos($header, 'location:')) {
+                            $locations[$key] = trim(substr($header, 9));
+                        }
+
+                        return strlen($header);
+                    },
+                ]);
+                if ('GET' === $method) {
+                    curl_setopt($ch, CURLOPT_RANGE, '0-1023'); // nur der Anfang, der Inhalt ist egal
+                }
+                curl_multi_add_handle($multi, $ch);
+                $handles[$key] = $ch;
+            }
+
+            do {
+                $status = curl_multi_exec($multi, $running);
+                if ($running) {
+                    curl_multi_select($multi, 1.0);
+                }
+            } while ($running && CURLM_OK === $status);
+
+            foreach ($handles as $key => $ch) {
+                $code = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+                $out[$key] = ['code' => $code > 0 ? $code : -1, 'location' => $locations[$key]];
+                curl_multi_remove_handle($multi, $ch);
+            }
+            curl_multi_close($multi);
+        }
+
+        return $out;
     }
 
     /**
      * @return array{code: int, location: string}
      */
-    private static function request(string $url, string $method): array
+    private static function requestSocket(string $url, string $method): array
     {
-        // cURL bevorzugt: rex_socket schreibt bei jedem http-Link eine Warnung ins System-Log
-        if (function_exists('curl_init')) {
-            $location = '';
-            $ch = curl_init($url);
-            curl_setopt_array($ch, [
-                CURLOPT_NOBODY => 'HEAD' === $method,
-                CURLOPT_CUSTOMREQUEST => $method,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_FOLLOWLOCATION => false, // Weiterleitungen selbst verfolgen und jede Station prüfen
-                CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
-                CURLOPT_CONNECTTIMEOUT => self::TIMEOUT,
-                CURLOPT_TIMEOUT => self::TIMEOUT,
-                CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; REDAXO for_sa11y link check)',
-                CURLOPT_HTTPHEADER => ['Accept: text/html,application/xhtml+xml,application/pdf,*/*;q=0.8'],
-                // nur die Antwortkopfzeilen auswerten, den Inhalt nach den ersten Bytes verwerfen
-                CURLOPT_RANGE => 'GET' === $method ? '0-1023' : null,
-                CURLOPT_HEADERFUNCTION => static function ($ch, string $header) use (&$location): int {
-                    if (0 === stripos($header, 'location:')) {
-                        $location = trim(substr($header, 9));
-                    }
-
-                    return strlen($header);
-                },
-            ]);
-            curl_exec($ch);
-            $code = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-            curl_close($ch);
-
-            return ['code' => $code > 0 ? $code : -1, 'location' => $location];
-        }
-
         try {
             $socket = rex_socket::factoryUrl($url);
             $socket->setTimeout(self::TIMEOUT);
-            $socket->addHeader('User-Agent', 'Mozilla/5.0 (compatible; REDAXO for_sa11y link check)');
+            $socket->addHeader('User-Agent', self::USER_AGENT);
             $response = $socket->doRequest($method);
 
             return ['code' => $response->getStatusCode(), 'location' => (string) $response->getHeader('location', '')];
@@ -180,5 +269,29 @@ class rex_api_for_sa11y_link_check extends rex_api_function
         $dir = preg_replace('~/[^/]*$~', '/', (string) ($parts['path'] ?? '/'));
 
         return $origin . $dir . $location;
+    }
+
+    private static function cacheFile(string $url): string
+    {
+        return rex_path::addonCache('for_sa11y', 'links/' . sha1($url) . '.json');
+    }
+
+    private static function cacheGet(string $url): ?int
+    {
+        $file = self::cacheFile($url);
+        if (!is_file($file)) {
+            return null;
+        }
+        $data = json_decode((string) rex_file::get($file), true);
+        if (!is_array($data) || !isset($data['status'], $data['ts']) || time() - (int) $data['ts'] >= self::CACHE_TTL) {
+            return null;
+        }
+
+        return (int) $data['status'];
+    }
+
+    private static function cacheSet(string $url, int $status): void
+    {
+        rex_file::put(self::cacheFile($url), (string) json_encode(['status' => $status, 'ts' => time()]));
     }
 }
