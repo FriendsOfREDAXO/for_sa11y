@@ -37,7 +37,7 @@ All settings are managed on the AddOn's config page in the REDAXO backend. They 
 |---|---|
 | **Active** | Enable or disable Sa11y globally |
 | **Root element** | CSS selector for the content area to check (default: `body`) |
-| **Link checker only in these areas** | CSS selectors of the areas whose links are checked (e.g. `main, .kb-app__article-body`); empty = Sa11y check area |
+| **Link checker only in these areas** | CSS selectors of the areas whose links are checked (e.g. `main, article`); empty = Sa11y check area |
 | **Ignore selectors** | CSS selectors to exclude from all checks |
 | **Panel position** | `right` (default), `left`, `top-right`, `top-left` |
 | **Check delay (ms)** | Delay before Sa11y runs (useful for SPAs) |

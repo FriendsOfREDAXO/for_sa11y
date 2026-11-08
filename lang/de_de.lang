@@ -227,4 +227,4 @@ for_sa11y_checks_group_contrast = Kontrast
 root_empty = Bitte einen Selektor angeben, z.B. <code>body</code> oder <code>main</code>.
 
 for_sa11y_link_checker_root = Link-Checker nur in diesen Bereichen
-for_sa11y_link_checker_root_notice = CSS-Selektoren der Bereiche, deren Links geprüft werden, mehrere kommagetrennt, z.B. <code>main, .kb-app__article-body</code>. Leer = Prüfbereich von Sa11y („Prüfen ab Selektor“). So bleiben Kopf, Navigation und Fußzeile außen vor.
+for_sa11y_link_checker_root_notice = CSS-Selektoren der Bereiche, deren Links geprüft werden, mehrere kommagetrennt, z.B. <code>main, article</code>. Leer = Prüfbereich von Sa11y („Prüfen ab Selektor“). So bleiben Kopf, Navigation und Fußzeile außen vor.

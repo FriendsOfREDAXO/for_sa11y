@@ -149,7 +149,7 @@ Nicht gemeldet werden 401, 403, 429, 503 und Zeitüberschreitungen. Das sind mei
 |---|---|
 | **Link-Checker aktivieren** | Feature ein-/ausschalten |
 | **Externe Links prüfen** | Links zu anderen Domains über den Server prüfen (echter HTTP-Status) |
-| **Link-Checker nur in diesen Bereichen** | CSS-Selektoren der Bereiche, deren Links geprüft werden (z. B. `main, .kb-app__article-body`); leer = Prüfbereich von Sa11y |
+| **Link-Checker nur in diesen Bereichen** | CSS-Selektoren der Bereiche, deren Links geprüft werden (z. B. `main, article`); leer = Prüfbereich von Sa11y |
 | **Ignorier-Selektoren** | Kommagetrennte CSS-Selektoren, die vom Check ausgeschlossen werden (z. B. `nav a, .footer a`) |
 
 ### Technische Details
