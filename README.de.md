@@ -23,6 +23,8 @@ Das AddOn dient als redaktionelle Hilfestellung, um Barrierefreiheitsprobleme au
 
 Sa11y erscheint automatisch für jeden eingeloggten Backend-Benutzer.
 
+**Ohne Template-Änderung:** In den Grundeinstellungen „Automatisch einbinden“ auf „ja“ stellen. Dann setzt das AddOn Sa11y im Frontend vor `</body>`. Steht `Sa11y::get()` bereits im Template, wird es nicht doppelt eingebunden.
+
 ---
 
 ## Konfiguration
@@ -46,6 +48,9 @@ Alle Einstellungen werden auf der Konfigurationsseite des AddOns im REDAXO-Backe
 |---|---|
 | **"Gutes Bild"-Button anzeigen** | Bilder mit gutem Alt-Text hervorheben |
 | **"Guter Link"-Button anzeigen** | Links mit beschreibendem Text hervorheben |
+| **Panel verschiebbar** | Schalter in den Sa11y-Einstellungen, um das Panel auf die andere Seite zu setzen |
+| **Hinweise ignorieren erlauben** | Redakteure können einzelne Warnungen als gesehen markieren |
+| **„Bearbeiten“ führt in den Medienpool** | In der Bildübersicht von Sa11y öffnet „Bearbeiten“ die Datei im Medienpool, auch bei Media-Manager-Pfaden wie `/media/typ/datei.jpg` |
 
 ### 3. Plugins
 
@@ -61,10 +66,27 @@ Alle Einstellungen werden auf der Konfigurationsseite des AddOns im REDAXO-Backe
 | **Lang-of-Parts-Plugin** | Experimentelle KI-Spracherkennung pro Element (nur Chrome) |
 | **Lang-of-Parts-Cache** | Erkennungsergebnisse zwischenspeichern |
 
-### 4. Links
+### 4. Ausschlüsse je Prüfungsbereich
 
-Benutzerdefinierte Link-Prüfungen als JSON-Array konfigurieren. Jedes Objekt kann
-`pattern` (Regex-String), `exclusive` (bool), `weight` (int) und `css` (Klassenname) enthalten.
+| Einstellung | Sa11y-Prop | Beschreibung |
+|---|---|---|
+| **Ohne Kontrastprüfung** | `contrastIgnore` | ersetzt den Standard `.sr-only`, also bei Bedarf mit angeben |
+| **Ohne Linkprüfung** | `linkIgnore` | z. B. `.breadcrumb a` |
+| **Ohne Bildprüfung** | `imageIgnore` | z. B. `.logo, .icon` |
+| **Ohne Überschriftenprüfung** | `headerIgnore` | Überschriften weder prüfen noch in der Gliederung zeigen |
+| **Nicht in der Gliederung** | `outlineIgnore` | prüfen, aber nicht in der Gliederung zeigen |
+| **Absätze ohne „Schein-Überschrift“-Prüfung** | `paragraphIgnore` | Standard `table p` |
+| **Verdeckte Bereiche** | `ignoreHiddenOverflow` | Container mit `overflow: hidden`, die Markierungen abschneiden |
+| **Erste Überschriftenebene** | `initialHeadingLevel` | z. B. H2, wenn die H1 im Template außerhalb des Prüfbereichs steht |
+
+Leere Felder lassen den Sa11y-Standard unverändert.
+
+### 4b. Prüfungen
+
+| Einstellung | Beschreibung |
+|---|---|
+| **Prüfungen abschalten** | Mehrfachauswahl aller Sa11y-Prüfungen, nach Bereichen gruppiert. Ein `checks: {…}`-Block in den individuellen Einstellungen wird ergänzt und hat Vorrang. |
+| **Verbotene Link-Ziele** | CSS-Selektoren für Links, die nicht vorkommen dürfen, z. B. `a[href*="staging."]` (Sa11y-Prüfung `QA_BAD_LINK`) |
 
 ### 5. Individuelle Einstellungen
 

@@ -60,6 +60,13 @@ if ($isAdmin) {
 
     $field = $form->addInputField('text', 'ignore', null, ['class' => 'form-control']);
     $field->setLabel($package->i18n('for_sa11y_ignore'));
+
+    $field = $form->addSelectField('auto_inject');
+    $field->setLabel($package->i18n('for_sa11y_auto_inject'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
+    $field->setNotice($package->i18n('for_sa11y_auto_inject_notice'));
 }
 
 $fragment = new rex_fragment();
@@ -106,11 +113,108 @@ if ($isAdmin) {
     $select->addOption($package->i18n('for_sa11y_active_false'), 0);
     $field->setNotice($package->i18n('for_sa11y_detect_spa_routing_notice'));
 
+    $field = $form->addSelectField('show_move_panel_toggle');
+    $field->setLabel($package->i18n('for_sa11y_show_move_panel_toggle'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
+    $field->setNotice($package->i18n('for_sa11y_show_move_panel_toggle_notice'));
+
+    $field = $form->addSelectField('dismiss_annotations');
+    $field->setLabel($package->i18n('for_sa11y_dismiss_annotations'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
+    $field->setNotice($package->i18n('for_sa11y_dismiss_annotations_notice'));
+
+    $field = $form->addSelectField('media_edit_link');
+    $field->setLabel($package->i18n('for_sa11y_media_edit_link'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_active_true'), 1);
+    $select->addOption($package->i18n('for_sa11y_active_false'), 0);
+    $field->setNotice($package->i18n('for_sa11y_media_edit_link_notice'));
+
     $fragment = new rex_fragment();
     $fragment->setVar('class', 'edit', false);
     $fragment->setVar('title', $package->i18n('for_sa11y_section_display'), false);
     $fragment->setVar('body', $form->get(), false);
 echo '<div id="for-sa11y-section-display">' . $fragment->parse('core/page/section.php') . '</div>';
+
+    // ==============================
+    // Sektion 2b: Ausschlüsse je Prüfungsbereich
+    // ==============================
+    $form = rex_config_form::factory('for_sa11y', 'exclusions');
+
+    $field = $form->addInputField('text', 'contrast_ignore', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_contrast_ignore'));
+    $field->setNotice($package->i18n('for_sa11y_contrast_ignore_notice'));
+
+    $field = $form->addInputField('text', 'link_ignore', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_link_ignore'));
+    $field->setNotice($package->i18n('for_sa11y_link_ignore_notice'));
+
+    $field = $form->addInputField('text', 'image_ignore', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_image_ignore'));
+    $field->setNotice($package->i18n('for_sa11y_image_ignore_notice'));
+
+    $field = $form->addInputField('text', 'header_ignore', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_header_ignore'));
+    $field->setNotice($package->i18n('for_sa11y_header_ignore_notice'));
+
+    $field = $form->addInputField('text', 'outline_ignore', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_outline_ignore'));
+    $field->setNotice($package->i18n('for_sa11y_outline_ignore_notice'));
+
+    $field = $form->addInputField('text', 'paragraph_ignore', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_paragraph_ignore'));
+    $field->setNotice($package->i18n('for_sa11y_paragraph_ignore_notice'));
+
+    $field = $form->addInputField('text', 'ignore_hidden_overflow', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_ignore_hidden_overflow'));
+    $field->setNotice($package->i18n('for_sa11y_ignore_hidden_overflow_notice'));
+
+    $field = $form->addSelectField('initial_heading_level');
+    $field->setLabel($package->i18n('for_sa11y_initial_heading_level'));
+    $select = $field->getSelect(); $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_initial_heading_level_default'), 0);
+    foreach ([1, 2, 3] as $level) {
+        $select->addOption('H' . $level, $level);
+    }
+    $field->setNotice($package->i18n('for_sa11y_initial_heading_level_notice'));
+
+    $fragment = new rex_fragment();
+    $fragment->setVar('class', 'edit', false);
+    $fragment->setVar('title', $package->i18n('for_sa11y_section_exclusions'), false);
+    $fragment->setVar('body', $form->get(), false);
+    echo '<div id="for-sa11y-section-exclusions">' . $fragment->parse('core/page/section.php') . '</div>';
+
+    // ==============================
+    // Sektion 2c: Prüfungen abschalten
+    // ==============================
+    $form = rex_config_form::factory('for_sa11y', 'checks');
+
+    $field = $form->addSelectField('disabled_checks', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_disabled_checks'));
+    $select = $field->getSelect();
+    $select->setMultiple();
+    $select->setSize(14);
+    foreach (\FriendsOfRedaxo\Sa11y\Checks::GROUPS as $groupKey => $checks) {
+        $select->addOptgroup($package->i18n($groupKey));
+        foreach ($checks as $check) {
+            $select->addOption($check, $check);
+        }
+    }
+    $field->setNotice($package->i18n('for_sa11y_disabled_checks_notice'));
+
+    $field = $form->addInputField('text', 'bad_link_sources', null, ['class' => 'form-control']);
+    $field->setLabel($package->i18n('for_sa11y_bad_link_sources'));
+    $field->setNotice($package->i18n('for_sa11y_bad_link_sources_notice'));
+
+    $fragment = new rex_fragment();
+    $fragment->setVar('class', 'edit', false);
+    $fragment->setVar('title', $package->i18n('for_sa11y_section_checks'), false);
+    $fragment->setVar('body', $form->get(), false);
+    echo '<div id="for-sa11y-section-checks">' . $fragment->parse('core/page/section.php') . '</div>';
     // Sektion 3: Plugins
     // ==============================
     $form = rex_config_form::factory('for_sa11y', 'plugins');

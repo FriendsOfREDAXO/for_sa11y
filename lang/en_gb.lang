@@ -176,3 +176,47 @@ custom_settings_example_shadow_dom_desc = Sa11y can check Web Components and Sha
 
 custom_settings_example_fixed_nav = Fixed header / sticky navigation
 custom_settings_example_fixed_nav_desc = If the page has a fixed navigation bar, tooltips can disappear behind it. With <code>fixedRoots</code>, Sa11y adjusts its tooltip placement accordingly.
+
+# 5.2.0: injection, display, exclusions, checks
+for_sa11y_auto_inject = Inject automatically
+for_sa11y_auto_inject_notice = Adds Sa11y before <code>&lt;/body&gt;</code> in the frontend, so no template change is needed. If <code>Sa11y::get()</code> is already in the template, it is not added twice.
+for_sa11y_show_move_panel_toggle = Panel can be moved
+for_sa11y_show_move_panel_toggle_notice = Shows the toggle in the Sa11y settings that moves the panel to the other side.
+for_sa11y_dismiss_annotations = Allow dismissing
+for_sa11y_dismiss_annotations_notice = Editors can mark single warnings as seen and hide them (stored in the browser).
+for_sa11y_media_edit_link = "Edit" opens the media pool
+for_sa11y_media_edit_link_notice = In the Sa11y image outline, "Edit" opens the file in the media pool (also for media manager types like <code>/media/type/file.jpg</code>).
+for_sa11y_section_exclusions = Exclusions per check area
+for_sa11y_contrast_ignore = No contrast check
+for_sa11y_contrast_ignore_notice = CSS selectors excluded from the contrast check. Replaces the Sa11y default <code>.sr-only</code>, so include it if needed, e.g. <code>.sr-only, .btn-disabled</code>
+for_sa11y_link_ignore = No link check
+for_sa11y_link_ignore_notice = Links in these areas are not checked, e.g. <code>.breadcrumb a, .social a</code>
+for_sa11y_image_ignore = No image check
+for_sa11y_image_ignore_notice = Images that are not checked, e.g. <code>.logo, .icon</code>
+for_sa11y_header_ignore = No heading check
+for_sa11y_header_ignore_notice = Headings that are not checked and not shown in the outline, e.g. <code>.widget-title</code>
+for_sa11y_outline_ignore = Not in outline
+for_sa11y_outline_ignore_notice = Headings are checked but not shown in the outline, e.g. <code>.offcanvas h2</code>
+for_sa11y_paragraph_ignore = Paragraphs without fake heading check
+for_sa11y_paragraph_ignore_notice = Bold paragraphs in these areas are not treated as fake headings. Sa11y default: <code>table p</code>
+for_sa11y_ignore_hidden_overflow = Clipped containers
+for_sa11y_ignore_hidden_overflow_notice = Containers with <code>overflow: hidden</code> that would clip annotations; Sa11y removes the clipping while checking.
+for_sa11y_initial_heading_level = First heading level
+for_sa11y_initial_heading_level_default = Default (H1)
+for_sa11y_initial_heading_level_notice = The level the checked area may start with, e.g. H2 when the H1 is in the template outside the checked area.
+for_sa11y_section_checks = Checks
+for_sa11y_disabled_checks = Disable checks
+for_sa11y_disabled_checks_notice = Selected checks do not run (multi-select with Ctrl/Cmd). A <code>checks: {…}</code> block in the custom settings is merged and takes precedence. Meaning of the keys: <a href="https://sa11y.netlify.app/developers/checks/" target="_blank" rel="noopener noreferrer">Sa11y documentation</a>
+for_sa11y_bad_link_sources = Forbidden link targets
+for_sa11y_bad_link_sources_notice = CSS selectors for links that must not appear, e.g. links to the staging server: <code>a[href*="staging."], a[href^="http://localhost"]</code> (Sa11y check QA_BAD_LINK)
+for_sa11y_checks_group_headings = Headings
+for_sa11y_checks_group_images = Images
+for_sa11y_checks_group_links = Links
+for_sa11y_checks_group_forms = Forms
+for_sa11y_checks_group_embeds = Embedded content
+for_sa11y_checks_group_quality = Quality & tables
+for_sa11y_checks_group_meta = Page & language
+for_sa11y_checks_group_developer = Developer
+for_sa11y_checks_group_contrast = Contrast
+
+root_empty = Please enter a selector, e.g. <code>body</code> or <code>main</code>.

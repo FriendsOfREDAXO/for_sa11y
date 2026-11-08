@@ -8,6 +8,7 @@ use rex_addon_interface;
 use rex_backend_login;
 use rex_clang;
 use rex_response;
+use rex_url;
 
 use function array_key_exists;
 use function rex_get;
@@ -52,7 +53,10 @@ class Sa11y
 
         $root = (string) rex_escape($addon->getConfig('root', 'body'));
         $ignore = (string) rex_escape($addon->getConfig('ignore'));
-        $custom = (string) $addon->getConfig('custom_settings');
+        // Eigene Einstellungen: Sa11y-4-Werte (panelPosition bottom-right/bottom-left) auf Sa11y 5 umschreiben,
+        // sonst überschreiben sie die Position aus dem Formular und Sa11y fällt still auf „right“ zurück.
+        $custom = self::migrateCustomSettings((string) $addon->getConfig('custom_settings'));
+        $nonce = ' nonce="' . rex_response::getNonce() . '"';
 
         // Konfigurierbare Optionen sammeln
         $jsOptions = self::buildJsOptions($addon);
@@ -82,10 +86,10 @@ class Sa11y
 
         $js = '
       <link rel="stylesheet" href="' . $addon->getAssetsUrl('vendor/sa11y/dist/css/sa11y.min.css') . '"/>
-      <script src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/sa11y.umd.min.js') . '"></script>
-      <script src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/lang/' . $lang['js'] . '.umd.js') . '"></script>
+      <script' . $nonce . ' src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/sa11y.umd.min.js') . '"></script>
+      <script' . $nonce . ' src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/lang/' . $lang['js'] . '.umd.js') . '"></script>
 
-  <script nonce="' . rex_response::getNonce() . '">
+  <script' . $nonce . '>
   (function() {
     const currentConfigHash = "' . $configHash . '";
     const storedConfigHash = localStorage.getItem("sa11y_config_hash");
@@ -105,23 +109,83 @@ class Sa11y
   })();
 
   Sa11y.Lang.addI18n(Sa11yLang' . $lang['setup'] . '.strings);
-  window.sa11yInstance = new Sa11y.Sa11y({
+  const sa11yOptions = {
     checkRoot: \'' . $root . '\',
     readabilityLang: \'' . $lang['text'] . '\',
     containerIgnore: \'' . $ignore . '\',
     ' . $jsOptions . $linkCheckerOptions . '
     ' . $custom . '
-  });
+  };
+  // Prüfungen aus dem Formular; ein checks-Block in den eigenen Einstellungen hat Vorrang und wird ergänzt, nicht ersetzt
+  sa11yOptions.checks = Object.assign(' . self::buildChecks($addon) . ', sa11yOptions.checks || {});
+  window.sa11yInstance = new Sa11y.Sa11y(sa11yOptions);
 </script>
 ';
 
         // Link-Checker Script
         if ((int) $addon->getConfig('link_checker', 0) === 1) {
             $js .= '<div id="sa11y-lc-config" hidden data-ignore="' . $lcIgnore . '" data-external="' . $lcExternal . '"></div>';
-            $js .= '<script src="' . $addon->getAssetsUrl('sa11y-linkchecker.js') . '"></script>';
+            // Nonce auch hier: wird der Link-Checker von einer CSP blockiert, wartet Sa11y im Modus „listen“
+            // bis zu 20 Sekunden, bevor es Markierungen setzt.
+            $js .= '<script' . $nonce . ' src="' . $addon->getAssetsUrl('sa11y-linkchecker.js') . '"></script>';
         }
 
         return $js;
+    }
+
+    /**
+     * Schreibt Sa11y-4-Werte in den eigenen Einstellungen auf Sa11y 5 um.
+     *
+     * @api
+     */
+    public static function migrateCustomSettings(string $custom): string
+    {
+        return (string) preg_replace_callback(
+            '~(panelPosition\s*:\s*["\'])bottom-(right|left)(["\'])~',
+            static fn (array $m): string => $m[1] . $m[2] . $m[3],
+            $custom,
+        );
+    }
+
+    /**
+     * Abgeschaltete Prüfungen und „verbotene Link-Ziele“ als JS-Objekt für die checks-Option.
+     */
+    private static function buildChecks(rex_addon_interface $addon): string
+    {
+        $checks = [];
+        foreach (Checks::parse($addon->getConfig('disabled_checks', '')) as $check) {
+            $checks[$check] = false;
+        }
+
+        // QA_BAD_LINK: Links auf diese Ziele (CSS-Selektoren) melden, z. B. Testserver
+        $badLinks = trim((string) $addon->getConfig('bad_link_sources', ''));
+        if ($badLinks !== '' && !isset($checks['QA_BAD_LINK'])) {
+            $checks['QA_BAD_LINK'] = ['sources' => $badLinks];
+        }
+
+        return [] === $checks ? '{}' : (string) json_encode($checks, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * Fügt Sa11y vor </body> ein (Option „Automatisch einbinden“), wenn es nicht schon im Template steht.
+     *
+     * @api
+     */
+    public static function injectIntoOutput(string $html): string
+    {
+        if (str_contains($html, 'sa11y.umd.min.js')) {
+            return $html;
+        }
+        $pos = strripos($html, '</body>');
+        if (false === $pos) {
+            return $html;
+        }
+        $snippet = self::get();
+        if ('' === $snippet) {
+            return $html;
+        }
+
+        return substr($html, 0, $pos) . $snippet . substr($html, $pos);
     }
 
     /**
@@ -234,6 +298,46 @@ class Sa11y
         $autoDetectShadow = (int) $addon->getConfig('auto_detect_shadow_components', 0);
         if ($autoDetectShadow === 1) {
             $options[] = 'autoDetectShadowComponents: true';
+        }
+
+        // Ausschlüsse je Prüfungsbereich (Sa11y-Props; leer = Sa11y-Standard)
+        $selectorOptions = [
+            'contrast_ignore' => 'contrastIgnore',
+            'link_ignore' => 'linkIgnore',
+            'image_ignore' => 'imageIgnore',
+            'header_ignore' => 'headerIgnore',
+            'outline_ignore' => 'outlineIgnore',
+            'paragraph_ignore' => 'paragraphIgnore',
+            'ignore_hidden_overflow' => 'ignoreHiddenOverflow',
+        ];
+        foreach ($selectorOptions as $configKey => $prop) {
+            $value = trim((string) $addon->getConfig($configKey, ''));
+            if ($value !== '') {
+                $options[] = $prop . ': ' . json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            }
+        }
+
+        // Erste Überschriftenebene (z. B. 2, wenn die H1 im Template steht)
+        $initialHeadingLevel = (int) $addon->getConfig('initial_heading_level', 0);
+        if ($initialHeadingLevel >= 1 && $initialHeadingLevel <= 6) {
+            $options[] = 'initialHeadingLevel: [' . $initialHeadingLevel . ']';
+        }
+
+        // Panel verschieben / Hinweise ignorieren
+        if ((int) $addon->getConfig('show_move_panel_toggle', 1) !== 1) {
+            $options[] = 'showMovePanelToggle: false';
+        }
+        if ((int) $addon->getConfig('dismiss_annotations', 1) !== 1) {
+            $options[] = 'dismissAnnotations: false';
+        }
+
+        // „Bearbeiten“ in der Bildübersicht → Medienpool
+        if ((int) $addon->getConfig('media_edit_link', 1) === 1) {
+            // rex_url liefert im Frontend „./…“; auf Seiten wie /kb/artikel/ würde das falsch aufgelöst → ab Wurzel
+            $rootPath = static fn (string $url): string => str_starts_with($url, './') ? substr($url, 1) : $url;
+            $editUrl = $rootPath(rex_url::frontendController(['rex-api-call' => 'for_sa11y_media_edit'], false)) . '&path=';
+            $options[] = 'editImageURLofCMS: ' . json_encode($editUrl, JSON_UNESCAPED_SLASHES);
+            $options[] = 'relativePathImageSRC: ' . json_encode($rootPath(rex_url::media()), JSON_UNESCAPED_SLASHES);
         }
 
         if (empty($options)) {

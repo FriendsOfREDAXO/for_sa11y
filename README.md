@@ -23,6 +23,8 @@ The AddOn serves as an editorial assistant to reduce accessibility issues on you
 
 That's it. Sa11y appears automatically for every logged-in backend user.
 
+**Without changing the template:** set "Inject automatically" to "yes" in the basic settings. The AddOn then adds Sa11y before `</body>` in the frontend. If `Sa11y::get()` is already in the template, it is not added twice.
+
 ---
 
 ## Configuration
@@ -61,10 +63,29 @@ All settings are managed on the AddOn's config page in the REDAXO backend. They 
 | **Lang of parts plugin** | Experimental AI-powered per-element language detection (Chrome only) |
 | **Lang of parts cache** | Cache language detection results |
 
-### 4. Links
+### 4. Exclusions per check area
 
-Configure custom link checks via a JSON array of objects. Each object can contain
-`pattern` (regex string), `exclusive` (bool), `weight` (int) and `css` (class name).
+| Setting | Sa11y prop | Description |
+|---|---|---|
+| **No contrast check** | `contrastIgnore` | replaces the default `.sr-only`, include it if needed |
+| **No link check** | `linkIgnore` | e.g. `.breadcrumb a` |
+| **No image check** | `imageIgnore` | e.g. `.logo, .icon` |
+| **No heading check** | `headerIgnore` | neither checked nor shown in the outline |
+| **Not in outline** | `outlineIgnore` | checked, but not shown in the outline |
+| **Paragraphs without fake heading check** | `paragraphIgnore` | default `table p` |
+| **Clipped containers** | `ignoreHiddenOverflow` | containers with `overflow: hidden` that clip annotations |
+| **First heading level** | `initialHeadingLevel` | e.g. H2 when the H1 is in the template outside the checked area |
+
+Empty fields keep the Sa11y default.
+
+### 4b. Checks
+
+| Setting | Description |
+|---|---|
+| **Disable checks** | Multi-select of all Sa11y checks, grouped by area. A `checks: {…}` block in the custom settings is merged and takes precedence. |
+| **Forbidden link targets** | CSS selectors for links that must not appear, e.g. `a[href*="staging."]` (Sa11y check `QA_BAD_LINK`) |
+
+Display also offers: panel can be moved, allow dismissing, and "Edit" in the Sa11y image outline opens the file in the media pool.
 
 ### 5. Custom Settings
 
