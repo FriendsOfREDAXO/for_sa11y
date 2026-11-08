@@ -181,3 +181,47 @@ custom_settings_example_shadow_dom_desc = Sa11y kann Web Components und Shadow-D
 
 custom_settings_example_fixed_nav = Fixierter Header / Sticky Navigation
 custom_settings_example_fixed_nav_desc = Wenn die Seite eine fixierte Navigation hat, können Tooltips dahinter verschwinden. Mit <code>fixedRoots</code> stellt Sa11y seine Tooltip-Position entsprechend ein.
+
+# 5.2.0: Einbinden, Anzeige, Ausschlüsse, Prüfungen
+for_sa11y_auto_inject = Automatisch einbinden
+for_sa11y_auto_inject_notice = Setzt Sa11y im Frontend automatisch vor <code>&lt;/body&gt;</code>. Dann ist kein Eintrag im Template nötig. Steht <code>Sa11y::get()</code> schon im Template, wird es nicht doppelt eingebunden.
+for_sa11y_show_move_panel_toggle = Panel verschiebbar
+for_sa11y_show_move_panel_toggle_notice = Zeigt in den Sa11y-Einstellungen den Schalter, mit dem Redakteure das Panel auf die andere Seite setzen können.
+for_sa11y_dismiss_annotations = Hinweise ignorieren erlauben
+for_sa11y_dismiss_annotations_notice = Redakteure können einzelne Warnungen als „gesehen“ markieren und ausblenden (wird im Browser gespeichert).
+for_sa11y_media_edit_link = „Bearbeiten“ führt in den Medienpool
+for_sa11y_media_edit_link_notice = In der Bildübersicht von Sa11y öffnet „Bearbeiten“ die Datei direkt im Medienpool (auch bei Media-Manager-Typen wie <code>/media/typ/datei.jpg</code>).
+for_sa11y_section_exclusions = Ausschlüsse je Prüfungsbereich
+for_sa11y_contrast_ignore = Ohne Kontrastprüfung
+for_sa11y_contrast_ignore_notice = CSS-Selektoren, die nicht auf Kontrast geprüft werden. Ersetzt den Sa11y-Standard <code>.sr-only</code>, also bei Bedarf mit angeben, z.B. <code>.sr-only, .btn-disabled</code>
+for_sa11y_link_ignore = Ohne Linkprüfung
+for_sa11y_link_ignore_notice = Links in diesen Bereichen werden nicht geprüft, z.B. <code>.breadcrumb a, .social a</code>
+for_sa11y_image_ignore = Ohne Bildprüfung
+for_sa11y_image_ignore_notice = Bilder, die nicht geprüft werden, z.B. <code>.logo, .icon</code>
+for_sa11y_header_ignore = Ohne Überschriftenprüfung
+for_sa11y_header_ignore_notice = Überschriften, die nicht geprüft werden und nicht in der Gliederung erscheinen, z.B. <code>.widget-title</code>
+for_sa11y_outline_ignore = Nicht in der Gliederung
+for_sa11y_outline_ignore_notice = Überschriften werden geprüft, aber nicht in der Gliederung angezeigt, z.B. <code>.offcanvas h2</code>
+for_sa11y_paragraph_ignore = Absätze ohne „Schein-Überschrift“-Prüfung
+for_sa11y_paragraph_ignore_notice = Fett gesetzte Absätze in diesen Bereichen gelten nicht als Schein-Überschrift. Sa11y-Standard: <code>table p</code>
+for_sa11y_ignore_hidden_overflow = Verdeckte Bereiche
+for_sa11y_ignore_hidden_overflow_notice = Container mit <code>overflow: hidden</code>, in denen Markierungen sonst abgeschnitten würden; Sa11y hebt das Abschneiden dort während der Prüfung auf.
+for_sa11y_initial_heading_level = Erste Überschriftenebene
+for_sa11y_initial_heading_level_default = Standard (H1)
+for_sa11y_initial_heading_level_notice = Mit welcher Ebene der geprüfte Bereich beginnen darf, z.B. H2, wenn die H1 im Template außerhalb des Prüfbereichs steht.
+for_sa11y_section_checks = Prüfungen
+for_sa11y_disabled_checks = Prüfungen abschalten
+for_sa11y_disabled_checks_notice = Ausgewählte Prüfungen laufen nicht (Mehrfachauswahl mit Strg/Cmd). Ein <code>checks: {…}</code>-Block in den individuellen Einstellungen wird ergänzt und hat Vorrang. Bedeutung der Schlüssel: <a href="https://sa11y.netlify.app/developers/checks/" target="_blank" rel="noopener noreferrer">Sa11y-Dokumentation</a>
+for_sa11y_bad_link_sources = Verbotene Link-Ziele
+for_sa11y_bad_link_sources_notice = CSS-Selektoren für Links, die nicht vorkommen dürfen, z.B. Links auf den Testserver: <code>a[href*="staging."], a[href^="http://localhost"]</code> (Sa11y-Prüfung QA_BAD_LINK)
+for_sa11y_checks_group_headings = Überschriften
+for_sa11y_checks_group_images = Bilder
+for_sa11y_checks_group_links = Links
+for_sa11y_checks_group_forms = Formulare
+for_sa11y_checks_group_embeds = Eingebettete Inhalte
+for_sa11y_checks_group_quality = Qualität & Tabellen
+for_sa11y_checks_group_meta = Seite & Sprache
+for_sa11y_checks_group_developer = Entwickler
+for_sa11y_checks_group_contrast = Kontrast
+
+root_empty = Bitte einen Selektor angeben, z.B. <code>body</code> oder <code>main</code>.
