@@ -80,9 +80,8 @@ class rex_api_for_sa11y_link_check extends rex_api_function
     private function send(array $data, int $code = 200): never
     {
         rex_response::cleanOutputBuffers();
-        if (200 !== $code) {
-            rex_response::setStatus($code . ' ' . (403 === $code ? 'Forbidden' : 'Error'));
-        }
+        // Status immer setzen: YRewrite markiert /index.php vorab als 404, sonst ginge die Antwort mit 404 raus
+        rex_response::setStatus(200 === $code ? rex_response::HTTP_OK : $code . ' ' . (403 === $code ? 'Forbidden' : 'Error'));
         rex_response::sendJson($data);
         exit;
     }

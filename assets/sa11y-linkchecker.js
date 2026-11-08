@@ -301,7 +301,11 @@
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify({ urls: urls }),
         })
-            .then(function (res) { return res.ok ? res.json() : { results: {} }; })
+            .then(function (res) {
+                /* JSON auch bei abweichendem HTTP-Status auswerten (z. B. 404 durch URL-Rewriting) */
+                var type = res.headers.get('content-type') || '';
+                return type.indexOf('json') !== -1 ? res.json() : { results: {} };
+            })
             .then(function (data) {
                 var results = (data && data.results) || {};
                 todo.forEach(function (a) {

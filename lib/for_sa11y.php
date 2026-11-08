@@ -133,7 +133,9 @@ class Sa11y
             $js .= '<div id="sa11y-lc-config" hidden data-root="' . $lcRoot . '" data-ignore="' . $lcIgnore . '" data-external="' . $lcExternal . '" data-endpoint="' . rex_escape($lcEndpoint) . '"></div>';
             // Nonce auch hier: wird der Link-Checker von einer CSP blockiert, wartet Sa11y im Modus „listen“
             // bis zu 20 Sekunden, bevor es Markierungen setzt.
-            $js .= '<script' . $nonce . ' src="' . $addon->getAssetsUrl('sa11y-linkchecker.js') . '"></script>';
+            // Zeitstempel gegen veraltete Dateien im Browser-Cache (Safari hält Skripte ohne Version lange)
+            $lcVersion = (string) @filemtime($addon->getAssetsPath('sa11y-linkchecker.js'));
+            $js .= '<script' . $nonce . ' src="' . $addon->getAssetsUrl('sa11y-linkchecker.js') . '?v=' . $lcVersion . '"></script>';
         }
 
         return $js;
