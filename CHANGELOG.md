@@ -1,5 +1,14 @@
 # Changelog
 
+## 5.1.1 – 2026-11-08
+
+### Bugfixes
+- **Nonce für alle Scripts**: Sa11y, Sprachdatei und Link-Checker bekommen jetzt die CSP-Nonce, nicht nur das Inline-Script. Ohne sie blockiert eine strenge Content-Security-Policy den Link-Checker. Sa11y wartet dann im Modus „listen“ bis zu 20 Sekunden, bevor es Markierungen setzt.
+- **Eigene Einstellungen aus Sa11y 4**: `panelPosition: "bottom-right"` bzw. `"bottom-left"` in den eigenen Einstellungen wird auf `right` bzw. `left` umgeschrieben, bei der Ausgabe und einmalig beim Update. Bisher überschrieb der alte Wert die Position aus dem Formular, und Sa11y fiel still auf `right` zurück.
+
+### Sa11y Bibliothek
+- Geprüft: 5.1.0 ist weiterhin die aktuelle Version (npm und GitHub).
+
 ## 5.0.0 – 2026-04-17
 
 ### Sa11y Bibliothek

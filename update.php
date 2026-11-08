@@ -27,6 +27,19 @@ if ($panelPosition !== '') {
 }
 
 // ---------------------------------------------------------------
+// Migration: eigene Einstellungen (custom_settings)
+// Dort steht häufig noch panelPosition: "bottom-right" aus Sa11y 4.
+// ---------------------------------------------------------------
+$customSettings = (string) $addon->getConfig('custom_settings', '');
+if ($customSettings !== '') {
+    // bewusst ohne Klassenaufruf: update.php kann noch mit der alten Klasse laufen
+    $migratedCustom = (string) preg_replace('~(panelPosition\s*:\s*["\'])bottom-(right|left)(["\'])~', '$1$2$3', $customSettings);
+    if ($migratedCustom !== $customSettings) {
+        $addon->setConfig('custom_settings', $migratedCustom);
+    }
+}
+
+// ---------------------------------------------------------------
 // Migration: links_to_flag entfernen
 // Das Prop wurde in Sa11y 5.0 ersatzlos entfernt.
 // ---------------------------------------------------------------

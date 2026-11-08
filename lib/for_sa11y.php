@@ -52,7 +52,10 @@ class Sa11y
 
         $root = (string) rex_escape($addon->getConfig('root', 'body'));
         $ignore = (string) rex_escape($addon->getConfig('ignore'));
-        $custom = (string) $addon->getConfig('custom_settings');
+        // Eigene Einstellungen: Sa11y-4-Werte (panelPosition bottom-right/bottom-left) auf Sa11y 5 umschreiben,
+        // sonst überschreiben sie die Position aus dem Formular und Sa11y fällt still auf „right“ zurück.
+        $custom = self::migrateCustomSettings((string) $addon->getConfig('custom_settings'));
+        $nonce = ' nonce="' . rex_response::getNonce() . '"';
 
         // Konfigurierbare Optionen sammeln
         $jsOptions = self::buildJsOptions($addon);
@@ -82,10 +85,10 @@ class Sa11y
 
         $js = '
       <link rel="stylesheet" href="' . $addon->getAssetsUrl('vendor/sa11y/dist/css/sa11y.min.css') . '"/>
-      <script src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/sa11y.umd.min.js') . '"></script>
-      <script src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/lang/' . $lang['js'] . '.umd.js') . '"></script>
+      <script' . $nonce . ' src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/sa11y.umd.min.js') . '"></script>
+      <script' . $nonce . ' src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/lang/' . $lang['js'] . '.umd.js') . '"></script>
 
-  <script nonce="' . rex_response::getNonce() . '">
+  <script' . $nonce . '>
   (function() {
     const currentConfigHash = "' . $configHash . '";
     const storedConfigHash = localStorage.getItem("sa11y_config_hash");
@@ -118,10 +121,26 @@ class Sa11y
         // Link-Checker Script
         if ((int) $addon->getConfig('link_checker', 0) === 1) {
             $js .= '<div id="sa11y-lc-config" hidden data-ignore="' . $lcIgnore . '" data-external="' . $lcExternal . '"></div>';
-            $js .= '<script src="' . $addon->getAssetsUrl('sa11y-linkchecker.js') . '"></script>';
+            // Nonce auch hier: wird der Link-Checker von einer CSP blockiert, wartet Sa11y im Modus „listen“
+            // bis zu 20 Sekunden, bevor es Markierungen setzt.
+            $js .= '<script' . $nonce . ' src="' . $addon->getAssetsUrl('sa11y-linkchecker.js') . '"></script>';
         }
 
         return $js;
+    }
+
+    /**
+     * Schreibt Sa11y-4-Werte in den eigenen Einstellungen auf Sa11y 5 um.
+     *
+     * @api
+     */
+    public static function migrateCustomSettings(string $custom): string
+    {
+        return (string) preg_replace_callback(
+            '~(panelPosition\s*:\s*["\'])bottom-(right|left)(["\'])~',
+            static fn (array $m): string => $m[1] . $m[2] . $m[3],
+            $custom,
+        );
     }
 
     /**
