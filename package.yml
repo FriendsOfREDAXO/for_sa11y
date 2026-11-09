@@ -1,5 +1,5 @@
 package: for_sa11y
-version: '5.2.0'
+version: '5.2.1'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/addon_key
 perm: for_sa11y[]
@@ -62,6 +62,7 @@ default_config:
     exclude_url_params: ''
     link_checker: 0
     link_checker_check_external: 0
+    link_checker_root: ''
     link_checker_ignore: 'nav a, .footer a'
     developer_plugin: 0
     developer_checks_on_by_default: 0

@@ -37,6 +37,7 @@ All settings are managed on the AddOn's config page in the REDAXO backend. They 
 |---|---|
 | **Active** | Enable or disable Sa11y globally |
 | **Root element** | CSS selector for the content area to check (default: `body`) |
+| **Link checker only in these areas** | CSS selectors of the areas whose links are checked (e.g. `main, article`); empty = Sa11y check area |
 | **Ignore selectors** | CSS selectors to exclude from all checks |
 | **Panel position** | `right` (default), `left`, `top-right`, `top-left` |
 | **Check delay (ms)** | Delay before Sa11y runs (useful for SPAs) |
@@ -130,34 +131,36 @@ fixedRoots: '.sticky-header, #cookie-bar',
 
 ## Link Checker (opt-in)
 
-The AddOn includes an optional **live link checker** that runs entirely in the browser—no server-side crawling required.
+The AddOn includes an optional **live link checker**. It checks the links of the displayed page and reports broken links directly in the Sa11y panel.
 
 ### How it works
 
-Once enabled, the link checker runs asynchronously in the background using Sa11y's native `customChecks: "listen"` API.
-Broken links are reported directly **inside the Sa11y error panel** using the same annotation system as all other checks.
-Each broken link shows a red error annotation button; clicking it opens a tooltip that displays a human-readable explanation including the HTTP status code:
+Once enabled, the link checker runs in the background via Sa11y's `customChecks: "listen"` API. Sa11y shows its results immediately, broken links are added after the checks. Each broken link gets a red error button with an explanation:
 
-- **HTTP 404** – Link not found
-- **HTTP 5xx** – Server error
-- **Timeout** – No response within 8 seconds
-- **Network error** – Server unreachable (DNS failure, connection refused)
+- **HTTP 404 / 410** – page not found
+- **HTTP 5xx** (except 503) – server error
+- **Domain not found** – the address does not exist (DNS)
+
+401, 403, 429, 503 and timeouts are not reported. They are usually bot protection or short outages, not broken links.
 
 ### Configuration options
 
 | Setting | Description |
 |---|---|
-| **Enable Link Checker** | Turns the feature on/off |
-| **Check external links** | Also check cross-origin URLs (detects unreachable servers; cannot read HTTP status due to CORS) |
-| **Ignore selectors** | Comma-separated CSS selectors to exclude from checking (e.g. `nav a, .footer a`) |
+| **Link checker** | *Automatically on every page view*, *On demand only* or *Off*. On demand: no check on page load (links checked within the last 5 minutes are still marked); the check starts with “Check links” in the Sa11y panel under “Settings”. Recommended for large sites and several editors |
+| **Check external links** | Check links to other domains via the server (real HTTP status) |
+| **Ignore selectors** | Comma-separated CSS selectors excluded from the check (e.g. `nav a, .footer a`) |
 
 ### Technical details
 
-- **Non-blocking** – uses Sa11y's native `customChecks: "listen"` API; Sa11y renders immediately, broken links are injected after network checks complete
-- **HEAD request first**, GET fallback for servers that reject HEAD (HTTP 405)
-- **Session cache** – results are stored in `sessionStorage` for 5 minutes; repeated navigation on a SPA skips already-checked links
-- **Concurrency** – 3 parallel requests at most
-- **External links** – checked via `no-cors` mode: an opaque response means the server is up; a `TypeError` means it's unreachable (status code is not readable due to CORS)
+- **Batches:** the browser sends the links to the server in batches of 40, one after another. External links are checked in parallel (`curl_multi`); internal links at most two at a time, because each check renders a page of the own site and would otherwise occupy all PHP processes. The backend session is released immediately. Internal links are checked the way a visitor without login sees them.
+- **External links** are checked by the server via `index.php?rex-api-call=for_sa11y_link_check`. The browser cannot read foreign status codes (CORS). Mixed content (`http://` on `https://` pages), tracking protection and content blockers made reachable links look broken.
+- **Endpoint security:**
+  - It works only for logged-in backend users with the Sa11y permission.
+  - It accepts `http`/`https` only.
+  - Targets in private and reserved networks are rejected, also after redirects, which are checked one by one.
+- **Cache:** the server keeps results for 1 hour (`var/cache/addons/for_sa11y/links/`), the browser for 5 minutes in `sessionStorage`.
+- **One request per target:** links to the same page with different fragments (`#…`) are checked once.
 
 ---
 

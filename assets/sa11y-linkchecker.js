@@ -11,11 +11,16 @@
  *     objects into sa11yInstance.results (the live n.results reference) and
  *     dispatch "sa11y-resume" → Sa11y renders with broken-link annotations.
  *
+ * - Mode "manual" (data-mode): no check on page load, only cached results; a "Check links"
+ *   entry in Sa11y's settings menu starts the check
  * - Deduplicates links by resolved URL
  * - Caches results in sessionStorage (5 min TTL)
  * - Same-origin: full HTTP status (GET fallback if HEAD blocked)
- * - Cross-origin (opt-in): detects unreachable servers (DNS/network errors)
- *   and opaque responses (server responded, status unreadable due to CORS)
+ * - Cross-origin (opt-in): checked on the server (rex-api-call=for_sa11y_link_check) with the real
+ *   HTTP status. The browser cannot read foreign status codes (CORS), and mixed content, tracking
+ *   protection or content blockers made reachable links look broken.
+ * - Only clear cases are reported: 404, 410, 5xx (except 503) and unknown domains. 401/403/429/503
+ *   and timeouts are usually bot protection, not broken links.
  */
 (function () {
     'use strict';
@@ -28,18 +33,34 @@
     /* ------------------------------------------------------------------ */
     /* Config                                                               */
     /* ------------------------------------------------------------------ */
+    var ROOT        = configEl.getAttribute('data-root') || 'body';
     var IGNORE      = configEl.getAttribute('data-ignore') || '';
     var CHECK_EXT   = configEl.getAttribute('data-external') === '1';
-    var CONCURRENCY = 3;
+    var ENDPOINT    = configEl.getAttribute('data-endpoint') || '';
+    var MANUAL      = configEl.getAttribute('data-mode') === 'manual';
+    var CONCURRENCY = 6;
     var TIMEOUT_MS  = 8000;
     var CACHE_TTL   = 5 * 60 * 1000; // 5 minutes
-    var CACHE_PFX   = 'sa11y_lc_';
+    var CACHE_PFX   = 'sa11y_lc2_';
 
     /* ------------------------------------------------------------------ */
     /* State                                                                */
     /* ------------------------------------------------------------------ */
     var isSecondPass  = false;   // true when triggered by our own resetAll+checkAll
     var checkRunning  = false;   // prevent concurrent background runs
+    var sameTarget    = {};      // href without #fragment => all anchors with this target
+
+    /* Mark or unmark every anchor that points to the same target */
+    function markBroken(anchor, status) {
+        var group = sameTarget[anchor.href.split('#')[0]] || [anchor];
+        group.forEach(function (a) {
+            if (status === null) {
+                a.removeAttribute('data-sa11y-broken');
+            } else {
+                a.setAttribute('data-sa11y-broken', String(status));
+            }
+        });
+    }
 
     /* ------------------------------------------------------------------ */
     /* SessionStorage cache                                                 */
@@ -90,14 +111,31 @@
     }
 
     function isBroken(status) {
-        return status >= 400 || status === -1 || status === -2;
+        return status === 404 || status === 410 || (status >= 500 && status !== 503) || status === -2;
     }
 
     /* ------------------------------------------------------------------ */
     /* Collect checkable anchors from the page                             */
     /* ------------------------------------------------------------------ */
     function collectAnchors() {
-        var allAnchors = Array.from(document.querySelectorAll('a[href]'));
+        /* Nur Links in den eingestellten Bereichen (kommagetrennte Selektoren); ungültig/leer = ganze Seite */
+        var roots = [];
+        try {
+            roots = Array.from(document.querySelectorAll(ROOT));
+        } catch (e) {
+            roots = [];
+        }
+        if (!roots.length) {
+            roots = [document.body];
+        }
+        var allAnchors = [];
+        roots.forEach(function (root) {
+            root.querySelectorAll('a[href]').forEach(function (a) {
+                if (allAnchors.indexOf(a) === -1) {
+                    allAnchors.push(a);
+                }
+            });
+        });
 
         /* Apply ignore selectors */
         var ignored = new Set();
@@ -125,40 +163,47 @@
             if (shouldSkip(a.getAttribute('href'))) {
                 return false;
             }
-            if (!CHECK_EXT && isExternal(a)) {
+            if ((!CHECK_EXT || !ENDPOINT) && isExternal(a)) {
                 return false;
             }
             return true;
         });
 
-        /* Deduplicate by resolved href */
-        var seen = new Set();
-        return allAnchors.filter(function (a) {
-            var href = a.href;
-            if (seen.has(href)) {
-                return false;
+        /* Deduplicate by resolved href without #fragment: one request per page, result for all anchors */
+        var groups = {};
+        var unique = [];
+        allAnchors.forEach(function (a) {
+            var key = a.href.split('#')[0];
+            if (!groups[key]) {
+                groups[key] = [];
+                unique.push(a);
             }
-            seen.add(href);
-            return true;
+            groups[key].push(a);
         });
+        sameTarget = groups;
+        return unique;
     }
 
     /* ------------------------------------------------------------------ */
     /* Single link check                                                    */
     /* ------------------------------------------------------------------ */
     function checkLink(anchor) {
-        var href = anchor.href;
+        var href = anchor.href.split('#')[0];
         var ext  = isExternal(anchor);
 
         /* Cache hit */
         var cached = cacheGet(href);
         if (cached !== null) {
             if (isBroken(cached.status)) {
-                anchor.setAttribute('data-sa11y-broken', String(cached.status));
+                markBroken(anchor, cached.status);
             } else {
-                anchor.removeAttribute('data-sa11y-broken');
+                markBroken(anchor, null);
             }
             return Promise.resolve();
+        }
+
+        if (ext) {
+            return checkExternal(anchor, href);
         }
 
         var controller = new AbortController();
@@ -171,11 +216,6 @@
             redirect: 'follow',
         };
 
-        /* External: no-cors → opaque response (server up) or TypeError (server down) */
-        if (ext) {
-            opts.mode = 'no-cors';
-        }
-
         return fetch(href, opts)
             .then(function (res) {
                 clearTimeout(timerId);
@@ -183,7 +223,7 @@
                 /* Opaque = external server responded – cannot read status, assume OK */
                 if (res.type === 'opaque') {
                     cacheSet(href, 0);
-                    anchor.removeAttribute('data-sa11y-broken');
+                    markBroken(anchor, null);
                     return;
                 }
 
@@ -214,9 +254,9 @@
                         }
                         cacheSet(href, r.status);
                         if (isBroken(r.status)) {
-                            anchor.setAttribute('data-sa11y-broken', String(r.status));
+                            markBroken(anchor, r.status);
                         } else {
-                            anchor.removeAttribute('data-sa11y-broken');
+                            markBroken(anchor, null);
                         }
                     }).catch(function (err) {
                         if (getTimerId) {
@@ -228,17 +268,101 @@
 
                 cacheSet(href, res.status);
                 if (isBroken(res.status)) {
-                    anchor.setAttribute('data-sa11y-broken', String(res.status));
+                    markBroken(anchor, res.status);
                 } else {
-                    anchor.removeAttribute('data-sa11y-broken');
+                    markBroken(anchor, null);
                 }
             })
-            .catch(function (err) {
+            .catch(function () {
+                /* Netzwerkfehler auf der eigenen Seite (z. B. Zeitüberschreitung) nicht als defekt melden */
                 clearTimeout(timerId);
+                cacheSet(href, -1);
+                markBroken(anchor, null);
+            });
+    }
 
-                var errStatus = (err && err.name === 'AbortError') ? -1 : -2;
-                cacheSet(href, errStatus);
-                anchor.setAttribute('data-sa11y-broken', String(errStatus));
+    /* All links in one request: the server checks them in parallel */
+    var BATCH_SIZE = 40;
+
+    function checkBatch(anchors) {
+        var todo = [];
+        anchors.forEach(function (a) {
+            var href = a.href.split('#')[0];
+            var cached = cacheGet(href);
+            if (cached !== null) {
+                markBroken(a, isBroken(cached.status) ? cached.status : null);
+            } else {
+                todo.push(a);
+            }
+        });
+        if (!todo.length) {
+            return Promise.resolve();
+        }
+        var urls = [];
+        todo.forEach(function (a) {
+            var href = a.href.split('#')[0];
+            if (urls.indexOf(href) === -1) {
+                urls.push(href);
+            }
+        });
+        /* In Paketen nacheinander: jede Anfrage bleibt kurz und belegt nur einen PHP-Prozess */
+        var chunks = [];
+        for (var i = 0; i < urls.length; i += BATCH_SIZE) {
+            chunks.push(urls.slice(i, i + BATCH_SIZE));
+        }
+        return chunks.reduce(function (chain, chunk) {
+            return chain.then(function () { return checkChunk(todo, chunk); });
+        }, Promise.resolve());
+    }
+
+    function checkChunk(todo, urls) {
+        return fetch(ENDPOINT, {
+            method: 'POST',
+            credentials: 'same-origin',
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ urls: urls }),
+        })
+            .then(function (res) {
+                /* JSON auch bei abweichendem HTTP-Status auswerten (z. B. 404 durch URL-Rewriting) */
+                var type = res.headers.get('content-type') || '';
+                return type.indexOf('json') !== -1 ? res.json() : { results: {} };
+            })
+            .then(function (data) {
+                var results = (data && data.results) || {};
+                todo.forEach(function (a) {
+                    var href = a.href.split('#')[0];
+                    if (!Object.prototype.hasOwnProperty.call(results, href)) {
+                        return;
+                    }
+                    var status = parseInt(results[href], 10) || 0;
+                    cacheSet(href, status);
+                    markBroken(a, isBroken(status) ? status : null);
+                });
+            })
+            .catch(function () { /* Netzwerkfehler: nichts melden */ });
+    }
+
+    /* External link: ask the server for the real status */
+    function checkExternal(anchor, href) {
+        var sep = ENDPOINT.indexOf('?') === -1 ? '?' : '&';
+        return fetch(ENDPOINT + sep + 'url=' + encodeURIComponent(href), {
+            credentials: 'same-origin',
+            cache: 'no-store',
+            headers: { 'Accept': 'application/json' },
+        })
+            .then(function (res) { return res.ok ? res.json() : { status: 0 }; })
+            .then(function (data) {
+                var status = parseInt(data && data.status, 10) || 0;
+                cacheSet(href, status);
+                if (isBroken(status)) {
+                    markBroken(anchor, status);
+                } else {
+                    markBroken(anchor, null);
+                }
+            })
+            .catch(function () {
+                markBroken(anchor, null);
             });
     }
 
@@ -288,14 +412,14 @@
         var messages = {
             en: {
                 timeout: 'Link check: Timeout \u2013 the link did not respond within 8 seconds.',
-                unreachable: 'Link check: Server unreachable (DNS error or connection refused).',
+                unreachable: 'Link check: Domain not found (DNS) \u2013 the address does not exist.',
                 notFound: 'Link check: Link not found (HTTP ',
                 serverError: 'Link check: Server error (HTTP ',
                 unknown: 'Link check: This link appears to be unreachable.',
             },
             de: {
                 timeout: 'Link-Check: Timeout \u2013 der Link hat nicht innerhalb von 8 Sekunden geantwortet.',
-                unreachable: 'Link-Check: Server nicht erreichbar (DNS-Fehler oder Verbindung abgewiesen).',
+                unreachable: 'Link-Check: Domain nicht gefunden (DNS) \u2013 diese Adresse gibt es nicht.',
                 notFound: 'Link-Check: Link nicht gefunden (HTTP ',
                 serverError: 'Link-Check: Serverfehler (HTTP ',
                 unknown: 'Link-Check: Dieser Link scheint nicht erreichbar zu sein.',
@@ -347,6 +471,115 @@
         });
     }
 
+    /* Zwischengespeicherte Ergebnisse anzeigen, ohne zu prüfen (Modus „Nur auf Knopfdruck“) */
+    function applyCached(anchors) {
+        anchors.forEach(function (a) {
+            var cached = cacheGet(a.href.split('#')[0]);
+            if (cached !== null && isBroken(cached.status)) {
+                markBroken(a, cached.status);
+            }
+        });
+        return Promise.resolve();
+    }
+
+    function runNetworkCheck(anchors) {
+        /* Mit Server-Endpunkt: Pakete an den Server; ohne: einzeln im Browser (nur eigene Seiten) */
+        return ENDPOINT ? checkBatch(anchors) : runQueue(anchors, CONCURRENCY);
+    }
+
+    function clearMarks() {
+        document.querySelectorAll('a[data-sa11y-broken]').forEach(function (a) {
+            a.removeAttribute('data-sa11y-broken');
+        });
+    }
+
+    /* Zweiter Sa11y-Durchlauf, der die Markierungen einträgt (resetAll lässt das Panel offen) */
+    function rerenderSa11y() {
+        var inst = window.sa11yInstance;
+        if (inst && typeof inst.resetAll === 'function' && typeof inst.checkAll === 'function') {
+            isSecondPass = true;
+            inst.resetAll(false).then(function () {
+                inst.checkAll();
+            });
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* „Links prüfen“ im Einstellungsmenü von Sa11y (Modus „Nur auf Knopfdruck“) */
+    /* ------------------------------------------------------------------ */
+    var button = null;
+    var buttonText = null;
+    var statusEl = null;
+
+    function buttonTexts() {
+        return getSa11yLanguage() === 'de'
+            ? { label: 'Links prüfen', idle: 'Prüfen', busy: 'Prüft …', none: 'Keine defekten Links gefunden.', one: '1 defekter Link gefunden.', many: ' defekte Links gefunden.' }
+            : { label: 'Check links', idle: 'Check', busy: 'Checking …', none: 'No broken links found.', one: '1 broken link found.', many: ' broken links found.' };
+    }
+
+    function startManualCheck() {
+        if (checkRunning || !button) {
+            return;
+        }
+        var t = buttonTexts();
+        checkRunning = true;
+        button.setAttribute('aria-busy', 'true');
+        buttonText.textContent = t.busy;
+        statusEl.textContent = '';
+        clearMarks();
+        runNetworkCheck(collectAnchors())
+            .catch(function () { /* Netzwerkfehler: nichts melden */ })
+            .then(function () {
+                checkRunning = false;
+                button.removeAttribute('aria-busy');
+                buttonText.textContent = t.idle;
+                var n = document.querySelectorAll('a[data-sa11y-broken]').length;
+                statusEl.textContent = n === 0 ? t.none : (n === 1 ? t.one : n + t.many);
+                /* immer neu zeichnen, damit alte Markierungen verschwinden und neue erscheinen */
+                rerenderSa11y();
+            });
+    }
+
+    /* Eintrag in die Einstellungsliste des Sa11y-Panels (offenes Shadow DOM), gestaltet wie „Ergebnisse exportieren“ */
+    function ensureControl() {
+        var panel = document.querySelector('sa11y-control-panel');
+        var list = panel && panel.shadowRoot ? panel.shadowRoot.getElementById('settings-options') : null;
+        if (list) {
+            if (list.querySelector('#for-sa11y-lc-item')) {
+                return;
+            }
+            var t = buttonTexts();
+            var item = document.createElement('li');
+            item.id = 'for-sa11y-lc-item';
+            item.style.flexWrap = 'wrap';
+            var label = document.createElement('span');
+            label.id = 'for-sa11y-lc-label';
+            label.textContent = t.label;
+            label.style.cssText = 'flex:1;color:var(--sa11y-panel-primary);font-weight:400;';
+            var group = document.createElement('div');
+            group.className = 'export-results-group';
+            button = document.createElement('button');
+            button.type = 'button';
+            button.setAttribute('aria-describedby', 'for-sa11y-lc-label');
+            buttonText = document.createElement('span');
+            buttonText.className = 'text';
+            buttonText.textContent = t.idle;
+            button.appendChild(buttonText);
+            group.appendChild(button);
+            statusEl = document.createElement('span');
+            statusEl.setAttribute('role', 'status');
+            statusEl.style.cssText = 'flex-basis:100%;color:var(--sa11y-panel-primary);font-size:0.9em;padding-bottom:4px;';
+            item.appendChild(label);
+            item.appendChild(group);
+            item.appendChild(statusEl);
+            /* vor „Ergebnisse exportieren“, sonst ans Ende */
+            var exportItem = list.querySelector('#export-results-item');
+            list.insertBefore(item, exportItem || null);
+            button.addEventListener('click', startManualCheck);
+        }
+    }
+
+
     /* ------------------------------------------------------------------ */
     /* Sa11y "listen" mode event handler                                   */
     /* ------------------------------------------------------------------ */
@@ -362,6 +595,9 @@
         /* ── Pass 1: unblock Sa11y immediately, start background checks ── */
         document.dispatchEvent(new Event('sa11y-resume'));
 
+        if (MANUAL) {
+            ensureControl();
+        }
         if (checkRunning) {
             /* Concurrent call (e.g. rapid SPA navigation) – skip */
             return;
@@ -369,29 +605,16 @@
         checkRunning = true;
 
         /* Clear stale broken-link marks from a previous run */
-        document.querySelectorAll('a[data-sa11y-broken]').forEach(function (a) {
-            a.removeAttribute('data-sa11y-broken');
-        });
+        clearMarks();
 
         var anchors = collectAnchors();
 
-        runQueue(anchors, CONCURRENCY)
+        /* Automatisch: prüfen. Nur auf Knopfdruck: nur bereits geprüfte Links aus dem Zwischenspeicher zeigen. */
+        (MANUAL ? applyCached(anchors) : runNetworkCheck(anchors))
             .then(function () {
                 checkRunning = false;
-
-                var hasBroken = document.querySelector('a[data-sa11y-broken]') !== null;
-                if (!hasBroken) {
-                    /* No broken links – nothing to add to the report */
-                    return;
-                }
-
-                /* Trigger second pass: resetAll keeps panel open, checkAll re-runs */
-                var inst = window.sa11yInstance;
-                if (inst && typeof inst.resetAll === 'function' && typeof inst.checkAll === 'function') {
-                    isSecondPass = true;
-                    inst.resetAll(false).then(function () {
-                        inst.checkAll();
-                    });
+                if (document.querySelector('a[data-sa11y-broken]') !== null) {
+                    rerenderSa11y();
                 }
             })
             .catch(function () {
