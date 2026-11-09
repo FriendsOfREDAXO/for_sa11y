@@ -279,6 +279,8 @@
     }
 
     /* All links in one request: the server checks them in parallel */
+    var BATCH_SIZE = 40;
+
     function checkBatch(anchors) {
         var todo = [];
         anchors.forEach(function (a) {
@@ -293,7 +295,24 @@
         if (!todo.length) {
             return Promise.resolve();
         }
-        var urls = todo.map(function (a) { return a.href.split('#')[0]; });
+        var urls = [];
+        todo.forEach(function (a) {
+            var href = a.href.split('#')[0];
+            if (urls.indexOf(href) === -1) {
+                urls.push(href);
+            }
+        });
+        /* In Paketen nacheinander: jede Anfrage bleibt kurz und belegt nur einen PHP-Prozess */
+        var chunks = [];
+        for (var i = 0; i < urls.length; i += BATCH_SIZE) {
+            chunks.push(urls.slice(i, i + BATCH_SIZE));
+        }
+        return chunks.reduce(function (chain, chunk) {
+            return chain.then(function () { return checkChunk(todo, chunk); });
+        }, Promise.resolve());
+    }
+
+    function checkChunk(todo, urls) {
         return fetch(ENDPOINT, {
             method: 'POST',
             credentials: 'same-origin',

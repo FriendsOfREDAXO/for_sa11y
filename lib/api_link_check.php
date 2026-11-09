@@ -20,19 +20,31 @@ class rex_api_for_sa11y_link_check extends rex_api_function
 
     private const TIMEOUT = 8;
     private const MAX_REDIRECTS = 5;
-    private const MAX_URLS = 400;
+    private const MAX_URLS = 60; // je Anfrage; der Browser schickt Pakete zu 40
     private const PARALLEL = 12;
+    /** Eigene Seiten belegen beim Prüfen PHP-Prozesse derselben Website – nur wenige gleichzeitig. */
+    private const PARALLEL_INTERNAL = 2;
     private const CACHE_TTL = 3600;
     private const USER_AGENT = 'Mozilla/5.0 (compatible; REDAXO for_sa11y link check)';
 
     /** @var array<string, int|true> Host => Prüfergebnis */
     private static array $hostCache = [];
 
+    /** @var list<string>|null */
+    private static ?array $internalHosts = null;
+
     public function execute(): rex_api_result
     {
         $user = rex_backend_login::createUser();
         if (!$user || !rex_backend_login::hasSession() || (!$user->isAdmin() && !$user->hasPerm('for_sa11y[sa11yCheck]'))) {
             $this->send(['error' => 'forbidden'], 403);
+        }
+        // Sitzung sofort freigeben: sonst warten alle weiteren Backend-Anfragen dieser Person, bis die Prüfung fertig ist
+        if (PHP_SESSION_ACTIVE === session_status()) {
+            session_write_close();
+        }
+        if (function_exists('set_time_limit')) {
+            @set_time_limit(90);
         }
 
         $urls = [];
@@ -106,10 +118,17 @@ class rex_api_for_sa11y_link_check extends rex_api_function
                 }
             }
 
-            $responses = self::requestMany($current, 'HEAD');
+            $internal = array_filter($current, static fn (string $url): bool => self::isInternal($url));
+            $external = array_diff_key($current, $internal);
+            $responses = self::requestMany($external, 'HEAD') + self::requestMany($internal, 'HEAD', self::PARALLEL_INTERNAL);
             // HEAD nicht erlaubt oder von Schutzsystemen anders beantwortet → mit GET nachfragen
+            // (eigene Seiten beantworten HEAD verlässlich – dort nur bei 405, sonst würde jede Seite doppelt gerendert)
             $retry = array_filter($responses, static fn (array $r): bool => in_array($r['code'], [-1, 0, 400, 403, 404, 405, 406, 429, 500, 501, 503], true));
-            foreach (self::requestMany(array_intersect_key($current, $retry), 'GET') as $origin => $get) {
+            $retry = array_filter($retry, static fn (array $r, string $origin): bool => !isset($internal[$origin]) || 405 === $r['code'], ARRAY_FILTER_USE_BOTH);
+            $retryUrls = array_intersect_key($current, $retry);
+            $retryInternal = array_intersect_key($retryUrls, $internal);
+            $gets = self::requestMany(array_diff_key($retryUrls, $retryInternal), 'GET') + self::requestMany($retryInternal, 'GET', self::PARALLEL_INTERNAL);
+            foreach ($gets as $origin => $get) {
                 if ($get['code'] > 0 || $responses[$origin]['code'] <= 0) {
                     $responses[$origin] = $get;
                 }
@@ -170,7 +189,7 @@ class rex_api_for_sa11y_link_check extends rex_api_function
      * @param array<string, string> $urls Schlüssel => URL
      * @return array<string, array{code: int, location: string}>
      */
-    private static function requestMany(array $urls, string $method): array
+    private static function requestMany(array $urls, string $method, int $parallel = self::PARALLEL): array
     {
         if ([] === $urls) {
             return [];
@@ -186,7 +205,7 @@ class rex_api_for_sa11y_link_check extends rex_api_function
 
         $out = [];
         $locations = [];
-        foreach (array_chunk($urls, self::PARALLEL, true) as $chunk) {
+        foreach (array_chunk($urls, max(1, $parallel), true) as $chunk) {
             $multi = curl_multi_init();
             $handles = [];
             foreach ($chunk as $key => $url) {
@@ -250,6 +269,26 @@ class rex_api_for_sa11y_link_check extends rex_api_function
         } catch (Throwable) {
             return ['code' => -1, 'location' => ''];
         }
+    }
+
+    /** Link auf diese Installation (YRewrite-Domains, Server-Adresse, aktueller Host)? */
+    private static function isInternal(string $url): bool
+    {
+        if (null === self::$internalHosts) {
+            $hosts = [(string) parse_url(rex::getServer(), PHP_URL_HOST), (string) ($_SERVER['HTTP_HOST'] ?? '')];
+            if (class_exists(rex_yrewrite::class)) {
+                foreach (rex_yrewrite::getDomains() as $domain) {
+                    $hosts[] = (string) parse_url($domain->getUrl(), PHP_URL_HOST);
+                }
+            }
+            self::$internalHosts = array_values(array_unique(array_filter(array_map(
+                static fn (string $h): string => (string) preg_replace('~^www\.|:\d+$~', '', strtolower($h)),
+                $hosts,
+            ))));
+        }
+        $host = (string) preg_replace('~^www\.~', '', strtolower((string) parse_url($url, PHP_URL_HOST)));
+
+        return '' !== $host && in_array($host, self::$internalHosts, true);
     }
 
     private static function resolve(string $base, string $location): string

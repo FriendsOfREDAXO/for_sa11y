@@ -11,7 +11,8 @@
   - Ergebnisse werden 1 Stunde zwischengespeichert.
   - Die Anfragen laufen über cURL, sodass keine Log-Warnungen bei `http`-Links entstehen.
 - **Nur eindeutige Fälle melden:** 404, 410, 5xx außer 503 und unbekannte Domains. 401, 403, 429, 503 und Zeitüberschreitungen sind meist Bot-Schutz und werden nicht mehr gemeldet.
-- **Alle Links in einer Anfrage**: Der Browser schickt alle Links der Seite gesammelt an den Server. Der prüft sie parallel per `curl_multi`, 143 Links in etwa 11 Sekunden statt 30 bis 40. Bisher erschienen die Markierungen beim ersten Aufruf zu spät und waren oft erst nach dem Neuladen zu sehen.
+- **Gesammelte Prüfung in Paketen:** Der Browser schickt die Links in Paketen zu 40 nacheinander an den Server. Externe Links prüft der Server parallel per `curl_multi`. Bisher erschienen die Markierungen beim ersten Aufruf zu spät und waren oft erst nach dem Neuladen zu sehen.
+- **Schonend für die eigene Website:** Interne Links werden höchstens zu zweit gleichzeitig geprüft, ohne zweiten GET-Abruf. Jede Prüfung rendert eine eigene Seite. Bei vielen Links hätte das sonst alle PHP-Prozesse der Website belegt, und Besucher hätten warten müssen. Die Backend-Sitzung wird sofort freigegeben, damit die Redaktion während der Prüfung weiterarbeiten kann.
 - **Interne Links** prüft jetzt ebenfalls der Server, so wie ein Besucher ohne Anmeldung sie sieht. Ein Link auf eine Offline-Seite gilt also als defekt.
 - Links auf dieselbe Seite mit unterschiedlichen Sprungmarken werden nur einmal geprüft.
 - **Neu: „Link-Checker nur in diesen Bereichen“**: Die Prüfung lässt sich per CSS-Selektor auf Bereiche eingrenzen, z. B. nur den Inhalt. Leer bedeutet der Prüfbereich von Sa11y.
