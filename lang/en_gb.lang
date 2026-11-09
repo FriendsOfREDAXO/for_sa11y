@@ -90,8 +90,10 @@ for_sa11y_new_version_release_notes = View release notes
 for_sa11y_version_up_to_date = for_sa11y {0} is up to date. ✅
 
 # Link Checker
-for_sa11y_link_checker = Enable link checker
-for_sa11y_link_checker_notice = Checks the links of the page in the background. Only clear cases are reported: page not found (404/410), server errors (5xx except 503) and domains that do not exist. Responses like 403, 429 or 503 and timeouts are usually bot protection and are not reported.
+for_sa11y_link_checker = Link checker
+for_sa11y_link_checker_auto = Automatically on every page view
+for_sa11y_link_checker_manual = On demand only
+for_sa11y_link_checker_notice = Checks the links of the page in the background – automatically or only after clicking “Check links” in the Sa11y panel under “Settings” (spares the server with many links and several editors; links already checked are still shown). Only clear cases are reported: page not found (404/410), server errors (5xx except 503) and domains that do not exist. Responses like 403, 429 or 503 and timeouts are usually bot protection and are not reported.
 for_sa11y_link_checker_check_external = Check external links
 for_sa11y_link_checker_check_external_notice = External links are checked by the server (logged-in backend users only, no internal network addresses), which returns the real HTTP status. Results are cached for one hour.
 for_sa11y_link_checker_ignore = Ignored selectors (link checker)

@@ -11,6 +11,8 @@
  *     objects into sa11yInstance.results (the live n.results reference) and
  *     dispatch "sa11y-resume" → Sa11y renders with broken-link annotations.
  *
+ * - Mode "manual" (data-mode): no check on page load, only cached results; a "Check links"
+ *   entry in Sa11y's settings menu starts the check
  * - Deduplicates links by resolved URL
  * - Caches results in sessionStorage (5 min TTL)
  * - Same-origin: full HTTP status (GET fallback if HEAD blocked)
@@ -35,6 +37,7 @@
     var IGNORE      = configEl.getAttribute('data-ignore') || '';
     var CHECK_EXT   = configEl.getAttribute('data-external') === '1';
     var ENDPOINT    = configEl.getAttribute('data-endpoint') || '';
+    var MANUAL      = configEl.getAttribute('data-mode') === 'manual';
     var CONCURRENCY = 6;
     var TIMEOUT_MS  = 8000;
     var CACHE_TTL   = 5 * 60 * 1000; // 5 minutes
@@ -468,6 +471,115 @@
         });
     }
 
+    /* Zwischengespeicherte Ergebnisse anzeigen, ohne zu prüfen (Modus „Nur auf Knopfdruck“) */
+    function applyCached(anchors) {
+        anchors.forEach(function (a) {
+            var cached = cacheGet(a.href.split('#')[0]);
+            if (cached !== null && isBroken(cached.status)) {
+                markBroken(a, cached.status);
+            }
+        });
+        return Promise.resolve();
+    }
+
+    function runNetworkCheck(anchors) {
+        /* Mit Server-Endpunkt: Pakete an den Server; ohne: einzeln im Browser (nur eigene Seiten) */
+        return ENDPOINT ? checkBatch(anchors) : runQueue(anchors, CONCURRENCY);
+    }
+
+    function clearMarks() {
+        document.querySelectorAll('a[data-sa11y-broken]').forEach(function (a) {
+            a.removeAttribute('data-sa11y-broken');
+        });
+    }
+
+    /* Zweiter Sa11y-Durchlauf, der die Markierungen einträgt (resetAll lässt das Panel offen) */
+    function rerenderSa11y() {
+        var inst = window.sa11yInstance;
+        if (inst && typeof inst.resetAll === 'function' && typeof inst.checkAll === 'function') {
+            isSecondPass = true;
+            inst.resetAll(false).then(function () {
+                inst.checkAll();
+            });
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* „Links prüfen“ im Einstellungsmenü von Sa11y (Modus „Nur auf Knopfdruck“) */
+    /* ------------------------------------------------------------------ */
+    var button = null;
+    var buttonText = null;
+    var statusEl = null;
+
+    function buttonTexts() {
+        return getSa11yLanguage() === 'de'
+            ? { label: 'Links prüfen', idle: 'Prüfen', busy: 'Prüft …', none: 'Keine defekten Links gefunden.', one: '1 defekter Link gefunden.', many: ' defekte Links gefunden.' }
+            : { label: 'Check links', idle: 'Check', busy: 'Checking …', none: 'No broken links found.', one: '1 broken link found.', many: ' broken links found.' };
+    }
+
+    function startManualCheck() {
+        if (checkRunning || !button) {
+            return;
+        }
+        var t = buttonTexts();
+        checkRunning = true;
+        button.setAttribute('aria-busy', 'true');
+        buttonText.textContent = t.busy;
+        statusEl.textContent = '';
+        clearMarks();
+        runNetworkCheck(collectAnchors())
+            .catch(function () { /* Netzwerkfehler: nichts melden */ })
+            .then(function () {
+                checkRunning = false;
+                button.removeAttribute('aria-busy');
+                buttonText.textContent = t.idle;
+                var n = document.querySelectorAll('a[data-sa11y-broken]').length;
+                statusEl.textContent = n === 0 ? t.none : (n === 1 ? t.one : n + t.many);
+                /* immer neu zeichnen, damit alte Markierungen verschwinden und neue erscheinen */
+                rerenderSa11y();
+            });
+    }
+
+    /* Eintrag in die Einstellungsliste des Sa11y-Panels (offenes Shadow DOM), gestaltet wie „Ergebnisse exportieren“ */
+    function ensureControl() {
+        var panel = document.querySelector('sa11y-control-panel');
+        var list = panel && panel.shadowRoot ? panel.shadowRoot.getElementById('settings-options') : null;
+        if (list) {
+            if (list.querySelector('#for-sa11y-lc-item')) {
+                return;
+            }
+            var t = buttonTexts();
+            var item = document.createElement('li');
+            item.id = 'for-sa11y-lc-item';
+            item.style.flexWrap = 'wrap';
+            var label = document.createElement('span');
+            label.id = 'for-sa11y-lc-label';
+            label.textContent = t.label;
+            label.style.cssText = 'flex:1;color:var(--sa11y-panel-primary);font-weight:400;';
+            var group = document.createElement('div');
+            group.className = 'export-results-group';
+            button = document.createElement('button');
+            button.type = 'button';
+            button.setAttribute('aria-describedby', 'for-sa11y-lc-label');
+            buttonText = document.createElement('span');
+            buttonText.className = 'text';
+            buttonText.textContent = t.idle;
+            button.appendChild(buttonText);
+            group.appendChild(button);
+            statusEl = document.createElement('span');
+            statusEl.setAttribute('role', 'status');
+            statusEl.style.cssText = 'flex-basis:100%;color:var(--sa11y-panel-primary);font-size:0.9em;padding-bottom:4px;';
+            item.appendChild(label);
+            item.appendChild(group);
+            item.appendChild(statusEl);
+            /* vor „Ergebnisse exportieren“, sonst ans Ende */
+            var exportItem = list.querySelector('#export-results-item');
+            list.insertBefore(item, exportItem || null);
+            button.addEventListener('click', startManualCheck);
+        }
+    }
+
+
     /* ------------------------------------------------------------------ */
     /* Sa11y "listen" mode event handler                                   */
     /* ------------------------------------------------------------------ */
@@ -483,6 +595,9 @@
         /* ── Pass 1: unblock Sa11y immediately, start background checks ── */
         document.dispatchEvent(new Event('sa11y-resume'));
 
+        if (MANUAL) {
+            ensureControl();
+        }
         if (checkRunning) {
             /* Concurrent call (e.g. rapid SPA navigation) – skip */
             return;
@@ -490,31 +605,16 @@
         checkRunning = true;
 
         /* Clear stale broken-link marks from a previous run */
-        document.querySelectorAll('a[data-sa11y-broken]').forEach(function (a) {
-            a.removeAttribute('data-sa11y-broken');
-        });
+        clearMarks();
 
         var anchors = collectAnchors();
 
-        /* Mit Server-Endpunkt: alle Links in einer Anfrage (parallel auf dem Server, wenige Sekunden).
-           Ohne Endpunkt: wie bisher einzeln im Browser (nur eigene Seiten). */
-        (ENDPOINT ? checkBatch(anchors) : runQueue(anchors, CONCURRENCY))
+        /* Automatisch: prüfen. Nur auf Knopfdruck: nur bereits geprüfte Links aus dem Zwischenspeicher zeigen. */
+        (MANUAL ? applyCached(anchors) : runNetworkCheck(anchors))
             .then(function () {
                 checkRunning = false;
-
-                var hasBroken = document.querySelector('a[data-sa11y-broken]') !== null;
-                if (!hasBroken) {
-                    /* No broken links – nothing to add to the report */
-                    return;
-                }
-
-                /* Trigger second pass: resetAll keeps panel open, checkAll re-runs */
-                var inst = window.sa11yInstance;
-                if (inst && typeof inst.resetAll === 'function' && typeof inst.checkAll === 'function') {
-                    isSecondPass = true;
-                    inst.resetAll(false).then(function () {
-                        inst.checkAll();
-                    });
+                if (document.querySelector('a[data-sa11y-broken]') !== null) {
+                    rerenderSa11y();
                 }
             })
             .catch(function () {
