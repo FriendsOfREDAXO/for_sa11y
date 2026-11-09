@@ -147,13 +147,13 @@ Once enabled, the link checker runs in the background via Sa11y's `customChecks:
 
 | Setting | Description |
 |---|---|
-| **Enable link checker** | Turn the feature on/off |
+| **Link checker** | *Automatically on every page view*, *On demand only* or *Off*. On demand: no check on page load (links checked within the last 5 minutes are still marked); the check starts with “Check links” in the Sa11y panel under “Settings”. Recommended for large sites and several editors |
 | **Check external links** | Check links to other domains via the server (real HTTP status) |
 | **Ignore selectors** | Comma-separated CSS selectors excluded from the check (e.g. `nav a, .footer a`) |
 
 ### Technical details
 
-- **All links in one request:** the browser sends the links to the server, which checks them in parallel (`curl_multi`). Internal links are checked the way a visitor without login sees them.
+- **Batches:** the browser sends the links to the server in batches of 40, one after another. External links are checked in parallel (`curl_multi`); internal links at most two at a time, because each check renders a page of the own site and would otherwise occupy all PHP processes. The backend session is released immediately. Internal links are checked the way a visitor without login sees them.
 - **External links** are checked by the server via `index.php?rex-api-call=for_sa11y_link_check`. The browser cannot read foreign status codes (CORS). Mixed content (`http://` on `https://` pages), tracking protection and content blockers made reachable links look broken.
 - **Endpoint security:**
   - It works only for logged-in backend users with the Sa11y permission.
