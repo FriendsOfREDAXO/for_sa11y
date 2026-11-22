@@ -1,6 +1,6 @@
 /* Sa11y – ruhiges, graues Erscheinungsbild (optional, Einstellung „Erscheinungsbild“).
  * Überschreibt die offiziellen CSS-Variablen von Sa11y und per ::part den runden Knopf und das Panel.
- * Grautöne mit Kontrasten von mindestens WCAG AA; Signalfarben (Fehler, Warnung, Gut) und der Fokusring bleiben erhalten. */
+ * Immer hell, flach, ohne Farbverläufe; Kontraste mindestens WCAG AA; Signalfarben (Fehler, Warnung, Gut) und der Fokusring bleiben erhalten. */
 :root {
   --sa11y-font-face: ui-sans-serif, system-ui, -apple-system, "Segoe UI", roboto, "Helvetica Neue", arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   --sa11y-focus-color: #2563ebcc;
@@ -13,12 +13,13 @@
   --sa11y-error-hover: #b91c1c;
 }
 
-html, html[data-sa11y-theme="light"] {
+/* Immer hell, auch bei dunklem System oder Sa11y-Dunkelmodus: eine ruhige, flache Palette ohne Farbverläufe */
+html, html[data-sa11y-theme] {
   --sa11y-red-text: #b4232f;
   --sa11y-yellow-text: #8a5a00;
   --sa11y-panel-badge: #e4e4e7;
   --sa11y-panel-outline-hover: #e4e4e7cc;
-  --sa11y-panel-scrollable: #d4d4d8b3;
+  --sa11y-panel-scrollable: #d4d4d8;
   --sa11y-panel-primary: #18181b;
   --sa11y-panel-bg: #fff;
   --sa11y-panel-bg-secondary: #f4f4f5;
@@ -37,56 +38,6 @@ html, html[data-sa11y-theme="light"] {
   --sa11y-box-shadow: 0 10px 30px -8px #18181b40, 0 2px 6px #18181b1a;
 }
 
-html[data-sa11y-theme="dark"] {
-  --sa11y-red-text: #fca5a5;
-  --sa11y-yellow-text: #fcd34d;
-  --sa11y-panel-badge: #3f3f46;
-  --sa11y-panel-outline-hover: #52525bcc;
-  --sa11y-panel-scrollable: #52525b99;
-  --sa11y-panel-primary: #f4f4f5;
-  --sa11y-panel-bg: #18181b;
-  --sa11y-panel-bg-secondary: #27272a;
-  --sa11y-panel-bg-splitter: #3f3f46;
-  --sa11y-panel-error: #fca5a5;
-  --sa11y-panel-secondary: #d4d4d8;
-  --sa11y-panel-secondary-hover: #ffffff14;
-  --sa11y-panel-toggle-active: #09090b;
-  --sa11y-element-preview: #18181b;
-  --sa11y-setting-switch-bg-on: #a1a1aa;
-  --sa11y-setting-switch-bg-off: #71717a;
-  --sa11y-hyperlink: #d4d4d8;
-  --sa11y-shortcut-hover: #27272a;
-  --sa11y-button-outline: #a1a1aa;
-  --sa11y-img-icon-color: #71717a;
-  --sa11y-box-shadow: 0 12px 40px -8px #000a, 0 2px 6px #0006;
-}
-
-@media (prefers-color-scheme: dark) {
-  html, html[data-sa11y-theme="dark"] {
-    --sa11y-red-text: #fca5a5;
-    --sa11y-yellow-text: #fcd34d;
-    --sa11y-panel-badge: #3f3f46;
-    --sa11y-panel-outline-hover: #52525bcc;
-    --sa11y-panel-scrollable: #52525b99;
-    --sa11y-panel-primary: #f4f4f5;
-    --sa11y-panel-bg: #18181b;
-    --sa11y-panel-bg-secondary: #27272a;
-    --sa11y-panel-bg-splitter: #3f3f46;
-    --sa11y-panel-error: #fca5a5;
-    --sa11y-panel-secondary: #d4d4d8;
-    --sa11y-panel-secondary-hover: #ffffff14;
-    --sa11y-panel-toggle-active: #09090b;
-    --sa11y-element-preview: #18181b;
-    --sa11y-setting-switch-bg-on: #a1a1aa;
-    --sa11y-setting-switch-bg-off: #71717a;
-    --sa11y-hyperlink: #d4d4d8;
-    --sa11y-shortcut-hover: #27272a;
-    --sa11y-button-outline: #a1a1aa;
-    --sa11y-img-icon-color: #71717a;
-    --sa11y-box-shadow: 0 12px 40px -8px #000a, 0 2px 6px #0006;
-  }
-}
-
 /* Der runde Knopf unten rechts: schlicht grau statt Farbverlauf (das Panel stellt ihn als ::part(toggle) bereit) */
 sa11y-control-panel::part(toggle) {
   background: #3f3f46;
@@ -94,7 +45,13 @@ sa11y-control-panel::part(toggle) {
   width: 46px;
   height: 46px;
   border-radius: 12px;
-  box-shadow: 0 4px 14px #00000040;
+  box-shadow: 0 2px 8px #00000033;
+}
+
+/* Panel: flach, ohne Verlauf */
+sa11y-control-panel::part(panel) {
+  background-image: none;
+  border: 1px solid #e4e4e7;
 }
 sa11y-control-panel::part(toggle):hover,
 sa11y-control-panel::part(toggle):focus {
