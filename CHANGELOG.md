@@ -2,7 +2,7 @@
 
 ## Unveröffentlicht
 
-- **Neu: Erscheinungsbild „Modern“** (Einstellungen → Anzeige → Erscheinungsbild). Ruhigere Farben, weichere Schatten, Systemschrift; hell und dunkel. Überschrieben werden nur die offiziellen Sa11y-CSS-Variablen in `assets/sa11y-modern.css`, Layout und Funktion bleiben gleich. Standard bleibt „Klassisch“.
+- **Neu: Erscheinungsbild „Modern“** (Einstellungen → Anzeige → Erscheinungsbild). Ruhiges Grau statt Farbverlauf, schlichter Knopf, Systemschrift; hell und dunkel. Überschrieben werden nur die offiziellen Sa11y-CSS-Variablen in `assets/sa11y-modern.css`, Layout und Funktion bleiben gleich. Standard bleibt „Klassisch“.
 
 ## 5.2.1 – 2026-11-08
 
