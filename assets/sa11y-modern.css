@@ -1,0 +1,88 @@
+/* Sa11y – modernes Erscheinungsbild (optional, Einstellung „Erscheinungsbild“).
+ * Überschreibt nur die offiziellen CSS-Variablen von Sa11y (Farben, Schatten, Schrift). Layout und Funktion bleiben unverändert.
+ * Wird nach sa11y.min.css geladen; Kontraste mindestens WCAG AA. */
+:root {
+  --sa11y-font-face: ui-sans-serif, system-ui, -apple-system, "Segoe UI", roboto, "Helvetica Neue", arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --sa11y-focus-color: #3b82f6cc;
+  --sa11y-blue: #2563eb;
+  --sa11y-good: #15803d;
+  --sa11y-good-hover: #16a34a;
+  --sa11y-warning: #f5b301;
+  --sa11y-warning-hover: #fbbf24;
+  --sa11y-error: #dc2626;
+  --sa11y-error-hover: #b91c1c;
+}
+
+html, html[data-sa11y-theme="light"] {
+  --sa11y-red-text: #b4232f;
+  --sa11y-yellow-text: #8a5a00;
+  --sa11y-panel-badge: #e8ecf4;
+  --sa11y-panel-outline-hover: #e8ecf4cc;
+  --sa11y-panel-scrollable: #cbd5e1b3;
+  --sa11y-panel-primary: #0f172a;
+  --sa11y-panel-bg: #fff;
+  --sa11y-panel-bg-secondary: #f1f5f9;
+  --sa11y-panel-bg-splitter: #e2e8f0;
+  --sa11y-panel-error: #b4232f;
+  --sa11y-panel-secondary: #334155;
+  --sa11y-panel-secondary-hover: #e2e8f0;
+  --sa11y-panel-toggle-active: #dbe4f3;
+  --sa11y-element-preview: #f1f5f9;
+  --sa11y-setting-switch-bg-on: #2563eb;
+  --sa11y-setting-switch-bg-off: #64748b;
+  --sa11y-hyperlink: #1d4ed8;
+  --sa11y-shortcut-hover: #e2e8f0;
+  --sa11y-button-outline: #64748b;
+  --sa11y-img-icon-color: #94a3b8;
+  --sa11y-box-shadow: 0 10px 30px -8px #0f172a40, 0 2px 6px #0f172a1a;
+}
+
+html[data-sa11y-theme="dark"] {
+  --sa11y-red-text: #fca5a5;
+  --sa11y-yellow-text: #fcd34d;
+  --sa11y-panel-badge: #334155;
+  --sa11y-panel-outline-hover: #475569cc;
+  --sa11y-panel-scrollable: #47556999;
+  --sa11y-panel-primary: #f1f5f9;
+  --sa11y-panel-bg: #0f172a;
+  --sa11y-panel-bg-secondary: #1e293b;
+  --sa11y-panel-bg-splitter: #334155;
+  --sa11y-panel-error: #fca5a5;
+  --sa11y-panel-secondary: #cbd5e1;
+  --sa11y-panel-secondary-hover: #ffffff14;
+  --sa11y-panel-toggle-active: #020617;
+  --sa11y-element-preview: #0f172a;
+  --sa11y-setting-switch-bg-on: #60a5fa;
+  --sa11y-setting-switch-bg-off: #94a3b8;
+  --sa11y-hyperlink: #93c5fd;
+  --sa11y-shortcut-hover: #1e293b;
+  --sa11y-button-outline: #60a5fa;
+  --sa11y-img-icon-color: #64748b;
+  --sa11y-box-shadow: 0 12px 40px -8px #000a, 0 2px 6px #0006;
+}
+
+@media (prefers-color-scheme: dark) {
+  html, html[data-sa11y-theme="dark"] {
+    --sa11y-red-text: #fca5a5;
+    --sa11y-yellow-text: #fcd34d;
+    --sa11y-panel-badge: #334155;
+    --sa11y-panel-outline-hover: #475569cc;
+    --sa11y-panel-scrollable: #47556999;
+    --sa11y-panel-primary: #f1f5f9;
+    --sa11y-panel-bg: #0f172a;
+    --sa11y-panel-bg-secondary: #1e293b;
+    --sa11y-panel-bg-splitter: #334155;
+    --sa11y-panel-error: #fca5a5;
+    --sa11y-panel-secondary: #cbd5e1;
+    --sa11y-panel-secondary-hover: #ffffff14;
+    --sa11y-panel-toggle-active: #020617;
+    --sa11y-element-preview: #0f172a;
+    --sa11y-setting-switch-bg-on: #60a5fa;
+    --sa11y-setting-switch-bg-off: #94a3b8;
+    --sa11y-hyperlink: #93c5fd;
+    --sa11y-shortcut-hover: #1e293b;
+    --sa11y-button-outline: #60a5fa;
+    --sa11y-img-icon-color: #64748b;
+    --sa11y-box-shadow: 0 12px 40px -8px #000a, 0 2px 6px #0006;
+  }
+}

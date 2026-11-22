@@ -24,6 +24,7 @@ default_config:
 
     # Anzeige & Verhalten
     panel_position: 'right'
+    theme: 'classic'
     delay_check: 0
     show_good_image_button: 1
     show_good_link_button: 1

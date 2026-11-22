@@ -88,7 +88,9 @@ class Sa11y
         }
 
         $js = '
-      <link rel="stylesheet" href="' . $addon->getAssetsUrl('vendor/sa11y/dist/css/sa11y.min.css') . '"/>
+      <link rel="stylesheet" href="' . $addon->getAssetsUrl('vendor/sa11y/dist/css/sa11y.min.css') . '"/>'
+        . ('modern' === $addon->getConfig('theme', 'classic') ? '
+      <link rel="stylesheet" href="' . $addon->getAssetsUrl('sa11y-modern.css') . '"/>' : '') . '
       <script' . $nonce . ' src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/sa11y.umd.min.js') . '"></script>
       <script' . $nonce . ' src="' . $addon->getAssetsUrl('vendor/sa11y/dist/js/lang/' . $lang['js'] . '.umd.js') . '"></script>
 
