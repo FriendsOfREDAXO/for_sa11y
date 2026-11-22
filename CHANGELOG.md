@@ -2,7 +2,7 @@
 
 ## Unveröffentlicht
 
-- **Neu: Erscheinungsbild „Modern“** (Einstellungen → Anzeige → Erscheinungsbild). Immer hell, flach und ohne Farbverläufe, schlichter Knopf, Systemschrift. Überschrieben werden nur die offiziellen Sa11y-CSS-Variablen in `assets/sa11y-modern.css`, Layout und Funktion bleiben gleich. Standard bleibt „Klassisch“.
+- **Neu: Erscheinungsbild „Modern“** (Einstellungen → Anzeige → Erscheinungsbild). Immer hell, flach und ohne Farbverläufe, schlichter Knopf, Systemschrift, höhere Listen im Panel (bis 80 % der Fensterhöhe; ergänzt per `assets/sa11y-modern.js` in den Shadow-DOM-Bereichen). Überschrieben werden nur die offiziellen Sa11y-CSS-Variablen in `assets/sa11y-modern.css`, Layout und Funktion bleiben gleich. Standard bleibt „Klassisch“.
 
 ## 5.2.1 – 2026-11-08
 
