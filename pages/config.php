@@ -90,6 +90,14 @@ if ($isAdmin) {
     $select->addOption($package->i18n('for_sa11y_panel_position_top_right'), 'top-right');
     $select->addOption($package->i18n('for_sa11y_panel_position_top_left'), 'top-left');
 
+    $field = $form->addSelectField('theme');
+    $field->setLabel($package->i18n('for_sa11y_theme'));
+    $field->setNotice($package->i18n('for_sa11y_theme_notice'));
+    $select = $field->getSelect();
+    $select->setSize(1);
+    $select->addOption($package->i18n('for_sa11y_theme_classic'), 'classic');
+    $select->addOption($package->i18n('for_sa11y_theme_modern'), 'modern');
+
     $field = $form->addInputField('text', 'delay_check', null, ['class' => 'form-control', 'type' => 'number', 'min' => '0', 'step' => '100']);
     $field->setLabel($package->i18n('for_sa11y_delay_check'));
     $field->setNotice($package->i18n('for_sa11y_delay_check_notice'));

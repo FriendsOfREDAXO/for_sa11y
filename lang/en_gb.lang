@@ -18,6 +18,10 @@ for_sa11y_section_advanced = Advanced Settings
 
 # Panel & Display
 for_sa11y_panel_position = Panel position
+for_sa11y_theme = Appearance
+for_sa11y_theme_notice = "Modern" uses calmer colours, softer shadows and a system font. Layout and behaviour stay the same.
+for_sa11y_theme_classic = Classic (Sa11y default)
+for_sa11y_theme_modern = Modern
 for_sa11y_panel_position_right = Right
 for_sa11y_panel_position_left = Left
 for_sa11y_panel_position_top_right = Top right

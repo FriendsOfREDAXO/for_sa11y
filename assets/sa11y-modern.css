@@ -1,0 +1,60 @@
+/* Sa11y – ruhiges, graues Erscheinungsbild (optional, Einstellung „Erscheinungsbild“).
+ * Überschreibt die offiziellen CSS-Variablen von Sa11y und per ::part den runden Knopf und das Panel.
+ * Immer hell, flach, ohne Farbverläufe; Kontraste mindestens WCAG AA; Signalfarben (Fehler, Warnung, Gut) und der Fokusring bleiben erhalten. */
+:root {
+  --sa11y-font-face: ui-sans-serif, system-ui, -apple-system, "Segoe UI", roboto, "Helvetica Neue", arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --sa11y-focus-color: #2563ebcc;
+  --sa11y-blue: #3f3f46;
+  --sa11y-good: #15803d;
+  --sa11y-good-hover: #16a34a;
+  --sa11y-warning: #f5b301;
+  --sa11y-warning-hover: #fbbf24;
+  --sa11y-error: #dc2626;
+  --sa11y-error-hover: #b91c1c;
+}
+
+/* Immer hell, auch bei dunklem System oder Sa11y-Dunkelmodus: eine ruhige, flache Palette ohne Farbverläufe */
+html, html[data-sa11y-theme] {
+  --sa11y-red-text: #b4232f;
+  --sa11y-yellow-text: #8a5a00;
+  --sa11y-panel-badge: #e4e4e7;
+  --sa11y-panel-outline-hover: #e4e4e7cc;
+  --sa11y-panel-scrollable: #d4d4d8;
+  --sa11y-panel-primary: #18181b;
+  --sa11y-panel-bg: #fff;
+  --sa11y-panel-bg-secondary: #f4f4f5;
+  --sa11y-panel-bg-splitter: #e4e4e7;
+  --sa11y-panel-error: #b4232f;
+  --sa11y-panel-secondary: #3f3f46;
+  --sa11y-panel-secondary-hover: #e4e4e7;
+  --sa11y-panel-toggle-active: #d4d4d8;
+  --sa11y-element-preview: #f4f4f5;
+  --sa11y-setting-switch-bg-on: #3f3f46;
+  --sa11y-setting-switch-bg-off: #71717a;
+  --sa11y-hyperlink: #27272a;
+  --sa11y-shortcut-hover: #e4e4e7;
+  --sa11y-button-outline: #71717a;
+  --sa11y-img-icon-color: #a1a1aa;
+  --sa11y-box-shadow: 0 10px 30px -8px #18181b40, 0 2px 6px #18181b1a;
+}
+
+/* Der runde Knopf unten rechts: schlicht grau statt Farbverlauf (das Panel stellt ihn als ::part(toggle) bereit) */
+sa11y-control-panel::part(toggle) {
+  background: #3f3f46;
+  background-image: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #00000033;
+}
+
+/* Panel: flach, ohne Verlauf */
+sa11y-control-panel::part(panel) {
+  background-image: none;
+  border: 1px solid #e4e4e7;
+}
+sa11y-control-panel::part(toggle):hover,
+sa11y-control-panel::part(toggle):focus {
+  background: #27272a;
+  animation: none;
+}
